@@ -1,0 +1,38 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: violetc <58360096+s-yh-china@users.noreply.github.com>
+Date: Tue, 18 Jul 2023 14:54:36 +0800
+Subject: [PATCH] Store mob counts in an array
+
+This patch is Powered by Gale(https://github.com/GaleMC/Gale)
+
+diff --git a/net/minecraft/world/level/LocalMobCapCalculator.java b/net/minecraft/world/level/LocalMobCapCalculator.java
+index 5b3808e6ff58d350fe3fd65fb56e8f209e1b2c93..68de5bfac701af046fdeae62b1df5ccab8c79366 100644
+--- a/net/minecraft/world/level/LocalMobCapCalculator.java
++++ b/net/minecraft/world/level/LocalMobCapCalculator.java
+@@ -43,13 +43,25 @@ public class LocalMobCapCalculator {
+ 
+     private static class MobCounts {
+         private final Object2IntMap<MobCategory> counts = new Object2IntOpenHashMap<>(MobCategory.values().length);
++        private final int[] arrayCounts = new int[MobCategory.values().length]; // Leaves - store mob counts in an array
+ 
+         public void add(final MobCategory category) {
+-            this.counts.computeInt(category, (k, count) -> count == null ? 1 : count + 1);
++            // Leaves start - store mob counts in an array
++            if (org.leavesmc.leaves.LeavesConfig.performance.storeMobCountsInArray) {
++                this.arrayCounts[category.ordinal()]++;
++            } else {
++                this.counts.computeInt(category, (key, count) -> count == null ? 1 : count + 1);
++            }
++            // Leaves end - store mob counts in an array
+         }
+ 
+         public boolean canSpawn(final MobCategory category) {
++            // Leaves start - store mob counts in an array
++            if (org.leavesmc.leaves.LeavesConfig.performance.storeMobCountsInArray) {
++                return this.arrayCounts[category.ordinal()] < category.getMaxInstancesPerChunk();
++            }
+             return this.counts.getOrDefault(category, 0) < category.getMaxInstancesPerChunk();
++            // Leaves end - store mob counts in an array
+         }
+     }
+ }

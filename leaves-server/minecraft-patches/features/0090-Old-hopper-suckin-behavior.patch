@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Lumine1909 <133463833+Lumine1909@users.noreply.github.com>
+Date: Thu, 6 Feb 2025 00:05:23 +0800
+Subject: [PATCH] Old hopper suckin behavior
+
+
+diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
+index 40556c8623a6e26873dd1753d5f43d19692fd6b6..d5fd7e2a9922836d5105da2a33ce207ec797b4ed 100644
+--- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
++++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
+@@ -606,6 +606,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+             return false;
+         } else {
+             boolean isBlocked = hopper.isGridAligned()
++                && !org.leavesmc.leaves.LeavesConfig.modify.oldMC.oldHopperSuckInBehavior // Leaves - old hopper suck-in behavior
+                 && blockState.isCollisionShapeFullBlock(level, blockPos)
+                 && !blockState.is(BlockTags.DOES_NOT_BLOCK_HOPPERS);
+             if (!isBlocked) {

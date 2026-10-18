@@ -1,0 +1,85 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Sat, 17 May 2025 21:03:00 +0800
+Subject: [PATCH] Tripwire behavior modifier
+
+
+diff --git a/net/minecraft/world/level/levelgen/feature/EndPlatformFeature.java b/net/minecraft/world/level/levelgen/feature/EndPlatformFeature.java
+index aab588e934945c2cec0f7d90f0b2cc22b4e5eb8b..bd826e4ab5b80d924e4358cd675a5db5bba91d0d 100644
+--- a/net/minecraft/world/level/levelgen/feature/EndPlatformFeature.java
++++ b/net/minecraft/world/level/levelgen/feature/EndPlatformFeature.java
+@@ -33,6 +33,11 @@ public record EndPlatformFeature() implements Feature {
+         // CraftBukkit end
+         BlockPos.MutableBlockPos pos = origin.mutable();
+ 
++        // Leaves start - tripwire behavior modifier
++        java.util.List<BlockPos> noDropBlocks = new java.util.ArrayList<>();
++        java.util.List<BlockPos> disarmedTripwires = new java.util.ArrayList<>();
++        boolean vanilla21 = org.leavesmc.leaves.LeavesConfig.modify.oldMC.tripwire.tripwireBehavior
++            == org.leavesmc.leaves.LeavesConfig.ModifyConfig.MinecraftOLDConfig.TripwireConfig.TripwireBehavior.VANILLA_21;
+         for (int dz = -2; dz <= 2; dz++) {
+             for (int dx = -2; dx <= 2; dx++) {
+                 for (int dy = -1; dy < 3; dy++) {
+@@ -40,7 +45,30 @@ public record EndPlatformFeature() implements Feature {
+                     Block block = dy == -1 ? Blocks.OBSIDIAN : Blocks.AIR;
+                     if (!blockList.getBlockState(blockPos).is(block)) { // CraftBukkit
+                         if (dropResources) {
+-                            blockList.destroyBlock(blockPos, true, null); // CraftBukkit
++                            boolean suppressDrop = false;
++                            if (org.leavesmc.leaves.LeavesConfig.modify.oldMC.tripwire.stringTripwireHookDuplicate) {
++                                switch (org.leavesmc.leaves.LeavesConfig.modify.oldMC.tripwire.tripwireBehavior) {
++                                    case VANILLA_20 -> suppressDrop = true;
++                                    case MIXED -> {
++                                        net.minecraft.world.level.block.state.BlockState state = newLevel.getBlockState(blockPos);
++                                        if (state.is(Blocks.TRIPWIRE)) {
++                                            if (state.getValue(net.minecraft.world.level.block.TripWireBlock.DISARMED)) {
++                                                suppressDrop = true;
++                                                disarmedTripwires.add(blockPos.immutable());
++                                            }
++                                            if (!suppressDrop) {
++                                                suppressDrop = checkString(disarmedTripwires, blockPos);
++                                            }
++                                        }
++                                    }
++                                    default -> {}
++                                }
++                            }
++                            if (suppressDrop) {
++                                noDropBlocks.add(blockPos.immutable());
++                            } else {
++                                blockList.destroyBlock(blockPos, true, null);
++                            }
+                         }
+ 
+                         blockList.setBlock(blockPos, block.defaultBlockState(), Block.UPDATE_ALL); // CraftBukkit
+@@ -58,11 +86,28 @@ public record EndPlatformFeature() implements Feature {
+             if (portalEvent.isCancelled()) return;
+         }
+ 
+-        if (dropResources) {
+-            blockList.placeBlocks(state -> newLevel.destroyBlock(state.getPosition(), true, null));
++        if (vanilla21 || !org.leavesmc.leaves.LeavesConfig.modify.oldMC.tripwire.stringTripwireHookDuplicate) {
++            if (dropResources) {
++                blockList.placeBlocks(state -> newLevel.destroyBlock(state.getPosition(), !noDropBlocks.contains(state.getPosition()), null));
++            } else {
++                blockList.placeBlocks();
++            }
+         } else {
++            if (dropResources) {
++                blockList.getSnapshotBlocks().forEach(state -> newLevel.destroyBlock(state.getPosition(), !noDropBlocks.contains(state.getPosition()), null));
++            }
+             blockList.placeBlocks();
+         }
+         // CraftBukkit end
+     }
++
++    private static boolean checkString(final java.util.List<BlockPos> blockList, final BlockPos blockPos) {
++        for (BlockPos pos : blockList) {
++            if (pos.getY() == blockPos.getY() && (pos.getX() == blockPos.getX() || pos.getZ() == blockPos.getZ())) {
++                return true;
++            }
++        }
++        return false;
++    }
++    // Leaves end - tripwire behavior modifier
+ }

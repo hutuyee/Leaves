@@ -1,0 +1,71 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: violetc <58360096+s-yh-china@users.noreply.github.com>
+Date: Tue, 18 Jul 2023 13:14:15 +0800
+Subject: [PATCH] Faster chunk serialization
+
+This patch is Powered by Leaf(https://github.com/Winds-Studio/Leaf)
+License: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
+
+This patch is based on the following mixins:
+* "net/caffeinemc/mods/lithium/mixin/chunk/palette/StrategyMixin.java"
+By: 2No2Name <2No2Name@web.de>
+As part of: Lithium (https://github.com/CaffeineMC/lithium)
+Licensed under: LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.html)
+
+diff --git a/net/minecraft/world/level/chunk/HashMapPalette.java b/net/minecraft/world/level/chunk/HashMapPalette.java
+index fde0a0e4b2a3b2bd4f2ac893703c70dd55b1ddc2..b303d23869fc5bab79b833b53cbb413bb921a212 100644
+--- a/net/minecraft/world/level/chunk/HashMapPalette.java
++++ b/net/minecraft/world/level/chunk/HashMapPalette.java
+@@ -21,6 +21,14 @@ public class HashMapPalette<T> implements Palette<T> {
+         this(bits, CrudeIncrementalIntIdentityHashBiMap.create((1 << bits) + 1)); // Paper - Perf: Avoid unnecessary resize operation in CrudeIncrementalIntIdentityHashBiMap
+     }
+ 
++    // Leaves start - faster hash palette
++    protected HashMapPalette(final int bits, final boolean dummy) {
++        this.bits = bits;
++        //noinspection DataFlowIssue
++        this.values = dummy ? null : CrudeIncrementalIntIdentityHashBiMap.create((1 << bits) + 1);
++    }
++    // Leaves end - faster hash palette
++
+     private HashMapPalette(final int bits, final CrudeIncrementalIntIdentityHashBiMap<T> values) {
+         this.bits = bits;
+         this.values = values;
+diff --git a/net/minecraft/world/level/chunk/PalettedContainer.java b/net/minecraft/world/level/chunk/PalettedContainer.java
+index 80136bf48b7a58af2c9382fc032200f9033fc89c..66eb1a1e80b86e5b6dd19cb698ee309fd47c3e54 100644
+--- a/net/minecraft/world/level/chunk/PalettedContainer.java
++++ b/net/minecraft/world/level/chunk/PalettedContainer.java
+@@ -477,13 +477,27 @@ public class PalettedContainer<T> implements PaletteResize<T>, PalettedContainer
+ 
+     @Override
+     public void count(final PalettedContainer.CountConsumer<T> output) {
+-        if (this.data.palette.getSize() == 1) {
+-            output.accept(this.data.palette.valueFor(0), this.data.storage.getSize());
+-        } else {
+-            Int2IntOpenHashMap counts = new Int2IntOpenHashMap();
+-            this.data.storage.getAll(state -> counts.addTo(state, 1));
+-            counts.int2IntEntrySet().forEach(entry -> output.accept(this.data.palette.valueFor(entry.getIntKey()), entry.getIntValue()));
++        // Leaves start - faster chunk serialization
++        if (!org.leavesmc.leaves.LeavesConfig.performance.fasterChunkSerialization || this.data.palette().getSize() > 4096) {
++            if (this.data.palette.getSize() == 1) {
++                output.accept(this.data.palette.valueFor(0), this.data.storage.getSize());
++            } else {
++                Int2IntOpenHashMap counts = new Int2IntOpenHashMap();
++                this.data.storage.getAll(state -> counts.addTo(state, 1));
++                counts.int2IntEntrySet().forEach(entry -> output.accept(this.data.palette.valueFor(entry.getIntKey()), entry.getIntValue()));
++            }
++            return;
++        }
++
++        short[] counts = new short[this.data.palette().getSize()];
++        this.data.storage().getAll(id -> counts[id]++);
++        for (int id = 0; id < counts.length; id++) {
++            T value = this.data.palette().valueFor(id);
++            if (value != null) {
++                output.accept(value, counts[id]);
++            }
+         }
++        // Leaves end - faster chunk serialization
+     }
+ 
+     @FunctionalInterface

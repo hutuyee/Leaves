@@ -1,0 +1,43 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MC_XiaoHei <xor7xiaohei@gmail.com>
+Date: Fri, 4 Jul 2025 17:13:15 +0800
+Subject: [PATCH] Prevent loss of item drops due to update suppression when
+ breaking blocks
+
+
+diff --git a/net/minecraft/server/level/ServerPlayerGameMode.java b/net/minecraft/server/level/ServerPlayerGameMode.java
+index 19981c0b3cd3f6de9b02eb5e97bd273cafc3d9f4..54a8606d27f393c8705e8a01507b5ea9d0202195 100644
+--- a/net/minecraft/server/level/ServerPlayerGameMode.java
++++ b/net/minecraft/server/level/ServerPlayerGameMode.java
+@@ -438,11 +438,22 @@ public class ServerPlayerGameMode {
+         BlockState adjustedState = org.leavesmc.leaves.command.leaves.subcommands.BlockUpdateCommand.isNoBlockUpdate()
+             ? state
+             : block.playerWillDestroy(this.level, pos, state, this.player); // Leaves - no block update
+-        boolean changed = this.level.removeBlock(pos, false);
++        boolean changed;
+         if (SharedConstants.DEBUG_BLOCK_BREAK) {
+             LOGGER.info("server broke {} {} -> {}", pos, adjustedState, this.level.getBlockState(pos));
+         }
+ 
++        // Leaves start - preserve captured drops during update suppression
++        org.leavesmc.leaves.util.UpdateSuppressionException suppression = null;
++        try {
++            changed = this.level.removeBlock(pos, false);
++        } catch (org.leavesmc.leaves.util.UpdateSuppressionException ex) {
++            suppression = ex;
++            ex.provideBlock(this.level, pos, block);
++            ex.providePlayer(this.player);
++            changed = false;
++        }
++        // Leaves end - preserve captured drops during update suppression
+         if (changed) {
+             block.destroy(this.level, pos, adjustedState);
+         }
+@@ -466,6 +477,7 @@ public class ServerPlayerGameMode {
+         if (event.isDropItems()) {
+             org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockDropItemEvent(bblock, bState, this.player, itemsToDrop); // Paper - capture all item additions to the world
+         }
++        if (suppression != null) throw suppression; // Leaves - preserve captured drops during update suppression
+ 
+         // Drop event experience
+         if (changed) {

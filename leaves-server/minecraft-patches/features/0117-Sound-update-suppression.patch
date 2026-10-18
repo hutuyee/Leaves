@@ -1,0 +1,57 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MC_XiaoHei <xiaohei.xor7@outlook.com>
+Date: Tue, 20 May 2025 12:08:40 +0000
+Subject: [PATCH] Sound update suppression
+
+
+diff --git a/net/minecraft/world/level/block/SculkSensorBlock.java b/net/minecraft/world/level/block/SculkSensorBlock.java
+index 94086896d42816f1791ee8e2d2efbd083e25e259..7afe84114ff5ab295e03b9d95a7018613b041f83 100644
+--- a/net/minecraft/world/level/block/SculkSensorBlock.java
++++ b/net/minecraft/world/level/block/SculkSensorBlock.java
+@@ -91,7 +91,7 @@ public class SculkSensorBlock extends BaseEntityBlock implements SimpleWaterlogg
+     @Override
+     public void stepOn(final Level level, final BlockPos pos, final BlockState onState, final Entity entity) {
+         if (!level.isClientSide()
+-            && canActivate(onState)
++            && canActivate(onState, pos) // Leaves - sound update suppression
+             && !entity.is(EntityTypes.WARDEN)
+             && level.getBlockEntity(pos) instanceof SculkSensorBlockEntity sculkSensor
+             && level instanceof ServerLevel serverLevel
+@@ -206,6 +206,15 @@ public class SculkSensorBlock extends BaseEntityBlock implements SimpleWaterlogg
+         return state.getValue(PHASE);
+     }
+ 
++    // Leaves start - sound update suppression
++    public static boolean canActivate(final BlockState state, final BlockPos pos) {
++        if (org.leavesmc.leaves.LeavesConfig.modify.oldMC.updater.soundUpdateSuppression && !(state.getBlock() instanceof SculkSensorBlock)) {
++            throw new org.leavesmc.leaves.util.UpdateSuppressionException(pos, null, state.getBlock(), null, new IllegalArgumentException());
++        }
++        return canActivate(state);
++    }
++    // Leaves end - sound update suppression
++
+     public static boolean canActivate(final BlockState state) {
+         return state.getBlock() instanceof SculkSensorBlock && getPhase(state) == SculkSensorPhase.INACTIVE; // Paper - Check for a valid type
+     }
+diff --git a/net/minecraft/world/level/block/entity/SculkSensorBlockEntity.java b/net/minecraft/world/level/block/entity/SculkSensorBlockEntity.java
+index 7903289b01c652226b58d1f22f25cfabcbb10274..926374f6c925b9f809d2d8a09fd6fb6c93953776 100644
+--- a/net/minecraft/world/level/block/entity/SculkSensorBlockEntity.java
++++ b/net/minecraft/world/level/block/entity/SculkSensorBlockEntity.java
+@@ -115,7 +115,7 @@ public class SculkSensorBlockEntity extends BlockEntity implements GameEventList
+         ) {
+             return (!pos.equals(this.blockPos) || !event.is(GameEvent.BLOCK_DESTROY) && !event.is(GameEvent.BLOCK_PLACE))
+                 && VibrationSystem.getGameEventFrequency(event) != 0
+-                && SculkSensorBlock.canActivate(SculkSensorBlockEntity.this.getBlockState());
++                && SculkSensorBlock.canActivate(SculkSensorBlockEntity.this.getBlockState(), pos); // Leaves - sound update suppression
+         }
+ 
+         @Override
+@@ -128,7 +128,7 @@ public class SculkSensorBlockEntity extends BlockEntity implements GameEventList
+             final float receivingDistance
+         ) {
+             BlockState state = SculkSensorBlockEntity.this.getBlockState();
+-            if (SculkSensorBlock.canActivate(state)) {
++            if (SculkSensorBlock.canActivate(state, pos)) { // Leaves - sound update suppression
+                 int eventFrequency = VibrationSystem.getGameEventFrequency(event);
+                 SculkSensorBlockEntity.this.setLastVibrationFrequency(eventFrequency);
+                 int calculatedPower = VibrationSystem.getRedstoneStrengthForDistance(receivingDistance, this.getListenerRadius());

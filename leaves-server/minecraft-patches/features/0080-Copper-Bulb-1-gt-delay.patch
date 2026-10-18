@@ -1,0 +1,56 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: violetc <58360096+s-yh-china@users.noreply.github.com>
+Date: Tue, 12 Dec 2023 12:09:16 +0800
+Subject: [PATCH] Copper Bulb 1 gt delay
+
+
+diff --git a/net/minecraft/world/level/block/CopperBulbBlock.java b/net/minecraft/world/level/block/CopperBulbBlock.java
+index 181b11733cee06c09592645e5043983300f22490..00dba0130fed579de6f5faa02bb7fab99fd8f2f1 100644
+--- a/net/minecraft/world/level/block/CopperBulbBlock.java
++++ b/net/minecraft/world/level/block/CopperBulbBlock.java
+@@ -26,7 +26,13 @@ public class CopperBulbBlock extends Block {
+     @Override
+     protected void onPlace(final BlockState state, final Level level, final BlockPos pos, final BlockState oldState, final boolean movedByPiston) {
+         if (oldState.getBlock() != state.getBlock() && level instanceof ServerLevel serverLevel) {
+-            this.checkAndFlip(state, serverLevel, pos);
++            // Leaves start - copper bulb 1 gt delay
++            if (org.leavesmc.leaves.LeavesConfig.modify.oldMC.copperBulb1gt) {
++                level.scheduleTick(pos, this, 1);
++            } else {
++                this.checkAndFlip(state, serverLevel, pos);
++            }
++            // Leaves end - copper bulb 1 gt delay
+         }
+     }
+ 
+@@ -35,7 +41,13 @@ public class CopperBulbBlock extends Block {
+         final BlockState state, final Level level, final BlockPos pos, final Block block, final @Nullable Orientation orientation, final boolean movedByPiston
+     ) {
+         if (level instanceof ServerLevel serverLevel) {
+-            this.checkAndFlip(state, serverLevel, pos);
++            // Leaves start - copper bulb 1 gt delay
++            if (org.leavesmc.leaves.LeavesConfig.modify.oldMC.copperBulb1gt) {
++                level.scheduleTick(pos, this, 1);
++            } else {
++                this.checkAndFlip(state, serverLevel, pos);
++            }
++            // Leaves end - copper bulb 1 gt delay
+         }
+     }
+ 
+@@ -57,6 +69,15 @@ public class CopperBulbBlock extends Block {
+         }
+     }
+ 
++    // Leaves start - copper bulb 1 gt delay
++    @Override
++    protected void tick(final BlockState state, final ServerLevel level, final BlockPos pos, final net.minecraft.util.RandomSource random) {
++        if (org.leavesmc.leaves.LeavesConfig.modify.oldMC.copperBulb1gt) {
++            this.checkAndFlip(state, level, pos);
++        }
++    }
++    // Leaves end - copper bulb 1 gt delay
++
+     @Override
+     protected void createBlockStateDefinition(final StateDefinition.Builder<Block, BlockState> builder) {
+         builder.add(LIT, POWERED);

@@ -1,0 +1,43 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: violetc <58360096+s-yh-china@users.noreply.github.com>
+Date: Thu, 20 Jul 2023 20:22:47 +0800
+Subject: [PATCH] Optimized CubePointRange
+
+This patch is Powered by Gale(https://github.com/GaleMC/Gale)
+
+diff --git a/net/minecraft/world/phys/shapes/CubePointRange.java b/net/minecraft/world/phys/shapes/CubePointRange.java
+index 72bb3bb29f2a1b06371589ed9bfea85de8046d50..15eb2682516e14703142a6e47490b5ff038dd50d 100644
+--- a/net/minecraft/world/phys/shapes/CubePointRange.java
++++ b/net/minecraft/world/phys/shapes/CubePointRange.java
+@@ -3,7 +3,9 @@ package net.minecraft.world.phys.shapes;
+ import it.unimi.dsi.fastutil.doubles.AbstractDoubleList;
+ 
+ public class CubePointRange extends AbstractDoubleList {
++    private final int size; // Leaves - optimized CubePointRange
+     private final int parts;
++    private final double scale; // Leaves - optimized CubePointRange
+ 
+     public CubePointRange(final int parts) {
+         if (parts <= 0) {
+@@ -11,15 +13,19 @@ public class CubePointRange extends AbstractDoubleList {
+         }
+ 
+         this.parts = parts;
++        this.size = parts + 1;
++        this.scale = 1.0 / parts;
+     }
+ 
+     @Override
+     public double getDouble(final int index) {
+-        return (double)index / this.parts;
++        // Leaves start - optimized CubePointRange
++        return org.leavesmc.leaves.LeavesConfig.performance.optimizedCubePointRange ? index * this.scale : (double)index / this.parts;
++        // Leaves end - optimized CubePointRange
+     }
+ 
+     @Override
+     public int size() {
+-        return this.parts + 1;
++        return org.leavesmc.leaves.LeavesConfig.performance.optimizedCubePointRange ? this.size : this.parts + 1; // Leaves - optimized CubePointRange
+     }
+ }

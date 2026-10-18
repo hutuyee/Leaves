@@ -1,0 +1,22 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Lumine1909 <133463833+Lumine1909@users.noreply.github.com>
+Date: Thu, 6 Feb 2025 00:14:22 +0800
+Subject: [PATCH] Bytebuf API
+
+
+diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
+index 8eb94f0896025f4688ace83ac32c5f2fc9260b83..709e41236f79fe32b2bf159ba086cc63496df0bc 100644
+--- a/net/minecraft/server/players/PlayerList.java
++++ b/net/minecraft/server/players/PlayerList.java
+@@ -309,6 +309,11 @@ public abstract class PlayerList {
+             GameProtocols.SERVERBOUND_TEMPLATE.bind(RegistryFriendlyByteBuf.decorator(this.server.registryAccess()), playerConnection), playerConnection
+         );
+         playerConnection.suspendFlushing();
++        // Leaves start - Bytebuf API
++        if (!(player instanceof org.leavesmc.leaves.bot.ServerBot) && !(player instanceof org.leavesmc.leaves.replay.ServerPhotographer)) {
++            org.leavesmc.leaves.bytebuf.internal.InternalBytebufHandler.updatePlayer(player);
++        }
++        // Leaves end - Bytebuf API
+         GameRules gameRules = level.getGameRules();
+         boolean immediateRespawn = gameRules.get(GameRules.IMMEDIATE_RESPAWN);
+         boolean reducedDebugInfo = gameRules.get(GameRules.REDUCED_DEBUG_INFO);

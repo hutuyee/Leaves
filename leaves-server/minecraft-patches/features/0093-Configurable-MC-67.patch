@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Lumine1909 <133463833+lumine1909@users.noreply.github.com>
+Date: Wed, 26 Jun 2024 18:15:57 +0800
+Subject: [PATCH] Configurable MC-67
+
+
+diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
+index 8c418817ab81b5fe8ffa502a7b9965a42a61b580..415a43baddc9f6425d0f54141cc1e94931ce32f4 100644
+--- a/net/minecraft/world/entity/Entity.java
++++ b/net/minecraft/world/entity/Entity.java
+@@ -4498,6 +4498,7 @@ public abstract class Entity
+     }
+ 
+     public boolean canTeleport(final Level from, final Level to) {
++        if (!org.leavesmc.leaves.LeavesConfig.modify.oldMC.allowEntityPortalWithPassenger && (this.isPassenger() || this.isVehicle())) return false; // Leaves - allowEntityPortalWithPassenger
+         if (!this.isAlive() || !this.valid) return false; // Paper - Fix item duplication and teleport issues
+         if (from.dimension() == Level.END && to.dimension() == Level.OVERWORLD) {
+             for (Entity passenger : this.getPassengers()) {

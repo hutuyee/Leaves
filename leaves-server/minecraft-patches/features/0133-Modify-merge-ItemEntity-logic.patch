@@ -1,0 +1,20 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Fri, 3 Oct 2025 19:43:36 +0800
+Subject: [PATCH] Modify merge ItemEntity logic
+
+Add followTickSequenceMerge to modify merge items, due to Paper's modification of the merge radius, when the merge radius is large and stacks containing many items get stuck in an unexpected position, individual items may never reach their destination. This configuration option is added to fix this behavior.
+
+diff --git a/net/minecraft/world/entity/item/ItemEntity.java b/net/minecraft/world/entity/item/ItemEntity.java
+index 7f22a7200ca06df120beb1f83adb8653c959ee92..b3e002f57240050f3c6a88eb618f98ae24f9f2d2 100644
+--- a/net/minecraft/world/entity/item/ItemEntity.java
++++ b/net/minecraft/world/entity/item/ItemEntity.java
+@@ -298,7 +298,7 @@ public class ItemEntity extends Entity implements TraceableEntity, ChangePublish
+         }
+         // Leaves end - item over-stack util
+         if (Objects.equals(this.target, other.target) && areMergable(thisItemStack, otherItemStack)) {
+-            if (otherItemStack.getCount() < thisItemStack.getCount()) {
++            if (org.leavesmc.leaves.LeavesConfig.modify.followTickSequenceMerge || otherItemStack.getCount() < thisItemStack.getCount()) { // Leaves - add follow Tick Sequence Merge
+                 merge(this, thisItemStack, other, otherItemStack);
+             } else {
+                 merge(other, otherItemStack, this, thisItemStack);

@@ -1,0 +1,29 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: violetc <58360096+s-yh-china@users.noreply.github.com>
+Date: Thu, 25 May 2023 17:15:22 +0800
+Subject: [PATCH] Shared villager discounts
+
+
+diff --git a/net/minecraft/world/entity/ai/gossip/GossipContainer.java b/net/minecraft/world/entity/ai/gossip/GossipContainer.java
+index 41f8df338bc58678493fbcf838cd1736871665e7..23e3eae84a8f31d19cbeef8f5d40c928648d7b8f 100644
+--- a/net/minecraft/world/entity/ai/gossip/GossipContainer.java
++++ b/net/minecraft/world/entity/ai/gossip/GossipContainer.java
+@@ -122,6 +122,18 @@ public class GossipContainer {
+ 
+     public int getReputation(final UUID entity, final Predicate<GossipType> types) {
+         GossipContainer.EntityGossips entry = this.gossips.get(entity);
++        // Leaves start - shared villager discounts
++        if (org.leavesmc.leaves.LeavesConfig.modify.sharedVillagerDiscounts && types.test(GossipType.MAJOR_POSITIVE)) {
++            int otherReputation = 0;
++            if (entry != null) {
++                otherReputation = entry.weightedValue(type -> types.test(type) && type != GossipType.MAJOR_POSITIVE);
++            }
++            int majorPositiveReputation = this.gossips.values().stream()
++                .mapToInt(gossips -> gossips.weightedValue(type -> type == GossipType.MAJOR_POSITIVE))
++                .sum();
++            return otherReputation + Math.min(majorPositiveReputation, GossipType.MAJOR_POSITIVE.max * GossipType.MAJOR_POSITIVE.weight);
++        }
++        // Leaves end - shared villager discounts
+         return entry != null ? entry.weightedValue(types) : 0;
+     }
+ 

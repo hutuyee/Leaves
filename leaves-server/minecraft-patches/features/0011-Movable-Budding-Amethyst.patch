@@ -5,12 +5,12 @@ Subject: [PATCH] Movable Budding Amethyst
 
 
 diff --git a/net/minecraft/world/level/block/BuddingAmethystBlock.java b/net/minecraft/world/level/block/BuddingAmethystBlock.java
-index 02326847187f5940751fda00a03856060ae8ae29..bb728c904bd401c2a681ca5d02d246b777ad8053 100644
+index 15d58eb7b6a24d28e1ed092f654db62c5230c61f..c5de54827ba65ab4b2d0615c9f4577711b9bf814 100644
 --- a/net/minecraft/world/level/block/BuddingAmethystBlock.java
 +++ b/net/minecraft/world/level/block/BuddingAmethystBlock.java
-@@ -58,4 +58,12 @@ public class BuddingAmethystBlock extends AmethystBlock {
-     public static boolean canClusterGrowAtState(BlockState state) {
-         return state.isAir() || state.is(Blocks.WATER) && state.getFluidState().getAmount() == 8;
+@@ -51,4 +51,12 @@ public class BuddingAmethystBlock extends AmethystBlock {
+     public static boolean canClusterGrowAtState(final BlockState state) {
+         return state.isAir() || state.is(Blocks.WATER) && state.getFluidState().isFull();
      }
 +
 +    // Leaves start - budding amethyst can push by piston

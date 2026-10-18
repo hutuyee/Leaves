@@ -1,0 +1,30 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Lumine1909 <133463833+Lumine1909@users.noreply.github.com>
+Date: Sat, 29 Nov 2025 21:01:21 +0800
+Subject: [PATCH] Fix stacked container destroyed drop
+
+
+diff --git a/net/minecraft/world/item/ItemUtils.java b/net/minecraft/world/item/ItemUtils.java
+index beb13c435ad1b3b23fcc0f0d9a2fd37b1d3d1581..3a4c06e0f51aef1d13f003b4ce245d89b3c401c7 100644
+--- a/net/minecraft/world/item/ItemUtils.java
++++ b/net/minecraft/world/item/ItemUtils.java
+@@ -43,6 +43,19 @@ public class ItemUtils {
+     }
+ 
+     public static void onContainerDestroyed(final ItemEntity container, final Stream<ItemStack> contents) {
++        // Leaves start - fix stacked container destroyed drop
++        if (org.leavesmc.leaves.LeavesConfig.fix.stackedContainerDestroyedDrop) {
++            java.util.List<ItemStack> storedContents = contents.toList();
++            for (int i = 0; i < container.getItem().getCount(); i++) {
++                createDroppedItem(container, storedContents.stream().map(ItemStack::copy));
++            }
++        } else {
++            createDroppedItem(container, contents);
++        }
++    }
++
++    private static void createDroppedItem(final ItemEntity container, final Stream<ItemStack> contents) {
++        // Leaves end - fix stacked container destroyed drop
+         Level level = container.level();
+         if (!level.isClientSide()) {
+             // Paper start - call EntityDropItemEvent

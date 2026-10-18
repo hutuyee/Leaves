@@ -1,0 +1,196 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: huanli233 <392352840@qq.com>
+Date: Wed, 23 Oct 2024 23:10:48 +0800
+Subject: [PATCH] Old raid behavior
+
+
+diff --git a/net/minecraft/world/effect/BadOmenMobEffect.java b/net/minecraft/world/effect/BadOmenMobEffect.java
+index f58b10c7dec0d2b7dc2b3d1198539b74d13038f3..ee49b2bdf1bbf6a53940099d1b84a99b278d84e3 100644
+--- a/net/minecraft/world/effect/BadOmenMobEffect.java
++++ b/net/minecraft/world/effect/BadOmenMobEffect.java
+@@ -22,6 +22,11 @@ class BadOmenMobEffect extends MobEffect {
+             && !player.isSpectator()
+             && level.getDifficulty() != Difficulty.PEACEFUL
+             && level.isVillage(player.blockPosition())) {
++            // Leaves start - Revert raid changes
++            if (org.leavesmc.leaves.LeavesConfig.modify.oldMC.oldRaidBehavior) {
++                return level.getRaids().createOrExtendRaid(player, player.blockPosition()) == null;
++            }
++            // Leaves end - Revert raid changes
+             Raid raid = level.getRaidAt(player.blockPosition());
+             if (raid == null || raid.getRaidOmenLevel() < raid.getMaxRaidOmenLevel()) {
+                 player.addEffect(new MobEffectInstance(MobEffects.RAID_OMEN, 600, amplification));
+diff --git a/net/minecraft/world/entity/raid/Raid.java b/net/minecraft/world/entity/raid/Raid.java
+index 16d789ffce1f645505f51a1e61944cd2bc0672c5..cff1f13d30779d8db9d2a54da1007a40a404ffe4 100644
+--- a/net/minecraft/world/entity/raid/Raid.java
++++ b/net/minecraft/world/entity/raid/Raid.java
+@@ -262,7 +262,7 @@ public class Raid {
+     }
+ 
+     public boolean absorbRaidOmen(final ServerPlayer player) {
+-        MobEffectInstance effect = player.getEffect(MobEffects.RAID_OMEN);
++        MobEffectInstance effect = player.getEffect(org.leavesmc.leaves.LeavesConfig.modify.oldMC.oldRaidBehavior ? MobEffects.BAD_OMEN : MobEffects.RAID_OMEN); // Leaves - old raid behavior
+         if (effect == null) {
+             return false;
+         }
+@@ -339,7 +339,9 @@ public class Raid {
+                         }
+ 
+                         if (shouldTryToFindSpawnPos) {
+-                            this.waveSpawnPos = this.getValidSpawnPos(level);
++                            this.waveSpawnPos = org.leavesmc.leaves.LeavesConfig.modify.oldMC.oldRaidBehavior
++                                ? this.preCalcRavagerSpawnLocation(level, this.raidCooldownTicks < 100 ? 1 : 0)
++                                : this.getValidSpawnPos(level); // Leaves - old spawn position
+                         }
+ 
+                         if (this.raidCooldownTicks == 300 || this.raidCooldownTicks % 20 == 0) {
+@@ -394,7 +396,9 @@ public class Raid {
+                 int attempt = 0;
+ 
+                 while (this.shouldSpawnGroup()) {
+-                    BlockPos spawnPos = this.waveSpawnPos.orElseGet(() -> this.findRandomSpawnPos(level, 20));
++                    BlockPos spawnPos = org.leavesmc.leaves.LeavesConfig.modify.oldMC.oldRaidBehavior
++                        ? this.getRavagerSpawnLocation(level, attempt, 20)
++                        : this.waveSpawnPos.orElseGet(() -> this.findRandomSpawnPos(level, 20)); // Leaves - old spawn position
+                     if (spawnPos != null) {
+                         this.started = true;
+                         this.spawnGroup(level, spawnPos);
+@@ -406,7 +410,7 @@ public class Raid {
+                         attempt++;
+                     }
+ 
+-                    if (attempt > 5) {
++                    if (attempt > (org.leavesmc.leaves.LeavesConfig.modify.oldMC.oldRaidBehavior ? 3 : 5)) { // Leaves - old spawn position
+                         org.bukkit.craftbukkit.event.CraftEventFactory.callRaidStopEvent(level, this, org.bukkit.event.raid.RaidStopEvent.Reason.UNSPAWNABLE); // CraftBukkit
+                         this.stop();
+                         break;
+@@ -701,7 +705,7 @@ public class Raid {
+             int spawnX = this.center.getX() + Mth.floor(Mth.cos(angle) * 32.0F * howFar) + this.random.nextInt(3) * Mth.floor(howFar);
+             int spawnZ = this.center.getZ() + Mth.floor(Mth.sin(angle) * 32.0F * howFar) + this.random.nextInt(3) * Mth.floor(howFar);
+             int spawnY = level.getHeight(Heightmap.Types.WORLD_SURFACE, spawnX, spawnZ);
+-            if (Mth.abs(spawnY - this.center.getY()) <= 96) {
++            if (org.leavesmc.leaves.LeavesConfig.modify.oldMC.oldRaidBehavior || Mth.abs(spawnY - this.center.getY()) <= 96) { // Leaves - skippable
+                 spawnPos.set(spawnX, spawnY, spawnZ);
+                 if (!level.isVillage(spawnPos) || secondsRemaining <= 7) {
+                     int delta = 10;
+@@ -720,6 +724,76 @@ public class Raid {
+         return null;
+     }
+ 
++    // Leaves Start - old FindSpawnPosition
++    @Nullable
++    private BlockPos findRandomSpawnPos(ServerLevel level, int n, int n2) {
++        int n3 = 2 - n;
++        BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos();
++        SpawnPlacementType spawnPlacementType = SpawnPlacements.getPlacementType(EntityTypes.RAVAGER);
++        for (int i = 0; i < n2; ++i) {
++            float f = level.random.nextFloat() * ((float)Math.PI * 2);
++            int n4 = this.center.getX() + Mth.floor(Mth.cos(f) * 32.0f * (float)n3) + level.random.nextInt(5);
++            int n5 = this.center.getZ() + Mth.floor(Mth.sin(f) * 32.0f * (float)n3) + level.random.nextInt(5);
++            int n6 = level.getHeight(Heightmap.Types.WORLD_SURFACE, n4, n5);
++            mutableBlockPos.set(n4, n6, n5);
++            if (level.isVillage(mutableBlockPos) && n < 2) continue;
++            if (!level.hasChunksAt(mutableBlockPos.getX() - 10, mutableBlockPos.getZ() - 10, mutableBlockPos.getX() + 10, mutableBlockPos.getZ() + 10) || !level.isPositionEntityTicking(mutableBlockPos) || !spawnPlacementType.isSpawnPositionOk(level, mutableBlockPos, EntityTypes.RAVAGER) && (!level.getBlockState((BlockPos)mutableBlockPos.below()).is(Blocks.SNOW) || !level.getBlockState(mutableBlockPos).isAir())) continue;
++            return mutableBlockPos;
++        }
++        return null;
++    }
++
++    private Optional<BlockPos> getValidSpawnPos(ServerLevel level, int n) {
++        for (int i = 0; i < 3; ++i) {
++            BlockPos blockPos = this.findRandomSpawnPos(level, n, 1);
++            if (blockPos == null) continue;
++            return Optional.of(blockPos);
++        }
++        return Optional.empty();
++    }
++    // Leaves End - old FindSpawnPosition
++
++
++
++    // Leaves start - old FindSpawnPosition
++    private BlockPos getRavagerSpawnLocation(ServerLevel serverWorld, int proximity, int tries) {
++        int i = proximity == 0 ? 2 : 2 - proximity;
++        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
++        SpawnPlacementType spawnLocation = SpawnPlacements.getPlacementType(EntityTypes.RAVAGER);
++
++        for (int j = 0; j < tries; j++) {
++            float f = serverWorld.random.nextFloat() * (float) (Math.PI * 2);
++            int k = this.center.getX() + Mth.floor(Mth.cos(f) * 32.0F * (float) i + serverWorld.random.nextInt(5));
++            int l = this.center.getZ() + Mth.floor(Mth.sin(f) * 32.0F * (float) i + serverWorld.random.nextInt(5));
++            int m = serverWorld.getHeight(Heightmap.Types.WORLD_SURFACE, k, l);
++            mutable.set(k, m, l);
++
++            if (serverWorld.isVillage(mutable) && proximity < 2) {
++                continue;
++            }
++            if (serverWorld.hasChunksAt(mutable.getX() - 10, mutable.getZ() - 10, mutable.getX() + 10, mutable.getZ() + 10)
++                && serverWorld.isPositionEntityTicking(mutable)
++                && (spawnLocation.isSpawnPositionOk(serverWorld, mutable, EntityTypes.RAVAGER)
++                    || serverWorld.getBlockState(mutable.below()).is(Blocks.SNOW)
++                    && serverWorld.getBlockState(mutable).isAir())
++            ) {
++                return mutable;
++            }
++        }
++        return null;
++    }
++
++    private Optional<BlockPos> preCalcRavagerSpawnLocation(ServerLevel serverWorld, int proximity) {
++        for (int i = 0; i < 3; i++) {
++            BlockPos blockPos = this.getRavagerSpawnLocation(serverWorld, proximity, 1);
++            if (blockPos != null) {
++                return Optional.of(blockPos);
++            }
++        }
++        return Optional.empty();
++    }
++    // Leaves end - old FindSpawnPosition
++
+     private boolean addWaveMob(final ServerLevel level, final int wave, final Raider raider) {
+         return this.addWaveMob(level, wave, raider, true);
+     }
+diff --git a/net/minecraft/world/entity/raid/Raider.java b/net/minecraft/world/entity/raid/Raider.java
+index 9d242f24c37fec196f06b8ef6fa29a66b2781c68..20d12010f4375fab8c15f9f48490e462dd505927 100644
+--- a/net/minecraft/world/entity/raid/Raider.java
++++ b/net/minecraft/world/entity/raid/Raider.java
+@@ -129,6 +129,39 @@ public abstract class Raider extends PatrollingMonster {
+ 
+                 raidWhenKilled.removeFromRaid(serverLevel, this, false);
+             }
++
++            // Leaves start - Revert raid changes
++            if (org.leavesmc.leaves.LeavesConfig.modify.oldMC.oldRaidBehavior && !this.hasRaid()) {
++                ItemStack headItem = this.getItemBySlot(EquipmentSlot.HEAD);
++                net.minecraft.world.entity.player.Player player = null;
++                if (killer instanceof net.minecraft.world.entity.player.Player playerKiller) {
++                    player = playerKiller;
++                } else if (killer instanceof net.minecraft.world.entity.animal.wolf.Wolf wolf
++                    && wolf.isTame()
++                    && wolf.getOwner() instanceof net.minecraft.world.entity.player.Player owner) {
++                    player = owner;
++                }
++
++                if (player != null && !headItem.isEmpty() && this.isCaptain()) {
++                    net.minecraft.world.effect.MobEffectInstance effect = player.getEffect(net.minecraft.world.effect.MobEffects.BAD_OMEN);
++                    int amplification = 1;
++                    if (effect != null) {
++                        amplification += effect.getAmplifier();
++                        player.removeEffectNoUpdate(net.minecraft.world.effect.MobEffects.BAD_OMEN);
++                    } else {
++                        amplification--;
++                    }
++                    amplification = net.minecraft.util.Mth.clamp(amplification, 0, 4);
++                    net.minecraft.world.effect.MobEffectInstance badOmen = new net.minecraft.world.effect.MobEffectInstance(
++                        net.minecraft.world.effect.MobEffects.BAD_OMEN, 120000, amplification, false, false, true
++                    );
++                    if (serverLevel.getGameRules().get(net.minecraft.world.level.gamerules.GameRules.RAIDS)) {
++                        player.addEffect(badOmen, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.PATROL_CAPTAIN);
++                    }
++                    this.setPatrolLeader(false);
++                }
++            }
++            // Leaves end - Revert raid changes
+         }
+ 
+         super.die(source);

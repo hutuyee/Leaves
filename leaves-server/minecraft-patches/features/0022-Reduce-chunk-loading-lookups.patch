@@ -1,0 +1,36 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: violetc <58360096+s-yh-china@users.noreply.github.com>
+Date: Sun, 21 Aug 2022 08:29:15 +0800
+Subject: [PATCH] Reduce chunk loading & lookups
+
+This patch is Powered by Pufferfish(https://github.com/pufferfish-gg/Pufferfish)
+
+diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
+index b0b9d78e58e29a85b0174b67c3c74584ad92e030..750c4223b815ab4b5b99dd542b103b9c9fc2a7bf 100644
+--- a/net/minecraft/world/entity/LivingEntity.java
++++ b/net/minecraft/world/entity/LivingEntity.java
+@@ -4560,10 +4560,14 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+         WorldBorder worldBorder = level.getWorldBorder();
+         Vec3 clamped = worldBorder.clampVec3ToBound(xx, y, zz);
+         BlockPos.MutableBlockPos pos = BlockPos.containing(clamped).mutable();
+-        if (level.hasChunkAt(pos)) {
++        // Leaves start - single chunk lookup
++        net.minecraft.world.level.chunk.LevelChunk chunk = org.leavesmc.leaves.LeavesConfig.performance.reduceChuckLoadAndLookup
++            ? level.getChunkIfLoaded(pos)
++            : null;
++        if (org.leavesmc.leaves.LeavesConfig.performance.reduceChuckLoadAndLookup ? chunk != null : level.hasChunkAt(pos)) {
+             while (pos.getY() > level.getMinY()) {
+                 pos.move(Direction.DOWN);
+-                BlockState state = level.getBlockState(pos);
++                BlockState state = chunk == null ? level.getBlockState(pos) : chunk.getBlockState(pos);
+                 if (state.is(BlockTags.ENTITIES_CAN_TELEPORT_TO)) {
+                     return this.checkPositionAndTeleport(clamped.x, y, clamped.z, showParticles, isInvalidPosition, state, level, cause); // Paper - teleport cause API
+                 }
+@@ -4571,6 +4575,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+                 y--;
+             }
+         }
++        // Leaves end - single chunk lookup
+ 
+         return RandomTeleportResult.FAILURE; // Paper - teleport event
+     }

@@ -1,17 +1,18 @@
 package org.leavesmc.leaves.profile;
 
 import com.destroystokyo.paper.profile.PaperMinecraftSessionService;
-import com.mojang.authlib.Environment;
+import com.destroystokyo.paper.profile.PaperServicesDiscoveryService;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.HttpAuthenticationService;
+import com.mojang.authlib.HttpDiscoveryService;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
 import com.mojang.authlib.exceptions.MinecraftClientException;
-import com.mojang.authlib.yggdrasil.ProfileActionType;
-import com.mojang.authlib.yggdrasil.ProfileResult;
-import com.mojang.authlib.yggdrasil.ServicesKeySet;
-import com.mojang.authlib.yggdrasil.response.HasJoinedMinecraftServerResponse;
-import com.mojang.authlib.yggdrasil.response.ProfileAction;
-import io.papermc.paper.profile.MutablePropertyMap;
+import com.mojang.authlib.minecraft.client.MinecraftClient;
+import com.mojang.authlib.properties.PropertyMap;
+import com.mojang.authlib.services.ProfileActionType;
+import com.mojang.authlib.services.ProfileResult;
+import com.mojang.authlib.services.ServicesKeySet;
+import com.mojang.authlib.services.response.HasJoinedMinecraftServerResponse;
+import com.mojang.authlib.services.response.ProfileAction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.NameAndId;
@@ -27,13 +28,17 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class LeavesMinecraftSessionService extends PaperMinecraftSessionService {
 
-    protected LeavesMinecraftSessionService(ServicesKeySet keySet, Proxy authenticationService, Environment environment) {
-        super(keySet, authenticationService, environment);
+    private final MinecraftClient client;
+
+    protected LeavesMinecraftSessionService(final ServicesKeySet keySet, final Proxy proxy, final PaperServicesDiscoveryService discoveryService) {
+        super(keySet, proxy, discoveryService);
+        this.client = MinecraftClient.unauthenticated(proxy);
     }
 
     private static List<URL> extraYggdrasilList = List.of();
@@ -41,7 +46,7 @@ public class LeavesMinecraftSessionService extends PaperMinecraftSessionService 
     public static void initExtraYggdrasilList(List<String> extraYggdrasilServiceList) {
         List<URL> list = new ArrayList<>();
         for (String str : extraYggdrasilServiceList) {
-            list.add(HttpAuthenticationService.constantURL(str + "/sessionserver/session/minecraft/hasJoined"));
+            list.add(HttpDiscoveryService.constantURL(str + "/sessionserver/session/minecraft/hasJoined"));
         }
         extraYggdrasilList = Collections.unmodifiableList(list);
     }
@@ -67,11 +72,11 @@ public class LeavesMinecraftSessionService extends PaperMinecraftSessionService 
 
             NameAndId cache = null;
             if (LeavesConfig.mics.yggdrasil.loginProtect) {
-                cache = MinecraftServer.getServer().services.nameToIdCache().getIfCached(profileName);
+                cache = MinecraftServer.getServer().services().nameToIdCache().getIfCached(profileName);
             }
 
             for (URL checkUrl : extraYggdrasilList) {
-                URL url = HttpAuthenticationService.concatenateURL(checkUrl, HttpAuthenticationService.buildQuery(arguments));
+                URL url = HttpDiscoveryService.concatenateURL(checkUrl, HttpDiscoveryService.buildQuery(arguments));
                 try {
                     final HasJoinedMinecraftServerResponse response = client.get(url, HasJoinedMinecraftServerResponse.class);
                     if (response != null && response.id() != null) {
@@ -81,10 +86,7 @@ public class LeavesMinecraftSessionService extends PaperMinecraftSessionService 
                             }
                         }
 
-                        final GameProfile result1 = new GameProfile(response.id(), profileName, new MutablePropertyMap());
-                        if (response.properties() != null) {
-                            result1.properties().putAll(response.properties());
-                        }
+                        final GameProfile result1 = new GameProfile(response.id(), profileName, Objects.requireNonNullElse(response.properties(), PropertyMap.EMPTY));
 
                         final Set<ProfileActionType> profileActions = response.profileActions().stream()
                             .map(ProfileAction::type)

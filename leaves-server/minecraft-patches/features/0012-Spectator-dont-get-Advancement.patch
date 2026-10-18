@@ -5,18 +5,19 @@ Subject: [PATCH] Spectator dont get Advancement
 
 
 diff --git a/net/minecraft/server/PlayerAdvancements.java b/net/minecraft/server/PlayerAdvancements.java
-index cd968c6971d054d9b66a0eaea4753a51ebb75b02..80d7227cb889fd3ef5d8563a00af5f3219b4496a 100644
+index 9f1737d812369a871cec372ce473a1761d68bee1..928d676d40452a04fe47a49469b0c8f2bc6549a1 100644
 --- a/net/minecraft/server/PlayerAdvancements.java
 +++ b/net/minecraft/server/PlayerAdvancements.java
-@@ -166,6 +166,11 @@ public class PlayerAdvancements {
+@@ -167,6 +167,12 @@ public class PlayerAdvancements {
      }
  
-     public boolean award(AdvancementHolder advancement, String criterionKey) {
+     public boolean award(final AdvancementHolder holder, final String criterion) {
 +        // Leaves start - spectator don't get advancement
-+        if (org.leavesmc.leaves.LeavesConfig.modify.spectatorDontGetAdvancement && player.gameMode.getGameModeForPlayer() == net.minecraft.world.level.GameType.SPECTATOR) {
++        if (org.leavesmc.leaves.LeavesConfig.modify.spectatorDontGetAdvancement
++            && this.player.gameMode.getGameModeForPlayer() == net.minecraft.world.level.GameType.SPECTATOR) {
 +            return false;
 +        }
 +        // Leaves end - spectator don't get advancement
          // Leaves start - bot can't get advancement
-         if (player instanceof org.leavesmc.leaves.bot.ServerBot) {
+         if (this.player instanceof org.leavesmc.leaves.bot.ServerBot) {
              return false;

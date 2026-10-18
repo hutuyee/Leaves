@@ -1,0 +1,25 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: violetc <58360096+s-yh-china@users.noreply.github.com>
+Date: Tue, 18 Jul 2023 14:29:47 +0800
+Subject: [PATCH] Skip secondary POI sensor if absent
+
+This patch is Powered by Gale(https://github.com/GaleMC/Gale)
+
+diff --git a/net/minecraft/world/entity/ai/sensing/SecondaryPoiSensor.java b/net/minecraft/world/entity/ai/sensing/SecondaryPoiSensor.java
+index 7d3e843c2d3c5e15b7bea7302d6118419d3a4957..b273646f054c13f212712378fec19c8c1ef1553f 100644
+--- a/net/minecraft/world/entity/ai/sensing/SecondaryPoiSensor.java
++++ b/net/minecraft/world/entity/ai/sensing/SecondaryPoiSensor.java
+@@ -22,6 +22,13 @@ public class SecondaryPoiSensor extends Sensor<Villager> {
+ 
+     @Override
+     protected void doTick(final ServerLevel level, final Villager body) {
++        // Leaves start - skip secondary POI sensor if absent
++        if (org.leavesmc.leaves.LeavesConfig.performance.skipSecondaryPOISensorIfAbsent
++            && body.getVillagerData().profession().value().secondaryPoi().isEmpty()) {
++            body.getBrain().eraseMemory(MemoryModuleType.SECONDARY_JOB_SITE);
++            return;
++        }
++        // Leaves end - skip secondary POI sensor if absent
+         ResourceKey<Level> dimensionType = level.dimension();
+         BlockPos center = body.blockPosition();
+         List<GlobalPos> jobSites = Lists.newArrayList();

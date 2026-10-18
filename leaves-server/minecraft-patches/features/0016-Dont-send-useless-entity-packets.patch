@@ -6,40 +6,36 @@ Subject: [PATCH] Dont send useless entity packets
 This patch is Powered by Purpur(https://github.com/PurpurMC/Purpur)
 
 diff --git a/net/minecraft/server/level/ServerEntity.java b/net/minecraft/server/level/ServerEntity.java
-index 3a817c92147bb78c60238f3ddc1644b721aed7a2..8f6b7ec2f2294ac5845b8f6fb94959e9a11d6329 100644
+index e46f95b19da1c14f240ec6697f22b5e220e0a835..b0c885796c81db431dac28104c86578e4cf4a602 100644
 --- a/net/minecraft/server/level/ServerEntity.java
 +++ b/net/minecraft/server/level/ServerEntity.java
-@@ -188,6 +188,11 @@ public class ServerEntity {
-                     } else if (flag) {
-                         packet = new ClientboundMoveEntityPacket.Rot(this.entity.getId(), b, b1, this.entity.onGround());
-                         flag4 = true;
-+                        // Leaves start - dont send useless entity packets
-+                        if (org.leavesmc.leaves.LeavesConfig.performance.dontSendUselessEntityPackets && isUselessPacket(packet)) {
-+                            packet = null;
-+                        }
-+                        // Leaves end - dont send useless entity packets
-                     }
-                 } else {
-                     packet = new ClientboundMoveEntityPacket.PosRot(this.entity.getId(), (short)l, (short)l1, (short)l2, b, b1, this.entity.onGround());
-@@ -300,6 +305,21 @@ public class ServerEntity {
-         this.positionCodec.setBase(this.entity.position());
+@@ -190,6 +190,14 @@ public class ServerEntity {
+                     packet = this.createMovePacket(position, yRotn, xRotn, shouldSendPosition, shouldSendRotation);
+                 }
+ 
++                // Leaves start - don't send useless entity packets
++                if (org.leavesmc.leaves.LeavesConfig.performance.dontSendUselessEntityPackets && this.isUselessPacket(packet)) {
++                    packet = null;
++                    this.lastSentYRot = yRotn;
++                    this.lastSentXRot = xRotn;
++                }
++                // Leaves end - don't send useless entity packets
++
+                 if (this.entity.needsSync || this.trackDelta || this.entity instanceof LivingEntity livingEntity && livingEntity.isFallFlying()) {
+                     Vec3 movement = this.entity.getDeltaMovement();
+                     double diff = movement.distanceToSqr(this.lastSentMovement);
+@@ -310,6 +318,14 @@ public class ServerEntity {
+         return false;
      }
  
-+    // Leaves start - dont send useless entity packets
-+    private boolean isUselessPacket(Packet<?> possibleUselessPacket) {
-+        if (possibleUselessPacket instanceof ClientboundMoveEntityPacket packet) {
-+            if (possibleUselessPacket instanceof ClientboundMoveEntityPacket.Pos) {
-+                return packet.getXa() == 0 && packet.getYa() == 0 && packet.getZa() == 0;
-+            } else if (possibleUselessPacket instanceof ClientboundMoveEntityPacket.PosRot) {
-+                return packet.getXa() == 0 && packet.getYa() == 0 && packet.getZa() == 0 && packet.getYRot() == 0 && packet.getXRot() == 0;
-+            } else if (possibleUselessPacket instanceof ClientboundMoveEntityPacket.Rot) {
-+                return packet.getYRot() == 0 && packet.getXRot() == 0;
-+            }
-+        }
-+        return false;
++    // Leaves start - don't send useless entity packets
++    private boolean isUselessPacket(final @Nullable Packet<?> possibleUselessPacket) {
++        return possibleUselessPacket instanceof ClientboundMoveEntityPacket.Rot packet
++            && packet.getYRot() == 0.0F
++            && packet.getXRot() == 0.0F;
 +    }
-+    // Leaves end - dont send useless entity packets
++    // Leaves end - don't send useless entity packets
 +
-     public void removePairing(ServerPlayer player) {
-         this.entity.stopSeenByPlayer(player);
-         player.connection.send(new ClientboundRemoveEntitiesPacket(this.entity.getId()));
+     private void handleMinecartPosRot(final NewMinecartBehavior newMinecartBehavior, final byte yRotn, final byte xRotn, final boolean shouldSendRotation) {
+         this.sendDirtyEntityData();
+         if (newMinecartBehavior.lerpSteps.isEmpty()) {

@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MC_XiaoHei <xor7xiaohei@gmail.com>
+Date: Fri, 4 Jul 2025 08:55:31 +0800
+Subject: [PATCH] Old wet tnt explode behavior
+
+
+diff --git a/net/minecraft/world/level/ServerExplosion.java b/net/minecraft/world/level/ServerExplosion.java
+index a2893f4298af62177fc3621603d465e24fe1e2eb..301398f76ff93347c51161084e776102dbc40ebd 100644
+--- a/net/minecraft/world/level/ServerExplosion.java
++++ b/net/minecraft/world/level/ServerExplosion.java
+@@ -706,6 +706,7 @@ public class ServerExplosion implements Explosion {
+ 
+     @Override
+     public boolean shouldAffectBlocklikeEntities() {
++        if (org.leavesmc.leaves.LeavesConfig.modify.oldMC.tntWetExplosionNoItemDamage && this.source != null && this.source.isInWater()) return false; // Leaves - old wet explosion behavior
+         boolean mobGriefingEnabled = this.level.getGameRules().get(GameRules.MOB_GRIEFING);
+         boolean isNotWindCharge = this.source == null || !this.source.is(EntityTypes.BREEZE_WIND_CHARGE) && !this.source.is(EntityTypes.WIND_CHARGE);
+         return mobGriefingEnabled ? isNotWindCharge : this.blockInteraction.shouldAffectBlocklikeEntities() && isNotWindCharge;

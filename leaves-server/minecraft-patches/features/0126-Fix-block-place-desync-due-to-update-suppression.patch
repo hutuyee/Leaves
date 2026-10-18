@@ -1,0 +1,52 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MC_XiaoHei <xor7xiaohei@gmail.com>
+Date: Sat, 5 Jul 2025 09:48:47 +0800
+Subject: [PATCH] Fix block place desync due to update suppression
+
+
+diff --git a/net/minecraft/world/item/ItemStack.java b/net/minecraft/world/item/ItemStack.java
+index 00bb3c03c3e5b8f25c16cfd2bfc72996edaf7766..706e7c10c867d404920752b3d799479370455bce 100644
+--- a/net/minecraft/world/item/ItemStack.java
++++ b/net/minecraft/world/item/ItemStack.java
+@@ -396,8 +396,18 @@ public final class ItemStack implements DataComponentHolder, ItemInstance {
+             List<net.minecraft.world.level.block.entity.BlockEntity> capturedBlockEntities;
+             org.bukkit.TreeType treeType;
+             InteractionResult result;
++            org.leavesmc.leaves.util.UpdateSuppressionException suppression = null; // Leaves - fix block place desync
+             try {
+                 result = usedItem.useOn(context);
++            } catch (org.leavesmc.leaves.util.UpdateSuppressionException ex) {
++                // Leaves start - finish placement bookkeeping before reporting update suppression
++                result = InteractionResult.SUCCESS.configurePaper(success -> success.placedBlockAt(pos.immutable()));
++                suppression = ex;
++                ex.provideBlock(level, pos, level.getBlockState(pos).getBlock());
++                if (player instanceof ServerPlayer serverPlayer) {
++                    ex.providePlayer(serverPlayer);
++                }
++                // Leaves end - finish placement bookkeeping before reporting update suppression
+             } finally {
+                 level.captureBlockStates = false;
+                 level.captureTreeGeneration = false;
+@@ -442,6 +452,7 @@ public final class ItemStack implements DataComponentHolder, ItemInstance {
+                     }
+                     player.awardStat(Stats.ITEM_USED.get(usedItem)); // SPIGOT-7236 - award stat
+                 }
++                if (suppression != null) throw suppression; // Leaves - fix block place desync
+                 return result;
+             }
+ 
+@@ -512,11 +523,14 @@ public final class ItemStack implements DataComponentHolder, ItemInstance {
+                     player.awardStat(Stats.ITEM_USED.get(usedItem));
+                     ItemStack transformTo = success.heldItemTransformedTo() == null ? this : success.heldItemTransformedTo();
+                     ItemStack resultItemStack = transformTo.applyAfterUseComponentSideEffects(player, stackBeforeUse);
++                    if (suppression != null) throw suppression; // Leaves - fix block place desync
+                     return success.heldItemTransformedTo(resultItemStack);
+                 }
++                if (suppression != null) throw suppression; // Leaves - fix block place desync
+                 return result;
+                 // CraftBukkit end
+             } else {
++                if (suppression != null) throw suppression; // Leaves - fix block place desync
+                 return result;
+             }
+         }

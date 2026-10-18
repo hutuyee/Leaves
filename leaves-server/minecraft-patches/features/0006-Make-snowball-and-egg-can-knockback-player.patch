@@ -5,34 +5,34 @@ Subject: [PATCH] Make snowball and egg can knockback player
 
 
 diff --git a/net/minecraft/world/entity/projectile/throwableitemprojectile/Snowball.java b/net/minecraft/world/entity/projectile/throwableitemprojectile/Snowball.java
-index 89a061cd0a2b39fc05ea96ac0f5d5a8c26582f97..ce57bc82ff31f50d86a5707de3957b10435937b7 100644
+index 1511c1cbde5897391f1bcb4af47a5cd12481494d..2ae88bdc8b2fe493a430756928211506a97ca47c 100644
 --- a/net/minecraft/world/entity/projectile/throwableitemprojectile/Snowball.java
 +++ b/net/minecraft/world/entity/projectile/throwableitemprojectile/Snowball.java
-@@ -55,6 +55,12 @@ public class Snowball extends ThrowableItemProjectile {
-         Entity entity = result.getEntity();
-         int i = entity instanceof Blaze ? 3 : 0;
-         entity.hurt(this.damageSources().thrown(this, this.getOwner()), i);
+@@ -57,6 +57,12 @@ public class Snowball extends ThrowableItemProjectile {
+         Entity entity = hitResult.getEntity();
+         int damage = entity instanceof Blaze ? 3 : 0;
+         entity.hurt(this.damageSources().thrown(this, this.getOwner()), damage);
 +        // Leaves start - make snowball can knockback player
 +        if (org.leavesmc.leaves.LeavesConfig.modify.snowballAndEggCanKnockback && entity instanceof net.minecraft.server.level.ServerPlayer player) {
 +            player.hurt(this.damageSources().thrown(this, this.getOwner()), 0.0000001F);
-+            player.knockback(0.4000000059604645D, this.getX() - player.getX(), this.getZ() - player.getZ(), this, io.papermc.paper.event.entity.EntityKnockbackEvent.Cause.DAMAGE);
++            player.knockback(0.4000000059604645D, this.getX() - player.getX(), this.getZ() - player.getZ(), this.damageSources().thrown(this, this.getOwner()), 0.0000001F, this, io.papermc.paper.event.entity.EntityKnockbackEvent.Cause.DAMAGE);
 +        }
 +        // Leaves end - make snowball can knockback player
      }
  
      @Override
 diff --git a/net/minecraft/world/entity/projectile/throwableitemprojectile/ThrownEgg.java b/net/minecraft/world/entity/projectile/throwableitemprojectile/ThrownEgg.java
-index c7db74ccc3f8c46e97c24857f297fe5fb5f45e36..44d9fe980a8ab0b747626f12c23d44e0360a5059 100644
+index 1d5449090d0649cb03cf87a0175aebedded20132..7afcbc2b866d8684c7a513ede7e1cdfa129c4d19 100644
 --- a/net/minecraft/world/entity/projectile/throwableitemprojectile/ThrownEgg.java
 +++ b/net/minecraft/world/entity/projectile/throwableitemprojectile/ThrownEgg.java
-@@ -56,6 +56,12 @@ public class ThrownEgg extends ThrowableItemProjectile {
-     protected void onHitEntity(EntityHitResult result) {
-         super.onHitEntity(result);
-         result.getEntity().hurt(this.damageSources().thrown(this, this.getOwner()), 0.0F);
+@@ -61,6 +61,12 @@ public class ThrownEgg extends ThrowableItemProjectile {
+     protected void onHitEntity(final EntityHitResult hitResult) {
+         super.onHitEntity(hitResult);
+         hitResult.getEntity().hurt(this.damageSources().thrown(this, this.getOwner()), 0.0F);
 +        // Leaves start - make egg can knockback player
-+        if (org.leavesmc.leaves.LeavesConfig.modify.snowballAndEggCanKnockback && result.getEntity() instanceof net.minecraft.server.level.ServerPlayer player) {
++        if (org.leavesmc.leaves.LeavesConfig.modify.snowballAndEggCanKnockback && hitResult.getEntity() instanceof net.minecraft.server.level.ServerPlayer player) {
 +            player.hurt(this.damageSources().thrown(this, this.getOwner()), 0.0000001F);
-+            player.knockback(0.4000000059604645D, this.getX() - player.getX(), this.getZ() - player.getZ(), this, io.papermc.paper.event.entity.EntityKnockbackEvent.Cause.DAMAGE);
++            player.knockback(0.4000000059604645D, this.getX() - player.getX(), this.getZ() - player.getZ(), this.damageSources().thrown(this, this.getOwner()), 0.0000001F, this, io.papermc.paper.event.entity.EntityKnockbackEvent.Cause.DAMAGE);
 +        }
 +        // Leaves end - make egg can knockback player
      }

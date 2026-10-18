@@ -1,0 +1,21 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: huanli233 <392352840@qq.com>
+Date: Sat, 26 Oct 2024 19:53:17 +0800
+Subject: [PATCH] Allow anvil destroy item entities
+
+
+diff --git a/net/minecraft/world/entity/item/FallingBlockEntity.java b/net/minecraft/world/entity/item/FallingBlockEntity.java
+index aa082f947aa413366ff7c5e879001285fe7b747a..b72a8a04c01f918c29d4b1f7ba6a032866b970b3 100644
+--- a/net/minecraft/world/entity/item/FallingBlockEntity.java
++++ b/net/minecraft/world/entity/item/FallingBlockEntity.java
+@@ -288,7 +288,9 @@ public class FallingBlockEntity extends Entity {
+             return false;
+         }
+ 
+-        Predicate<Entity> entitySelector = EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(EntitySelector.LIVING_ENTITY_STILL_ALIVE);
++        Predicate<Entity> entitySelector = org.leavesmc.leaves.LeavesConfig.modify.oldMC.allowAnvilDestroyItemEntities
++            ? EntitySelector.NO_CREATIVE_OR_SPECTATOR
++            : EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(EntitySelector.LIVING_ENTITY_STILL_ALIVE); // Leaves - Allow anvil destroy item entities
+         DamageSource actualDamageSource = this.blockState.getBlock() instanceof Fallable fallable
+             ? fallable.getFallDamageSource(this)
+             : this.damageSources().fallingBlock(this);

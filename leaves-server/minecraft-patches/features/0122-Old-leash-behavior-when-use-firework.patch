@@ -1,0 +1,28 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MC_XiaoHei <xor7xiaohei@gmail.com>
+Date: Thu, 3 Jul 2025 21:33:29 +0800
+Subject: [PATCH] Old leash behavior when use firework
+
+
+diff --git a/net/minecraft/world/item/FireworkRocketItem.java b/net/minecraft/world/item/FireworkRocketItem.java
+index 4bf71b7dca8d569e426df39fa20dc3fa4d2d93bf..ded48fc4a91186827fcec1f2583a83a60fa4f0ef 100644
+--- a/net/minecraft/world/item/FireworkRocketItem.java
++++ b/net/minecraft/world/item/FireworkRocketItem.java
+@@ -72,7 +72,7 @@ public class FireworkRocketItem extends Item implements ProjectileItem {
+                     com.destroystokyo.paper.event.player.PlayerElytraBoostEvent event = new com.destroystokyo.paper.event.player.PlayerElytraBoostEvent((org.bukkit.entity.Player) player.getBukkitEntity(), org.bukkit.craftbukkit.inventory.CraftItemStack.asBukkitMirror(itemStack), (org.bukkit.entity.Firework) firework.getBukkitEntity(), org.bukkit.craftbukkit.CraftEquipmentSlot.getHand(hand));
+                     if (event.callEvent() && org.leavesmc.leaves.util.ElytraAeronauticsHelper.proxySpawnAndTick(firework)) {
+                         player.awardStat(Stats.ITEM_USED.get(this));
+-                        if (player.dropAllLeashConnections(player, hand)) {
++                        if (!org.leavesmc.leaves.LeavesConfig.modify.oldMC.keepLeashConnectWhenUseFirework && player.dropAllLeashConnections(player, hand)) { // Leaves - keep leash connection when using firework
+                             level.playSound(null, player, SoundEvents.LEAD_BREAK, SoundSource.NEUTRAL, 1.0F, 1.0F);
+                         }
+                         if (event.shouldConsume() && !player.hasInfiniteMaterials()) {
+@@ -91,7 +91,7 @@ public class FireworkRocketItem extends Item implements ProjectileItem {
+                 com.destroystokyo.paper.event.player.PlayerElytraBoostEvent event = new com.destroystokyo.paper.event.player.PlayerElytraBoostEvent((org.bukkit.entity.Player) player.getBukkitEntity(), org.bukkit.craftbukkit.inventory.CraftItemStack.asBukkitMirror(itemStack), (org.bukkit.entity.Firework) delayed.projectile().getBukkitEntity(), org.bukkit.craftbukkit.CraftEquipmentSlot.getHand(hand));
+                 if (event.callEvent() && delayed.attemptSpawn()) {
+                     player.awardStat(Stats.ITEM_USED.get(this)); // Moved up from below
+-                    if (player.dropAllLeashConnections(player, hand)) { // Paper - PlayerUnleashEntityEvent
++                    if (!org.leavesmc.leaves.LeavesConfig.modify.oldMC.keepLeashConnectWhenUseFirework && player.dropAllLeashConnections(player, hand)) { // Paper - PlayerUnleashEntityEvent // Leaves - keep leash connection when using firework
+                         level.playSound(null, player, SoundEvents.LEAD_BREAK, SoundSource.NEUTRAL, 1.0F, 1.0F);
+                     }
+                     if (event.shouldConsume() && !player.hasInfiniteMaterials()) {

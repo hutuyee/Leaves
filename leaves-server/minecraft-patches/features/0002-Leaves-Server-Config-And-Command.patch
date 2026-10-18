@@ -5,22 +5,22 @@ Subject: [PATCH] Leaves Server Config And Command
 
 
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 501e3ba63c0c262028aade6ee802a71cbe14c9fe..ec2a71fce91b9897bda2686d187c71c10fb9500c 100644
+index 211e78b603ab3c572abfa7f8a5785606550b4b0e..8515b302ea57f5ef197edcda3223c586c14b60d2 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -2297,6 +2297,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
-             .thenAcceptAsync(
-                 reloadableResources -> {
-                     io.papermc.paper.command.brigadier.PaperBrigadier.moveBukkitCommands(this.resources.managers().getCommands(), reloadableResources.managers().commands); // Paper
-+                    org.leavesmc.leaves.command.RootNode.reloadLeavesCommands(); // Leaves - command
-                     this.resources.close();
-                     this.resources = reloadableResources;
-                     this.packRepository.setSelected(selectedIds, false); // Paper - add pendingReload flag to determine required pack loading - false as this is *after* a reload (see above)
+@@ -2302,6 +2302,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+             )
+             .thenAcceptAsync(newResources -> {
+                 io.papermc.paper.command.brigadier.PaperBrigadier.moveBukkitCommands(this.resources.managers().getCommands(), newResources.managers().getCommands()); // Paper
++                org.leavesmc.leaves.command.RootNode.reloadLeavesCommands(); // Leaves - command
+                 this.resources.close();
+                 this.resources = newResources;
+                 this.packRepository.setSelected(packsToEnable, false); // Paper - add pendingReload flag to determine required pack loading - false as this is *after* a reload (see above)
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index 2fbc8efbd12e9adbabc47b9f81a71271e0daeca1..2e6af078b8713cccf4dd51df53ce580a26553ae1 100644
+index d7317d209ed5c150f732878bd1abc703e03b9379..2fcc8d18dddff4e2bca2a7c782465f162a93e2e0 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -274,6 +274,8 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -251,6 +251,8 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
          this.server.spark.registerCommandBeforePlugins(this.server); // Paper - spark
          com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // Paper - load version history now
  

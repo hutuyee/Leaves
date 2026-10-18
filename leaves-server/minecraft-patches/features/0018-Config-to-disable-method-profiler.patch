@@ -6,23 +6,23 @@ Subject: [PATCH] Config to disable method profiler
 This patch is Powered by Pufferfish(https://github.com/pufferfish-gg/Pufferfish)
 
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index f45ad308fc4bcf5647580ad3d46de9a966985790..98f5813f404874a861b31758e74072c31dc2fef2 100644
+index 4b5f290a4a00ea778b1b3a422b5512f3e191b50f..353e42a712a0283e7e4b45ec98ab123e836e3c01 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1334,7 +1334,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1328,7 +1328,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
                  // Paper - improve tick loop - done above
  
--                try (Profiler.Scope scope = Profiler.use(this.createProfiler())) {
-+                try (Profiler.Scope scope = org.leavesmc.leaves.LeavesConfig.mics.disableMethodProfiler ? null : Profiler.use(this.createProfiler())) { // Leaves - disable profiler
-                     this.processPacketsAndTick(flag);
-                     ProfilerFiller profilerFiller = Profiler.get();
-                     profilerFiller.push("nextTickWait");
+-                try (Profiler.Scope ignored = Profiler.use(this.createProfiler())) {
++                try (Profiler.Scope ignored = org.leavesmc.leaves.LeavesConfig.mics.disableMethodProfiler ? null : Profiler.use(this.createProfiler())) { // Leaves - disable profiler
+                     this.processPacketsAndTick(sprinting);
+                     ProfilerFiller profiler = Profiler.get();
+                     profiler.push("nextTickWait");
 diff --git a/net/minecraft/util/profiling/Profiler.java b/net/minecraft/util/profiling/Profiler.java
-index 9567003a8ed1a3783b743553ce8f690756da868d..40b169c0f2831f547a4377f119929d6185a94aa8 100644
+index ae5974d304abd7d240453f0376c5fd79359a9585..3eaf86b0fb208f50f6cd19264493827dd35256f7 100644
 --- a/net/minecraft/util/profiling/Profiler.java
 +++ b/net/minecraft/util/profiling/Profiler.java
-@@ -45,6 +45,7 @@ public final class Profiler {
+@@ -49,6 +49,7 @@ public final class Profiler {
      }
  
      public static ProfilerFiller get() {

@@ -1,0 +1,37 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: violetc <58360096+s-yh-china@users.noreply.github.com>
+Date: Thu, 20 Jul 2023 15:30:56 +0800
+Subject: [PATCH] Reduce lambda and Optional allocation in
+ EntityBasedExplosionDamageCalculator
+
+This patch is Powered by Gale(https://github.com/GaleMC/Gale)
+
+diff --git a/net/minecraft/world/level/EntityBasedExplosionDamageCalculator.java b/net/minecraft/world/level/EntityBasedExplosionDamageCalculator.java
+index 356a3a0dda09af007c3fbddfe360b38f4d7204ce..9603fb753b8d500981688cc2240ca180080d380a 100644
+--- a/net/minecraft/world/level/EntityBasedExplosionDamageCalculator.java
++++ b/net/minecraft/world/level/EntityBasedExplosionDamageCalculator.java
+@@ -17,8 +17,22 @@ public class EntityBasedExplosionDamageCalculator extends ExplosionDamageCalcula
+     public Optional<Float> getBlockExplosionResistance(
+         final Explosion explosion, final BlockGetter level, final BlockPos pos, final BlockState block, final FluidState fluid
+     ) {
+-        return super.getBlockExplosionResistance(explosion, level, pos, block, fluid)
+-            .map(resistance -> this.source.getBlockExplosionResistance(explosion, level, pos, block, fluid, resistance));
++        // Leaves start - reduce lambda and Optional allocation
++        if (!org.leavesmc.leaves.LeavesConfig.performance.remove.damageLambda) {
++            return super.getBlockExplosionResistance(explosion, level, pos, block, fluid)
++                .map(resistance -> this.source.getBlockExplosionResistance(explosion, level, pos, block, fluid, resistance));
++        }
++
++        Optional<Float> resistance = super.getBlockExplosionResistance(explosion, level, pos, block, fluid);
++        if (resistance.isPresent()) {
++            float originalResistance = resistance.get();
++            float effectiveResistance = this.source.getBlockExplosionResistance(explosion, level, pos, block, fluid, originalResistance);
++            if (effectiveResistance != originalResistance) {
++                return Optional.of(effectiveResistance);
++            }
++        }
++        return resistance;
++        // Leaves end - reduce lambda and Optional allocation
+     }
+ 
+     @Override

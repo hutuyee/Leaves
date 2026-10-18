@@ -1,0 +1,22 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: violetc <58360096+s-yh-china@users.noreply.github.com>
+Date: Mon, 3 Feb 2025 13:03:42 +0800
+Subject: [PATCH] BBOR Protocol
+
+
+diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
+index 76dae652c910e36c860791a8285bd9fee466d5b9..04063b07d3634003dd7e158f12d1d8fcd1fc99ce 100644
+--- a/net/minecraft/world/level/chunk/LevelChunk.java
++++ b/net/minecraft/world/level/chunk/LevelChunk.java
+@@ -751,6 +751,11 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
+ 
+     public void setLoaded(final boolean loaded) {
+         this.loaded = loaded;
++        // Leaves start - bbor
++        if (loaded) {
++            org.leavesmc.leaves.protocol.BBORProtocol.onChunkLoaded(this);
++        }
++        // Leaves end - bbor
+     }
+ 
+     public Level getLevel() {

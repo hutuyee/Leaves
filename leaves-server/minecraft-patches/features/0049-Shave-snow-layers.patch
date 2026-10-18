@@ -1,0 +1,49 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: violetc <58360096+s-yh-china@users.noreply.github.com>
+Date: Tue, 27 Jun 2023 14:07:00 +0800
+Subject: [PATCH] Shave snow layers
+
+
+diff --git a/net/minecraft/core/component/BlockTransformer.java b/net/minecraft/core/component/BlockTransformer.java
+index 90cc5370be87f4f9d1d52e997f79d6d8f6232647..7b11772e849b6b3fc077c8185a47ec9809631018 100644
+--- a/net/minecraft/core/component/BlockTransformer.java
++++ b/net/minecraft/core/component/BlockTransformer.java
+@@ -60,6 +60,38 @@ public record BlockTransformer(List<BlockTransformer.BlockTransformData> transfo
+         BlockPos pos = context.getClickedPos();
+         Level level = context.getLevel();
+ 
++        // Leaves start - shave snow layers
++        Holder<BlockTransformer> transformer = context.getItemInHand().get(DataComponents.BLOCK_TRANSFORMER);
++        if (org.leavesmc.leaves.LeavesConfig.modify.shaveSnowLayers
++            && transformer != null
++            && transformer.is(net.minecraft.world.item.component.BlockTransformers.SHOVEL)
++            && context.getClickedFace() != Direction.DOWN) {
++            BlockState blockState = level.getBlockState(pos);
++            if (blockState.is(net.minecraft.world.level.block.Blocks.SNOW)) {
++                int layers = blockState.getValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS);
++                ItemStack tool = context.getItemInHand();
++                boolean hasSilkTouch = net.minecraft.world.item.enchantment.EnchantmentHelper.getItemEnchantmentLevel(
++                    level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(net.minecraft.world.item.enchantment.Enchantments.SILK_TOUCH),
++                    tool
++                ) > 0;
++                BlockState shavedState = layers > 1
++                    ? blockState.setValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS, layers - 1)
++                    : net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
++                Player player = context.getPlayer();
++
++                level.setBlock(pos, shavedState, Block.UPDATE_ALL_IMMEDIATE);
++                level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, shavedState));
++                Block.popResource(level, pos, new ItemStack(hasSilkTouch ? net.minecraft.world.item.Items.SNOW : net.minecraft.world.item.Items.SNOWBALL));
++                level.playSound(player, pos, SoundEvents.SNOW_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
++
++                if (player != null) {
++                    tool.hurtAndBreak(1, player, context.getHand().asEquipmentSlot());
++                }
++                return InteractionResult.SUCCESS;
++            }
++        }
++        // Leaves end - shave snow layers
++
+         for (BlockTransformer.BlockTransformData transformData : this.transforms) {
+             Direction clickedFace = context.getClickedFace();
+             if (!transformData.disallowedFaces().contains(clickedFace)) {

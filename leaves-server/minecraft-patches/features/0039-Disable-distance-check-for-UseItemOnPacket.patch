@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: violetc <58360096+s-yh-china@users.noreply.github.com>
+Date: Tue, 23 May 2023 17:10:00 +0800
+Subject: [PATCH] Disable distance check for UseItemOnPacket
+
+
+diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 7d0388611ac3ec6d4ea4bf93798907e084816e74..80da49a2f5d012e02ec6c1cb8e3b3406794f3108 100644
+--- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -2173,7 +2173,7 @@ public class ServerGamePacketListenerImpl
+                 if (this.player.isWithinBlockInteractionRange(pos, 1.0)) {
+                     Vec3 distance = location.subtract(Vec3.atCenterOf(pos));
+                     double limit = 1.0000001;
+-                    if (Math.abs(distance.x()) < 1.0000001 && Math.abs(distance.y()) < 1.0000001 && Math.abs(distance.z()) < 1.0000001) {
++                    if (org.leavesmc.leaves.LeavesConfig.modify.disableDistanceCheckForUseItem || Math.abs(distance.x()) < 1.0000001 && Math.abs(distance.y()) < 1.0000001 && Math.abs(distance.z()) < 1.0000001) { // Leaves - disable distance check for use item
+                         Direction direction = blockHit.getDirection();
+                         this.player.resetLastActionTime();
+                         int maxY = level.getMaxY();

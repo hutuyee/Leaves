@@ -5,6 +5,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -21,7 +22,7 @@ public class ItemOverstackUtils {
         new ShulkerBox()
     );
 
-    public static int getItemStackMaxCount(ItemStack stack) {
+    public static int getItemStackMaxCount(ItemInstance stack) {
         int size;
         for (ItemUtil util : overstackUtils) {
             if (util.isEnabled() && (size = util.getMaxServerStackCount(stack)) != -1) {
@@ -106,10 +107,10 @@ public class ItemOverstackUtils {
         boolean tryStackItems(ItemEntity self, ItemEntity other);
 
         // number -> modified count, -1 -> I don't care
-        int getMaxServerStackCount(ItemStack stack);
+        int getMaxServerStackCount(ItemInstance stack);
 
         // number -> modified count, -1 -> I don't care
-        default int getMaxClientStackCount(ItemStack stack) {
+        default int getMaxClientStackCount(ItemInstance stack) {
             return getMaxServerStackCount(stack);
         }
     }
@@ -122,8 +123,8 @@ public class ItemOverstackUtils {
             return isEmpty(stack1) && isEmpty(stack2) && Objects.equals(stack1.getComponents(), stack2.getComponents());
         }
 
-        public static boolean isEmpty(@NotNull ItemStack stack) {
-            return Iterables.isEmpty(stack.getComponents().getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).nonEmptyItems());
+        public static boolean isEmpty(@NotNull ItemInstance stack) {
+            return Iterables.isEmpty(stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).nonEmptyItems());
         }
 
         @Override
@@ -162,8 +163,8 @@ public class ItemOverstackUtils {
         }
 
         @Override
-        public int getMaxServerStackCount(ItemStack stack) {
-            if (stack.getItem() instanceof BlockItem bi &&
+        public int getMaxServerStackCount(ItemInstance stack) {
+            if (stack.typeHolder().value() instanceof BlockItem bi &&
                 bi.getBlock() instanceof ShulkerBoxBlock && (LeavesConfig.modify.shulkerBox.sameNbtStackable || isEmpty(stack))) {
                 return LeavesConfig.modify.shulkerBox.stackableShulkerBoxes;
             }

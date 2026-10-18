@@ -5,74 +5,77 @@ Subject: [PATCH] No chat sign
 
 
 diff --git a/net/minecraft/commands/arguments/ArgumentSignatures.java b/net/minecraft/commands/arguments/ArgumentSignatures.java
-index b61d120f112be90d94e9c545f26c4941a1a49d7d..58a92516bf540d1cd909d6a52a3b130a8ca09af8 100644
+index 78aa03db8aa8b0aa927145c26f72ff31d98653da..c645fb48933f10755b5f7cfe2d73efc52972e0cb 100644
 --- a/net/minecraft/commands/arguments/ArgumentSignatures.java
 +++ b/net/minecraft/commands/arguments/ArgumentSignatures.java
-@@ -13,10 +13,17 @@ public record ArgumentSignatures(List<ArgumentSignatures.Entry> entries) {
+@@ -13,9 +13,15 @@ public record ArgumentSignatures(List<ArgumentSignatures.Entry> entries) {
+     public static final ArgumentSignatures EMPTY = new ArgumentSignatures(List.of());
      private static final int MAX_ARGUMENT_COUNT = 8;
      private static final int MAX_ARGUMENT_NAME_LENGTH = 16;
- 
+-    public static final StreamCodec<ByteBuf, ArgumentSignatures> STREAM_CODEC = StreamCodec.composite(
+-        ArgumentSignatures.Entry.STREAM_CODEC.apply(ByteBufCodecs.list(8)), ArgumentSignatures::entries, ArgumentSignatures::new
++    private static final StreamCodec<ByteBuf, List<ArgumentSignatures.Entry>> ENTRIES_STREAM_CODEC = ArgumentSignatures.Entry.STREAM_CODEC.apply(
++        ByteBufCodecs.list(8)
+     );
 +    // Leaves start - no chat sign
-     public ArgumentSignatures(FriendlyByteBuf buffer) {
--        this(buffer.readCollection(FriendlyByteBuf.<List<ArgumentSignatures.Entry>>limitValue(ArrayList::new, 8), ArgumentSignatures.Entry::new));
-+        this(readSign(buffer));
-     }
- 
-+    private static List<ArgumentSignatures.Entry> readSign(FriendlyByteBuf buf) {
-+        var entries = buf.readCollection(FriendlyByteBuf.<List<ArgumentSignatures.Entry>>limitValue(ArrayList::new, 8), ArgumentSignatures.Entry::new);
-+        return org.leavesmc.leaves.LeavesConfig.mics.noChatSign ? List.of() : entries;
-+    }
++    public static final StreamCodec<ByteBuf, ArgumentSignatures> STREAM_CODEC = ENTRIES_STREAM_CODEC.map(
++        entries -> new ArgumentSignatures(org.leavesmc.leaves.LeavesConfig.mics.noChatSign ? List.of() : entries),
++        ArgumentSignatures::entries
++    );
 +    // Leaves end - no chat sign
-+
-     public void write(FriendlyByteBuf buffer) {
-         buffer.writeCollection(this.entries, (buffer1, entry) -> entry.write(buffer1));
-     }
+ 
+     public static ArgumentSignatures signCommand(final SignableCommand<?> command, final ArgumentSignatures.Signer signer) {
+         List<ArgumentSignatures.Entry> entries = command.arguments().stream().map(argument -> {
 diff --git a/net/minecraft/network/protocol/game/ServerboundChatPacket.java b/net/minecraft/network/protocol/game/ServerboundChatPacket.java
-index 11d18c1c13e25c01c5e8f2e3363932d1fce16236..3b51297de087c52d92fa8457bb0792e3a4f436e2 100644
+index b758f2d913b5539362d228b04d4c9bb87e8c8482..caa6f3647d7949c6272a275aa9fa9b69b258468a 100644
 --- a/net/minecraft/network/protocol/game/ServerboundChatPacket.java
 +++ b/net/minecraft/network/protocol/game/ServerboundChatPacket.java
-@@ -16,7 +16,7 @@ public record ServerboundChatPacket(String message, Instant timeStamp, long salt
-     );
+@@ -1,5 +1,6 @@
+ package net.minecraft.network.protocol.game;
  
-     private ServerboundChatPacket(FriendlyByteBuf buffer) {
--        this(buffer.readUtf(256), buffer.readInstant(), buffer.readLong(), buffer.readNullable(MessageSignature::read), new LastSeenMessages.Update(buffer));
-+        this(buffer.readUtf(256), buffer.readInstant(), buffer.readLong(), buffer.readNullable(ServerboundChatPacket::readSign), new LastSeenMessages.Update(buffer)); // Leaves - no chat sign
-     }
++import io.netty.buffer.ByteBuf;
+ import java.time.Instant;
+ import java.util.Optional;
+ import net.minecraft.network.FriendlyByteBuf;
+@@ -12,6 +13,11 @@ import net.minecraft.network.protocol.PacketType;
  
-     private void write(FriendlyByteBuf buffer) {
-@@ -27,6 +27,14 @@ public record ServerboundChatPacket(String message, Instant timeStamp, long salt
-         this.lastSeenMessages.write(buffer);
-     }
- 
+ public record ServerboundChatPacket(String message, Instant timeStamp, long salt, Optional<MessageSignature> signature, LastSeenMessages.Update lastSeenMessages)
+     implements Packet<ServerGamePacketListener> {
 +    // Leaves start - no chat sign
-+    private static MessageSignature readSign(FriendlyByteBuf buf) {
-+        byte[] bs = new byte[256];
-+        buf.readBytes(bs);
-+        return org.leavesmc.leaves.LeavesConfig.mics.noChatSign ? null : new MessageSignature(bs);
-+    }
++    private static final StreamCodec<ByteBuf, Optional<MessageSignature>> SIGNATURE_STREAM_CODEC = MessageSignature.STREAM_CODEC
++        .apply(ByteBufCodecs::optional)
++        .map(signature -> org.leavesmc.leaves.LeavesConfig.mics.noChatSign ? Optional.empty() : signature, signature -> signature);
 +    // Leaves end - no chat sign
-+
-     @Override
-     public PacketType<ServerboundChatPacket> type() {
-         return GamePacketTypes.SERVERBOUND_CHAT;
+     public static final StreamCodec<FriendlyByteBuf, ServerboundChatPacket> STREAM_CODEC = StreamCodec.composite(
+         ByteBufCodecs.stringUtf8(256),
+         ServerboundChatPacket::message,
+@@ -19,7 +25,7 @@ public record ServerboundChatPacket(String message, Instant timeStamp, long salt
+         ServerboundChatPacket::timeStamp,
+         ByteBufCodecs.LONG,
+         ServerboundChatPacket::salt,
+-        MessageSignature.STREAM_CODEC.apply(ByteBufCodecs::optional),
++        SIGNATURE_STREAM_CODEC,
+         ServerboundChatPacket::signature,
+         LastSeenMessages.Update.STREAM_CODEC,
+         ServerboundChatPacket::lastSeenMessages,
 diff --git a/net/minecraft/network/protocol/game/ServerboundChatSessionUpdatePacket.java b/net/minecraft/network/protocol/game/ServerboundChatSessionUpdatePacket.java
-index 1df628ac0b414511aaed6e09d78f884c4170f730..b92081d70ffeec47c304e553ce1aea0a8980752d 100644
+index 0a3cffd6346b0a27078efb5083e42d1d68421342..ce8a32a970a7df574a5edc07367f512b12fda02e 100644
 --- a/net/minecraft/network/protocol/game/ServerboundChatSessionUpdatePacket.java
 +++ b/net/minecraft/network/protocol/game/ServerboundChatSessionUpdatePacket.java
-@@ -26,6 +26,11 @@ public record ServerboundChatSessionUpdatePacket(RemoteChatSession.Data chatSess
+@@ -17,6 +17,11 @@ public record ServerboundChatSessionUpdatePacket(RemoteChatSession.Data chatSess
  
      @Override
-     public void handle(ServerGamePacketListener handler) {
+     public void handle(final ServerGamePacketListener listener) {
 +        // Leaves start - no chat report
 +        if (org.leavesmc.leaves.LeavesConfig.mics.noChatSign) {
 +            return;
 +        }
 +        // Leaves end - no chat report
-         handler.handleChatSessionUpdate(this);
+         listener.handleChatSessionUpdate(this);
      }
  }
 diff --git a/net/minecraft/network/protocol/status/ServerStatus.java b/net/minecraft/network/protocol/status/ServerStatus.java
-index 88447fc2108126ccfad2fb7eb79ac94537f132d3..1bca4150c63da064bd2d1ee8f504f2ebbc9d96a0 100644
+index 5eb7d46bf0d84720662125711fa7b544e9299446..68dc48c768ac8ecbc3826bb35a17952838385bf5 100644
 --- a/net/minecraft/network/protocol/status/ServerStatus.java
 +++ b/net/minecraft/network/protocol/status/ServerStatus.java
 @@ -19,7 +19,8 @@ public record ServerStatus(
@@ -80,24 +83,30 @@ index 88447fc2108126ccfad2fb7eb79ac94537f132d3..1bca4150c63da064bd2d1ee8f504f2eb
      Optional<ServerStatus.Version> version,
      Optional<ServerStatus.Favicon> favicon,
 -    boolean enforcesSecureChat
-+    boolean enforcesSecureChat, // Leaves - no chat sign
++    boolean enforcesSecureChat,
 +    boolean preventsChatReports // Leaves - no chat sign
  ) {
      public static final Codec<ServerStatus> CODEC = RecordCodecBuilder.create(
-         instance -> instance.group(
-@@ -27,11 +28,18 @@ public record ServerStatus(
+         i -> i.group(
+@@ -27,11 +28,24 @@ public record ServerStatus(
                  ServerStatus.Players.CODEC.lenientOptionalFieldOf("players").forGetter(ServerStatus::players),
                  ServerStatus.Version.CODEC.lenientOptionalFieldOf("version").forGetter(ServerStatus::version),
                  ServerStatus.Favicon.CODEC.lenientOptionalFieldOf("favicon").forGetter(ServerStatus::favicon),
 -                Codec.BOOL.lenientOptionalFieldOf("enforcesSecureChat", false).forGetter(ServerStatus::enforcesSecureChat)
-+                Codec.BOOL.lenientOptionalFieldOf("enforcesSecureChat", false).forGetter(ServerStatus::enforcesSecureChat), // Leaves - no chat sign
++                Codec.BOOL.lenientOptionalFieldOf("enforcesSecureChat", false).forGetter(ServerStatus::enforcesSecureChat),
 +                Codec.BOOL.lenientOptionalFieldOf("preventsChatReports", false).forGetter(ServerStatus::preventsChatReports) // Leaves - no chat sign
              )
-             .apply(instance, ServerStatus::new)
+             .apply(i, ServerStatus::new)
      );
  
 +    // Leaves start - no chat sign
-+    public ServerStatus(Component description, Optional<ServerStatus.Players> players, Optional<ServerStatus.Version> version, Optional<ServerStatus.Favicon> favicon, boolean enforcesSecureChat) {
++    public ServerStatus(
++        final Component description,
++        final Optional<ServerStatus.Players> players,
++        final Optional<ServerStatus.Version> version,
++        final Optional<ServerStatus.Favicon> favicon,
++        final boolean enforcesSecureChat
++    ) {
 +        this(description, players, version, favicon, enforcesSecureChat, org.leavesmc.leaves.LeavesConfig.mics.noChatSign);
 +    }
 +    // Leaves end - no chat sign
@@ -106,10 +115,10 @@ index 88447fc2108126ccfad2fb7eb79ac94537f132d3..1bca4150c63da064bd2d1ee8f504f2eb
          private static final String PREFIX = "data:image/png;base64,";
          public static final Codec<ServerStatus.Favicon> CODEC = Codec.STRING.comapFlatMap(string -> {
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index 6817fe059655ea93030aea69dfbe4fd6714fe1e4..16ea8a00470943904ae167b7a670cd26c599f024 100644
+index 1d50163bccdd84f9beed5815704d7dabb2220469..ec2b06bfdd03f591fa8cb4361160767694b86a69 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -772,7 +772,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -773,7 +773,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
          // Paper start - Add setting for proxy online mode status
          return properties.enforceSecureProfile
              && io.papermc.paper.configuration.GlobalConfiguration.get().proxies.isProxyOnlineMode()
@@ -119,42 +128,46 @@ index 6817fe059655ea93030aea69dfbe4fd6714fe1e4..16ea8a00470943904ae167b7a670cd26
      }
  
 diff --git a/net/minecraft/server/network/ServerCommonPacketListenerImpl.java b/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
-index 8bacc1779e540c32dad9c547f941c5767729420c..cb9a4f669ae2ff772206bffde9255d239f47e1ea 100644
+index d2585f4362ad3111e0bb23a0f25c7df06e43c210..36b45826b61f4006e5ae4e8766d9a146df7a8e93 100644
 --- a/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
-@@ -323,10 +323,24 @@ public abstract class ServerCommonPacketListenerImpl implements ServerCommonPack
+@@ -316,10 +316,26 @@ public abstract class ServerCommonPacketListenerImpl implements ServerCommonPack
      }
  
-     public void send(Packet<?> packet) {
+     public void send(final Packet<?> packet) {
+-        this.send(packet, null);
++        Packet<?> packetToSend = packet;
 +        // Leaves start - rebuild ClientboundPlayerChatPacket
-+        if (org.leavesmc.leaves.LeavesConfig.mics.noChatSign) {
-+            if (this instanceof ServerGamePacketListenerImpl && packet instanceof net.minecraft.network.protocol.game.ClientboundPlayerChatPacket chat) {
-+                packet = new net.minecraft.network.protocol.game.ClientboundSystemChatPacket(chat.chatType().decorate(chat.unsignedContent() != null ? chat.unsignedContent() : Component.literal(chat.body().content())), false);
-+            }
++        if (org.leavesmc.leaves.LeavesConfig.mics.noChatSign
++            && this instanceof ServerGamePacketListenerImpl
++            && packet instanceof net.minecraft.network.protocol.game.ClientboundPlayerChatPacket chat) {
++            Component content = chat.unsignedContent().orElseGet(() -> Component.literal(chat.body().content()));
++            packetToSend = new net.minecraft.network.protocol.game.ClientboundSystemChatPacket(chat.chatType().decorate(content), false);
 +        }
 +        // Leaves end - rebuild ClientboundPlayerChatPacket
-         this.send(packet, null);
++        this.send(packetToSend, null);
      }
  
-     public void send(Packet<?> packet, @Nullable ChannelFutureListener sendListener) {
+-    public void send(final Packet<?> packet, final @Nullable ChannelFutureListener listener) {
++    public void send(final Packet<?> packet, @Nullable ChannelFutureListener listener) {
 +        // Leaves start - no ClientboundPlayerChatHeaderPacket and rebuild ClientboundPlayerChatPacket
-+        if (org.leavesmc.leaves.LeavesConfig.mics.noChatSign) {
-+            if (packet instanceof net.minecraft.network.protocol.game.ClientboundPlayerChatPacket && sendListener != null) {
-+                sendListener = null;
-+            }
++        if (org.leavesmc.leaves.LeavesConfig.mics.noChatSign
++            && packet instanceof net.minecraft.network.protocol.game.ClientboundPlayerChatPacket
++            && listener != null) {
++            listener = null;
 +        }
 +        // Leaves end - no ClientboundPlayerChatHeaderPacket and rebuild ClientboundPlayerChatPacket
          // CraftBukkit start
-         if (packet == null || this.processedDisconnect) { // Spigot
+         if (packet == null) {
              return;
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 8baca1186179d49e1f8dc0e3acb39816bd61967d..ffc04a2e30b407df64bba4a887b14932c02c0caa 100644
+index 5c459d4c274930faf394ea6af0f05fd5a19f246d..aa8042e60f63ce7380893af6da21be41ff40d6b9 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -1187,7 +1187,7 @@ public abstract class PlayerList {
+@@ -1197,7 +1197,7 @@ public abstract class PlayerList {
      }
  
-     public boolean verifyChatTrusted(PlayerChatMessage message) {
+     public boolean verifyChatTrusted(final PlayerChatMessage message) {
 -        return message.hasSignature() && !message.hasExpiredServer(Instant.now());
 +        return org.leavesmc.leaves.LeavesConfig.mics.noChatSign || (message.hasSignature() && !message.hasExpiredServer(Instant.now())); // Leaves - No Not Secure
      }

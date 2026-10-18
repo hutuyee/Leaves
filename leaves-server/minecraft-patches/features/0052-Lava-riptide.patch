@@ -1,0 +1,31 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: violetc <58360096+s-yh-china@users.noreply.github.com>
+Date: Fri, 7 Jul 2023 16:53:32 +0800
+Subject: [PATCH] Lava riptide
+
+
+diff --git a/net/minecraft/world/item/TridentItem.java b/net/minecraft/world/item/TridentItem.java
+index 078ebe71a4a5648eb3152e218cd4bb7d99f6a6c9..be3ba2a84af8342a265b9c742f8f0f42c3746c08 100644
+--- a/net/minecraft/world/item/TridentItem.java
++++ b/net/minecraft/world/item/TridentItem.java
+@@ -71,7 +71,8 @@ public class TridentItem extends Item implements ProjectileItem {
+             }
+ 
+             float riptideStrength = EnchantmentHelper.getTridentSpinAttackStrength(itemStack, player);
+-            if (!(riptideStrength > 0.0F) || player.isInWaterOrRain() && !player.isPassenger()) {
++            if (!(riptideStrength > 0.0F)
++                || (player.isInWaterOrRain() || org.leavesmc.leaves.LeavesConfig.modify.lavaRiptide && player.isInLava()) && !player.isPassenger()) { // Leaves - lava riptide
+                 if (itemStack.nextDamageWillBreak()) {
+                     return false;
+                 }
+@@ -153,7 +154,9 @@ public class TridentItem extends Item implements ProjectileItem {
+             return InteractionResult.FAIL;
+         }
+ 
+-        if (EnchantmentHelper.getTridentSpinAttackStrength(itemInHand, player) > 0.0F && !player.isInWaterOrRain()) {
++        if (EnchantmentHelper.getTridentSpinAttackStrength(itemInHand, player) > 0.0F
++            && !player.isInWaterOrRain()
++            && !(org.leavesmc.leaves.LeavesConfig.modify.lavaRiptide && player.isInLava())) { // Leaves - lava riptide
+             return InteractionResult.FAIL;
+         }
+ 
