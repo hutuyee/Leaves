@@ -92,6 +92,19 @@ index 9f4d73fd321f6f0cd19fdd1b63068d2ea6c0816b..339d4c13daafc3fd7fdf6fc8909a7e7f
          }
      }
  }
+diff --git a/src/main/java/io/papermc/paper/PaperServerInternalAPIBridge.java b/src/main/java/io/papermc/paper/PaperServerInternalAPIBridge.java
+index 24721e4b0128faa4f85d69ec92c4a6f012f70ef9..6da9fb0f7bb6c5179b5dbf9c7b8e3a7ffd562df6 100644
+--- a/src/main/java/io/papermc/paper/PaperServerInternalAPIBridge.java
++++ b/src/main/java/io/papermc/paper/PaperServerInternalAPIBridge.java
+@@ -192,7 +192,7 @@ public class PaperServerInternalAPIBridge implements InternalAPIBridge {
+ 
+     @Override
+     public VersionFetcher getVersionFetcher() {
+-        return new PaperVersionFetcher();
++        return new org.leavesmc.leaves.util.LeavesVersionFetcher(); // Leaves
+     }
+ 
+     @Override
 diff --git a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
 index 74ffdc823e66fc5ec027c4b7c462382bcbfe2be2..f38f8e5851ec65a8f3f98018d55de74ea6ff165c 100644
 --- a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
@@ -105,42 +118,8 @@ index 74ffdc823e66fc5ec027c4b7c462382bcbfe2be2..f38f8e5851ec65a8f3f98018d55de74e
  
      private static final String BUILD_DEV = "DEV";
  
-diff --git a/src/main/java/io/papermc/paper/command/PaperVersionCommand.java b/src/main/java/io/papermc/paper/command/PaperVersionCommand.java
-index bfacb856623b5cb6af4f1b65ee89200cdfb1ef13..a427a962ea90b089bef1a8177b187f4ba1063582 100644
---- a/src/main/java/io/papermc/paper/command/PaperVersionCommand.java
-+++ b/src/main/java/io/papermc/paper/command/PaperVersionCommand.java
-@@ -24,7 +24,6 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
- import net.minecraft.server.MinecraftServer;
- import org.bukkit.Bukkit;
- import org.bukkit.command.CommandSender;
--import org.bukkit.craftbukkit.util.CraftMagicNumbers;
- import org.bukkit.plugin.Plugin;
- import org.bukkit.util.StringUtil;
- import org.jspecify.annotations.NullMarked;
-@@ -45,7 +44,7 @@ public class PaperVersionCommand {
-     private static final Component FAILED_TO_FETCH = Component.text("Could not fetch version information!", NamedTextColor.RED);
-     private static final Component FETCHING = Component.text("Checking version, please wait...", NamedTextColor.WHITE, TextDecoration.ITALIC);
- 
--    private final VersionFetcher versionFetcher = CraftMagicNumbers.INSTANCE.getVersionFetcher();
-+    private final VersionFetcher versionFetcher = new org.leavesmc.leaves.util.LeavesVersionFetcher(); // Leaves - build change
-     private CompletableFuture<ComputedVersion> computedVersion = CompletableFuture.completedFuture(new ComputedVersion(Component.empty(), -1)); // Precompute-- someday move that stuff out of bukkit
- 
-     public static LiteralCommandNode<CommandSourceStack> create() {
-diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index 9323383f7d1226d887fc9219354ac9613204cbc2..148e863b513ebfbbcd25b48ce6f3675c383cc367 100644
---- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-+++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-@@ -485,7 +485,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
- 
-     @Override
-     public com.destroystokyo.paper.util.VersionFetcher getVersionFetcher() {
--        return new com.destroystokyo.paper.PaperVersionFetcher();
-+        return new org.leavesmc.leaves.util.LeavesVersionFetcher(); // Leaves
-     }
- 
-     @Override
 diff --git a/src/main/java/org/spigotmc/WatchdogThread.java b/src/main/java/org/spigotmc/WatchdogThread.java
-index 5c1306ac6eb620a38ed5ef3632b611214e1d5dcd..a69f70c2fae62848db8bed92ede994b8385696fa 100644
+index ab6c553f0f5c228e65c95538fc2deef07d9cd077..0a4b6233d863ddfc1fa5fc0b7dee21c1e0e0edd0 100644
 --- a/src/main/java/org/spigotmc/WatchdogThread.java
 +++ b/src/main/java/org/spigotmc/WatchdogThread.java
 @@ -75,14 +75,14 @@ public class WatchdogThread extends ca.spottedleaf.moonrise.common.util.TickThre
@@ -174,7 +153,7 @@ index 5c1306ac6eb620a38ed5ef3632b611214e1d5dcd..a69f70c2fae62848db8bed92ede994b8
 -                logger.log(Level.SEVERE, "Server thread dump (Look for plugins here before reporting to Paper!):"); // Paper
 +                logger.log(Level.SEVERE, "Server thread dump (Look for plugins here before reporting to Leaves!):"); // Paper // Leaevs
                  FeatureHooks.dumpAllChunkLoadInfo(MinecraftServer.getServer(), isLongTimeout); // Paper - log detailed tick information
-                 WatchdogThread.dumpThread(ManagementFactory.getThreadMXBean().getThreadInfo(MinecraftServer.getServer().serverThread.threadId(), Integer.MAX_VALUE), logger);
+                 WatchdogThread.dumpThread(ManagementFactory.getThreadMXBean().getThreadInfo(MinecraftServer.getServer().getRunningThread().threadId(), Integer.MAX_VALUE), logger);
                  logger.log(Level.SEVERE, "------------------------------");
 @@ -120,7 +120,7 @@ public class WatchdogThread extends ca.spottedleaf.moonrise.common.util.TickThre
                          WatchdogThread.dumpThread(thread, logger);

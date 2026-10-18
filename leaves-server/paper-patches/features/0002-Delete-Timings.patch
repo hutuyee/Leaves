@@ -5,29 +5,14 @@ Subject: [PATCH] Delete Timings
 
 
 diff --git a/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java b/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java
-index 7ce9ebba8ce304d1f3f21d4f15ee5f3560d7700b..a589689e3a9de1fffef62e0e3dcd79bb2e848c5b 100644
+index 8b7a15af1eb2cc0318e26d7199c8e684de63cd72..e3123f87167c3ef2884344f24b6e85951f97fd0b 100644
 --- a/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java
 +++ b/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java
-@@ -1,6 +1,5 @@
- package io.papermc.paper.plugin.manager;
- 
--import co.aikar.timings.TimedEventExecutor;
- import com.destroystokyo.paper.event.server.ServerExceptionEvent;
- import com.destroystokyo.paper.exception.ServerEventException;
- import com.google.common.collect.Sets;
-@@ -95,7 +94,6 @@ class PaperEventManager {
-             throw new IllegalPluginAccessException("Plugin attempted to register " + event + " while not enabled");
-         }
- 
--        executor = new TimedEventExecutor(executor, plugin, null, event);
-         this.getEventListeners(event).register(new RegisteredListener(listener, executor, priority, plugin, ignoreCancelled));
-     }
- 
-@@ -182,7 +180,7 @@ class PaperEventManager {
+@@ -184,7 +184,7 @@ class PaperEventManager {
                  }
              }
  
--            EventExecutor executor = new TimedEventExecutor(EventExecutor.create(method, eventClass), plugin, method, eventClass);
+-            EventExecutor executor = EventExecutor.create(method, eventClass);
 +            EventExecutor executor = EventExecutor.create(method, eventClass); // Leaves - disable timing
              eventSet.add(new RegisteredListener(listener, executor, eh.priority(), plugin, eh.ignoreCancelled()));
          }
