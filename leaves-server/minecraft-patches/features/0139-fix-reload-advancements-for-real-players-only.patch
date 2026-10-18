@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: hutuyee <hutuyee@outlook.com>
+Date: Sun, 18 Oct 2026 14:24:55 +0800
+Subject: [PATCH] fix: reload advancements for real players only
+
+
+diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
+index cbe6506b2877f344f82b9a5ec3067b0d087c7e27..89c85d8bfe0ca4ee913d9382e8b414d62ba2b8a2 100644
+--- a/net/minecraft/server/players/PlayerList.java
++++ b/net/minecraft/server/players/PlayerList.java
+@@ -1494,7 +1494,7 @@ public abstract class PlayerList {
+         // for (PlayerAdvancements playerAdvancements : this.advancements.values()) {
+         //     playerAdvancements.reload(this.server.getAdvancements());
+         // }
+-        for (ServerPlayer player : this.players) {
++        for (ServerPlayer player : this.realPlayers) { // Leaves - only real players
+             player.getAdvancements().reload(this.server.getAdvancements());
+             player.getAdvancements().flushDirty(player, false); // CraftBukkit - trigger immediate flush of advancements
+         }
