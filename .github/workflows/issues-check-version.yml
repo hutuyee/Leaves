@@ -26,7 +26,7 @@ jobs:
               if (
                 body.includes("### 服务端版本 Leaves Version")
               ) {
-                const versionMatch = body.match(/(\d+\.\d+\.\d+)-(\d+)/);
+                const versionMatch = body.match(/(\d+\.\d+(?:\.\d+)?)-(\d+)/);
                 const gitVersionMatch = body.match(/git-Leaves-"[a-z0-9]{7}"/);
 
                 if (versionMatch) {
@@ -93,7 +93,7 @@ jobs:
                     issue_number: issueNumber,
                     owner,
                     repo,
-                    body: `## :wave: Hi, The LeavesMC Team here.\n:information_source: Please make sure you have filled in the Leaves version correctly. (e.g. \`1.21.4-16\`).\nYou can generate pre-populated issue templates via \`/leaves report\`.\n\n---\n## :wave: 嗨，这里是 LeavesMC 团队。\n:information_source: 请确保你已正确填写 Leaves 版本字段（例如：\`1.21.4-16\`）。 \n你可以通过 \`/leaves report\` 生成预填充的问题模板。`,
+                    body: `## :wave: Hi, The LeavesMC Team here.\n:information_source: Please make sure you have filled in the Leaves version correctly. (e.g. \`26.3-4\`).\nYou can generate pre-populated issue templates via \`/leaves report\`.\n\n---\n## :wave: 嗨，这里是 LeavesMC 团队。\n:information_source: 请确保你已正确填写 Leaves 版本字段（例如：\`26.3-4\`）。 \n你可以通过 \`/leaves report\` 生成预填充的问题模板。`,
                   });
                   addLabels({
                     issue_number: issueNumber,
