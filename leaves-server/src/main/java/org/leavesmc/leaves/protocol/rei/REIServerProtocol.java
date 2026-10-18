@@ -139,9 +139,7 @@ public class REIServerProtocol implements LeavesProtocol {
                 case ShapedRecipe ignored -> builder.add(new ShapedDisplay((RecipeHolder) holder));
                 case ShapelessRecipe ignored -> builder.add(new ShapelessDisplay((RecipeHolder) holder));
                 case TransmuteRecipe ignored -> builder.addAll(Display.ofTransmuteRecipe((RecipeHolder) holder));
-                case TippedArrowRecipe ignored -> builder.addAll(Display.ofTippedArrowRecipe((RecipeHolder) holder));
                 case FireworkRocketRecipe ignored -> builder.addAll(Display.ofFireworkRocketRecipe((RecipeHolder) holder));
-                case MapCloningRecipe ignored -> builder.addAll(Display.ofMapCloningRecipe((RecipeHolder) holder));
                 // ignore ArmorDyeRecipe, BannerDuplicateRecipe, BookCloningRecipe, ShieldDecorationRecipe
                 default -> {
                 }
@@ -234,7 +232,7 @@ public class REIServerProtocol implements LeavesProtocol {
                 });
                 */
             } else {
-                player.displayClientMessage(Component.translatable("text.rei.failed_cheat_items"), false);
+                player.sendSystemMessage(Component.translatable("text.rei.failed_cheat_items"));
             }
         };
         inboundTransform(player, CREATE_ITEMS_PACKET, buf, consumer);
@@ -293,7 +291,7 @@ public class REIServerProtocol implements LeavesProtocol {
                 });
                 */
             } else {
-                player.displayClientMessage(Component.translatable("text.rei.failed_cheat_items"), false);
+                player.sendSystemMessage(Component.translatable("text.rei.failed_cheat_items"));
             }
         };
         inboundTransform(player, CREATE_ITEMS_HOTBAR_PACKET, buf, consumer);
@@ -367,7 +365,7 @@ public class REIServerProtocol implements LeavesProtocol {
         if (player.getBukkitEntity().hasPermission(CHEAT_PERMISSION)) {
             return true;
         }
-        player.displayClientMessage(Component.translatable("text.rei.no_permission_cheat").withStyle(ChatFormatting.RED), false);
+        player.sendSystemMessage(Component.translatable("text.rei.no_permission_cheat").withStyle(ChatFormatting.RED));
         return false;
     }
 

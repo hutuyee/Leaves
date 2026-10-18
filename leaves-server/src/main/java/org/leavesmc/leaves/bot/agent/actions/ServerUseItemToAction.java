@@ -2,6 +2,7 @@ package org.leavesmc.leaves.bot.agent.actions;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -34,13 +35,13 @@ public class ServerUseItemToAction extends AbstractUseBotAction<ServerUseItemToA
 
         Vec3 vec3 = hitResult.getLocation().subtract(entity.getX(), entity.getY(), entity.getZ());
         bot.updateItemInHand(hand);
-        InteractionResult interactionResult = entity.interactAt(bot, vec3, hand);
+        InteractionResult interactionResult = entity.interact(bot, hand, vec3);
         if (!interactionResult.consumesAction()) {
-            interactionResult = bot.interactOn(hitResult.getEntity(), hand);
+            interactionResult = bot.interactOn(hitResult.getEntity(), hand, vec3);
         }
 
         if (shouldSwing(interactionResult)) {
-            bot.swing(hand);
+            bot.swing(hand, SwingAnimation.DEFAULT, true);
         }
 
         return interactionResult;

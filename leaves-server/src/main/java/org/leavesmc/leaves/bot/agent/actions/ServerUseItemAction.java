@@ -2,6 +2,7 @@ package org.leavesmc.leaves.bot.agent.actions;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.component.SwingAnimation;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.bot.ServerBot;
 import org.leavesmc.leaves.entity.bot.actions.CraftBotAction;
@@ -22,7 +23,7 @@ public class ServerUseItemAction extends AbstractUseBotAction<ServerUseItemActio
         bot.updateItemInHand(hand);
         InteractionResult result = bot.gameMode.useItem(bot, bot.level(), bot.getItemInHand(hand), hand);
         if (shouldSwing(result)) {
-            bot.swing(hand);
+            bot.swing(hand, SwingAnimation.DEFAULT, true);
         }
         return result;
     }

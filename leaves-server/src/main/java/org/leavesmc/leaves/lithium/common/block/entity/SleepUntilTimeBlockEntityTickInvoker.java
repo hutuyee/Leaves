@@ -48,6 +48,6 @@ public record SleepUntilTimeBlockEntityTickInvoker(BlockEntity sleepingBlockEnti
     @Override
     public String getType() {
         //noinspection ConstantConditions
-        return BlockEntityType.getKey(this.sleepingBlockEntity.getType()).toString();
+        return net.minecraft.core.registries.BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(this.sleepingBlockEntity.getType()).toString();
     }
 }

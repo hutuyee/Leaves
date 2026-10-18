@@ -3,6 +3,7 @@ package org.leavesmc.leaves.bot.agent.actions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +36,7 @@ public class ServerUseItemOnAction extends AbstractUseBotAction<ServerUseItemOnA
         bot.updateItemInHand(hand);
         InteractionResult interactionResult = bot.gameMode.useItemOn(bot, bot.level(), bot.getItemInHand(hand), hand, hitResult);
         if (shouldSwing(interactionResult)) {
-            bot.swing(hand);
+            bot.swing(hand, SwingAnimation.DEFAULT, true);
         }
 
         return interactionResult;

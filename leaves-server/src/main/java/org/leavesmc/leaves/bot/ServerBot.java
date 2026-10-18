@@ -29,12 +29,14 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.MoveSimulationType;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
 import net.minecraft.world.inventory.ChestMenu;
@@ -142,8 +144,8 @@ public class ServerBot extends ServerPlayer {
 
         this.resetOperationCountPerTick(); // Leaves - player operation limiter
         this.wardenSpawnTracker.tick();
-        if (this.invulnerableTime > 0) {
-            this.invulnerableTime--;
+        if (this.getInvulnerableTime() > 0) {
+            this.setInvulnerableTime(this.getInvulnerableTime() - 1);
         }
         if (this.spawnInvulnerableTime > 0) {
             --this.spawnInvulnerableTime; // Leaves - spawn invulnerable time
@@ -248,8 +250,8 @@ public class ServerBot extends ServerPlayer {
     }
 
     @Override
-    public boolean canSimulateMovement() {
-        return true;
+    public MoveSimulationType getMoveSimulationType() {
+        return MoveSimulationType.SERVER_AND_CLIENT;
     }
 
     @Override
@@ -310,11 +312,8 @@ public class ServerBot extends ServerPlayer {
     }
 
     @Override
-    public void knockback(double strength, double x, double z, @Nullable Entity attacker, EntityKnockbackEvent.@NotNull Cause eventCause) {
-        if (!this.hurtMarked) {
-            return;
-        }
-        super.knockback(strength, x, z, attacker, eventCause);
+    public void knockback(double power, double x, double z, DamageSource source, float damage, @Nullable Entity attacker, EntityKnockbackEvent.@NotNull Cause eventCause) {
+        super.knockback(power, x, z, source, damage, attacker, eventCause);
     }
 
     @Override
@@ -336,7 +335,7 @@ public class ServerBot extends ServerPlayer {
     }
 
     @Override
-    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand, @NotNull Vec3 location) {
         if (LeavesConfig.modify.fakeplayer.canOpenInventory) {
             if (player instanceof ServerPlayer player1 && player.getMainHandItem().isEmpty()) {
                 BotInventoryOpenEvent event = new BotInventoryOpenEvent(this.getBukkitEntity(), player1.getBukkitEntity());
@@ -347,13 +346,13 @@ public class ServerBot extends ServerPlayer {
                 }
             }
         }
-        return super.interact(player, hand);
+        return super.interact(player, hand, location);
     }
 
     @Override
     public void attack(@NotNull Entity target) {
         super.attack(target);
-        this.swing(InteractionHand.MAIN_HAND);
+        this.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, true);
     }
 
     @Override
@@ -643,14 +642,14 @@ public class ServerBot extends ServerPlayer {
         for (int i = 0; i < items.size(); i++) {
             ItemStack itemStack = items.get(i);
             if (!itemStack.isEmpty()) {
-                this.drop(itemStack, death, false);
+                this.drop(itemStack, death, net.minecraft.util.Prediction.SERVER_ONLY);
                 items.set(i, ItemStack.EMPTY);
             }
         }
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ItemStack itemStack;
             if (!(itemStack = this.equipment.get(slot)).isEmpty()) {
-                this.drop(itemStack, death, false);
+                this.drop(itemStack, death, net.minecraft.util.Prediction.SERVER_ONLY);
                 this.equipment.set(slot, ItemStack.EMPTY);
             }
         }

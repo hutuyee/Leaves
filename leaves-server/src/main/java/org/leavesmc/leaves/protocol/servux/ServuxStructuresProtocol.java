@@ -221,7 +221,7 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
             LongIterator iter = startChunks.iterator();
 
             while (iter.hasNext()) {
-                ChunkPos pos = new ChunkPos(iter.nextLong());
+                ChunkPos pos = ChunkPos.unpack(iter.nextLong());
 
                 if (!world.hasChunk(pos.x(), pos.z())) {
                     continue;
@@ -296,7 +296,7 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
 
         for (LongSet chunks : references.values()) {
             for (Long chunkPosLong : chunks) {
-                final ChunkPos pos = new ChunkPos(chunkPosLong);
+                final ChunkPos pos = ChunkPos.unpack(chunkPosLong);
                 map.computeIfAbsent(pos, (p) -> new Timeout(tickCounter)).setLastSync(tickCounter);
             }
         }

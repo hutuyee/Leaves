@@ -51,7 +51,7 @@ public class ElytraAeronauticsHelper {
                     lookAngle.y * 0.1 + (lookAngle.y * 1.5 - deltaMovement.y) * 0.5,
                     lookAngle.z * 0.1 + (lookAngle.z * 1.5 - deltaMovement.z) * 0.5
                 ));
-                firework.attachedToEntity.hurtMarked = true;
+                firework.attachedToEntity.needsSync = true;
                 handHoldingItemAngle = firework.attachedToEntity.getHandHoldingItemAngle(Items.FIREWORK_ROCKET);
             } else {
                 handHoldingItemAngle = Vec3.ZERO;
@@ -124,7 +124,7 @@ public class ElytraAeronauticsHelper {
             }
             try {
                 PlatformHooks.get().removePlayerFromDistanceMaps(serverPlayer.level(), serverPlayer);
-                serverPlayer.level().chunkSource.chunkMap.getDistanceManager().removePlayer(serverPlayer.getLastSectionPos(), serverPlayer);
+                serverPlayer.level().getChunkSource().chunkMap.getDistanceManager().removePlayer(serverPlayer.getLastSectionPos(), serverPlayer);
             } catch (Exception ignored) {
             }
         }
@@ -139,7 +139,7 @@ public class ElytraAeronauticsHelper {
             }
             try {
                 PlatformHooks.get().addPlayerToDistanceMaps(serverPlayer.level(), serverPlayer);
-                serverPlayer.level().chunkSource.chunkMap.getDistanceManager().addPlayer(SectionPos.of(serverPlayer), serverPlayer);
+                serverPlayer.level().getChunkSource().chunkMap.getDistanceManager().addPlayer(SectionPos.of(serverPlayer), serverPlayer);
             } catch (Exception ignored) {
             }
         }

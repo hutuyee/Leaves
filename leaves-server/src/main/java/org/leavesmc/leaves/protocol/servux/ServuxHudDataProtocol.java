@@ -4,6 +4,7 @@ import com.mojang.serialization.DataResult;
 import io.netty.buffer.Unpooled;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
@@ -117,7 +118,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
         ListTag list = new ListTag();
 
         recipes.forEach((recipeEntry -> {
-            DataResult<Tag> dr = Recipe.CODEC.encodeStart(NbtOps.INSTANCE, recipeEntry.value());
+            DataResult<Tag> dr = Recipe.CODEC.encodeStart(NbtOps.INSTANCE, Holder.direct(recipeEntry.value()));
 
             if (dr.result().isPresent()) {
                 CompoundTag entry = new CompoundTag();
@@ -142,22 +143,22 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
         nbt.putString("id", HudDataPayload.CHANNEL.toString());
         nbt.putString("servux", ServuxProtocol.SERVUX_STRING);
 
-        if (level.serverLevelData.isRaining() && level.serverLevelData.getRainTime() > -1) {
-            nbt.putInt("SetRaining", level.serverLevelData.getRainTime());
+        if (level.getWeatherData().isRaining() && level.getWeatherData().getRainTime() > -1) {
+            nbt.putInt("SetRaining", level.getWeatherData().getRainTime());
             nbt.putBoolean("isRaining", true);
         } else {
             nbt.putBoolean("isRaining", false);
         }
 
-        if (level.serverLevelData.isThundering() && level.serverLevelData.getThunderTime() > -1) {
-            nbt.putInt("SetThundering", level.serverLevelData.getThunderTime());
+        if (level.getWeatherData().isThundering() && level.getWeatherData().getThunderTime() > -1) {
+            nbt.putInt("SetThundering", level.getWeatherData().getThunderTime());
             nbt.putBoolean("isThundering", true);
         } else {
             nbt.putBoolean("isThundering", false);
         }
 
-        if (level.serverLevelData.getClearWeatherTime() > -1) {
-            nbt.putInt("SetClear", level.serverLevelData.getClearWeatherTime());
+        if (level.getWeatherData().getClearWeatherTime() > -1) {
+            nbt.putInt("SetClear", level.getWeatherData().getClearWeatherTime());
         }
 
         sendPacket(player, new HudDataPayload(HudDataPayloadType.PACKET_S2C_WEATHER_TICK, nbt));
@@ -165,7 +166,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
 
     private static void putWorldData(@NotNull CompoundTag metadata) {
         ServerLevel level = MinecraftServer.getServer().overworld();
-        BlockPos spawnPos = level.levelData.getRespawnData().pos();
+        BlockPos spawnPos = level.getRespawnData().pos();
         metadata.putInt("spawnPosX", spawnPos.getX());
         metadata.putInt("spawnPosY", spawnPos.getY());
         metadata.putInt("spawnPosZ", spawnPos.getZ());

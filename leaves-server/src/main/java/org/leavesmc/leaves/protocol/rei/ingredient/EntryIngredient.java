@@ -3,6 +3,7 @@ package org.leavesmc.leaves.protocol.rei.ingredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -36,7 +37,7 @@ public class EntryIngredient {
                     buffer.writeVarInt(0);
                 } else {
                     buffer.writeVarInt(itemStack.getCount());
-                    ITEM_STREAM_CODEC.encode(buffer, itemStack.getItemHolder());
+                    ITEM_STREAM_CODEC.encode(buffer, BuiltInRegistries.ITEM.wrapAsHolder(itemStack.getItem()));
                     DataComponentPatch.STREAM_CODEC.encode(buffer, itemStack.components.asPatch());
                 }
             });

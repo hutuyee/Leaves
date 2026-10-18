@@ -27,6 +27,7 @@ import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -87,7 +88,7 @@ public class ItemRecipeFinder {
     }
 
     private ItemKey ofKey(ItemStack itemStack) {
-        return keys.intern(new ItemKey(itemStack.getItemHolder(), itemStack.getComponentsPatch()));
+        return keys.intern(new ItemKey(BuiltInRegistries.ITEM.wrapAsHolder(itemStack.getItem()), itemStack.getComponentsPatch()));
     }
 
     private Ingredient ofKeys(int index, List<ItemStack> itemStack) {

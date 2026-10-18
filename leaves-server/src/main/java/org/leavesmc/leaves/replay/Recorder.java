@@ -5,6 +5,8 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.local.LocalChannel;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.LayeredRegistryAccess;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.core.RegistrySynchronization;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -36,7 +38,10 @@ import net.minecraft.server.RegistryLayer;
 import net.minecraft.server.packs.repository.KnownPack;
 import net.minecraft.tags.TagNetworkSerialization;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.PositionMoveRotation;
+import net.minecraft.world.clock.ClockNetworkState;
+import net.minecraft.world.clock.WorldClock;
 import net.minecraft.world.flag.FeatureFlags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +51,9 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -96,7 +103,7 @@ public class Recorder extends Connection {
         metaData.mcversion = SharedConstants.getCurrentVersion().name();
 
         // TODO start event
-        this.savePacket(new ClientboundLoginFinishedPacket(photographer.getGameProfile()), ConnectionProtocol.LOGIN);
+        this.savePacket(new ClientboundLoginFinishedPacket(photographer.getGameProfile(), MinecraftServer.getServer().getConnection().getSessionId()), ConnectionProtocol.LOGIN);
         this.startConfiguration();
 
         savePacket(ClientboundPlayerPositionPacket.of(photographer.getId(), PositionMoveRotation.of(photographer), Collections.emptySet()));
@@ -123,7 +130,7 @@ public class Recorder extends Connection {
 
         LayeredRegistryAccess<RegistryLayer> layeredregistryaccess = server.registries();
         DynamicOps<Tag> dynamicOps = layeredregistryaccess.compositeAccess().createSerializationContext(NbtOps.INSTANCE);
-        RegistrySynchronization.packRegistries(dynamicOps, layeredregistryaccess.getAccessFrom(RegistryLayer.WORLDGEN), Set.copyOf(knownPackslist),
+        RegistrySynchronization.packRegistries(dynamicOps, layeredregistryaccess.getAccessFrom(RegistryLayer.WORLD), Set.copyOf(knownPackslist),
             (key, entries) ->
                 this.savePacket(new ClientboundRegistryDataPacket(key, entries), ConnectionProtocol.CONFIGURATION)
         );
@@ -187,7 +194,7 @@ public class Recorder extends Connection {
                 return;
             }
             case ClientboundAddEntityPacket packet1 -> {
-                if (packet1.getType() == EntityType.PLAYER) {
+                if (packet1.getType() == EntityTypes.PLAYER) {
                     metaData.players.add(packet1.getUUID());
                     saveMetadata();
                 }
@@ -203,7 +210,12 @@ public class Recorder extends Connection {
         }
 
         if (recorderOption.forceDayTime != -1 && packet instanceof ClientboundSetTimePacket packet1) {
-            packet = new ClientboundSetTimePacket(packet1.dayTime(), recorderOption.forceDayTime, false);
+            Map<Holder<WorldClock>, ClockNetworkState> updates = new HashMap<>(packet1.clockUpdates());
+            photographer.level().dimensionType().defaultClock().ifPresent(clock -> {
+                ClockNetworkState previous = updates.getOrDefault(clock, new ClockNetworkState(packet1.gameTime(), 0.0F, 1.0F));
+                updates.put(clock, new ClockNetworkState(recorderOption.forceDayTime, previous.partialTick(), previous.rate()));
+            });
+            packet = new ClientboundSetTimePacket(packet1.gameTime(), updates);
         }
 
         if (recorderOption.forceWeather != null && packet instanceof ClientboundGameEventPacket packet1) {
