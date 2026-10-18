@@ -5,10 +5,10 @@ Subject: [PATCH] Replay Mod API
 
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index 3b0513fbbf46e7cbb1790264eebaed9862d48eb5..44ee8036e2f813e947c2c166e1876030cabf86ff 100644
+index 9d50903d4d30f0d15bce75cf018606cefbc54e21..a004984544499b200551d1bf8fa3af4b2653df09 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -3014,4 +3014,10 @@ public final class Bukkit {
+@@ -3065,4 +3065,10 @@ public final class Bukkit {
          return server.getBotManager();
      }
      // Leaves end - Bot API
@@ -20,10 +20,10 @@ index 3b0513fbbf46e7cbb1790264eebaed9862d48eb5..44ee8036e2f813e947c2c166e1876030
 +    // Leaves end - Photographer API
  }
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index bc9bdaadf6b6bb7cc7a8cf2d4e9b8e7724f36445..f2d616b896ac7998c75c9ded8dd28cf2b49dd416 100644
+index acd77485c2ac52cb4f7a320ec65765e106bf8135..49ec437cdca98beebf4266a90906cad9f05ae11d 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -2770,4 +2770,6 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -2824,4 +2824,6 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
       */
      @NotNull org.leavesmc.leaves.entity.bot.BotManager getBotManager();
      // Leaves end - Bot API

@@ -1,7 +1,39 @@
 --- a/paper-api/build.gradle.kts
 +++ b/paper-api/build.gradle.kts
-@@ -91,19 +_,33 @@
-     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+@@ -1,11 +_,9 @@
+-import io.papermc.paperweight.checkstyle.JavadocTag
+ import paper.libs.com.google.gson.Gson
+ 
+ plugins {
+     `java-library`
+     `maven-publish`
+     idea
+-    id("io.papermc.paperweight.paper-checkstyle")
+ }
+ 
+ java {
+@@ -13,15 +_,6 @@
+     withJavadocJar()
+ }
+ 
+-val projectCustomJavadocTags = setOf(
+-    JavadocTag("apiNote", "a", "API Note:"),
+-)
+-
+-paperCheckstyle {
+-    customJavadocTags = projectCustomJavadocTags
+-    directoriesToSkipFile = layout.projectDirectory.file(".checkstyle/ignored_directories.txt")
+-}
+-
+ val annotationsVersion = "26.1.0"
+ val adventureVersion = "5.2.0"
+ val bungeeCordChatVersion = "1.21-R0.2-deprecated+build.21"
+@@ -102,23 +_,35 @@
+     mockitoAgent("org.mockito:mockito-core:5.22.0") { isTransitive = false } // configure mockito agent that is needed in newer java versions
+     testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.0.3")
+ 
+-    // checkstyle
+-    checkstyle(project(":paper-checkstyle"))
  }
  
 -val generatedDir: java.nio.file.Path = layout.projectDirectory.dir("src/generated/java").asFile.toPath()
@@ -35,7 +67,7 @@
  
  val outgoingVariants = arrayOf("runtimeElements", "apiElements", "sourcesElements", "javadocElements")
  val mainCapability = "${project.group}:${project.name}:${project.version}"
-@@ -138,6 +_,16 @@
+@@ -153,6 +_,16 @@
      }
  }
  
@@ -52,7 +84,7 @@
  abstract class GenerateApiVersioningFile : DefaultTask() {
      @get:OutputFile
      abstract val outputFile: RegularFileProperty
-@@ -183,7 +_,7 @@
+@@ -198,7 +_,7 @@
  
  tasks.withType<Javadoc>().configureEach {
      val options = options as StandardJavadocDocletOptions
@@ -61,7 +93,16 @@
      options.use()
      options.isDocFilesSubDirs = true
      options.links(
-@@ -217,16 +_,18 @@
+@@ -213,8 +_,6 @@
+         "https://logging.apache.org/log4j/2.x/javadoc/log4j-api/",
+         "https://www.javadocs.dev/org.apache.maven.resolver/maven-resolver-api/1.7.3",
+     )
+-    options.tags(projectCustomJavadocTags.map { it.toOptionString() })
+-
+     inputs.files(javadocSourcepath).ignoreEmptyDirectories().withPropertyName(javadocSourcepath.name + "-configuration")
+     val javadocSourcepathElements = javadocSourcepath.elements
+     doFirst {
+@@ -225,16 +_,18 @@
      }
  
      // workaround for https://github.com/gradle/gradle/issues/4046

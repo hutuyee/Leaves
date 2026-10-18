@@ -4,7 +4,7 @@ import java.util.Locale
 
 plugins {
     java
-    id("org.leavesmc.leavesweight.patcher") version "2.1.0-SNAPSHOT"
+    id("org.leavesmc.leavesweight.patcher") version "2.2.0-SNAPSHOT"
 }
 
 subprojects {
@@ -13,7 +13,7 @@ subprojects {
 
     extensions.configure<JavaPluginExtension> {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(21)
+            languageVersion = JavaLanguageVersion.of(25)
             vendor = JvmVendorSpec.ADOPTIUM
         }
     }
@@ -32,7 +32,7 @@ subprojects {
     }
     tasks.withType<JavaCompile> {
         options.encoding = Charsets.UTF_8.name()
-        options.release = 21
+        options.release = 25
         options.isFork = true
         options.forkOptions.memoryMaximumSize = "6g"
     }
