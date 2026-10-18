@@ -15,7 +15,7 @@ Leaves
 ## 对于服务器管理员
 此分支使用与 Paper 一致的 leavesclip(paperclip的分支) 分发
 
-你可以从 [此处](https://github.com/LeavesMC/Leaves/releases/latest) 下载最新的构建结果 (1.21.x)
+你可以从 [此处](https://github.com/LeavesMC/Leaves/releases/latest) 下载最新的构建结果
 
 也可以通过 [此处](#自行构建) 的指南自行构建
 
@@ -30,7 +30,7 @@ maven {
 }
 
 dependencies {
-    compileOnly("org.leavesmc.leaves:leaves-api:1.21.10-R0.1-SNAPSHOT")
+    compileOnly("org.leavesmc.leaves:leaves-api:26.3-R0.1-SNAPSHOT")
 }
  ```
 
@@ -39,13 +39,13 @@ dependencies {
 Leaves-Server:
 ```kotlin
 dependencies {
-    compileOnly("org.leavesmc.leaves:leaves:1.21.10-R0.1-SNAPSHOT")
+    compileOnly("org.leavesmc.leaves:leaves:26.3-R0.1-SNAPSHOT")
 }
  ```
 
 ## 自行构建
 
-你需要最低 JDK 21 和一个可以正常访问各种 git/maven 库的网络
+你需要 JDK 25 和一个可以正常访问各种 git/maven 库的网络
 
 首先克隆此储存库，然后在你的终端里依次执行 `./gradlew applyAllPatches` 和 `./gradlew createMojmapLeavesclipJar`
 
