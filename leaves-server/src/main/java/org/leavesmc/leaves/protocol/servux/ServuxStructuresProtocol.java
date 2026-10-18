@@ -90,7 +90,7 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
     private static void addChunkTimeoutIfHasReferences(final UUID uuid, LevelChunk chunk, final int tickCounter) {
         final ChunkPos pos = chunk.getPos();
 
-        if (chunkHasStructureReferences(pos.x, pos.z, chunk.getLevel())) {
+        if (chunkHasStructureReferences(pos.x(), pos.z(), chunk.getLevel())) {
             final Map<ChunkPos, Timeout> map = timeouts.computeIfAbsent(uuid, (u) -> new HashMap<>());
             map.computeIfAbsent(pos, (p) -> new Timeout(tickCounter - timeout));
         }
@@ -150,8 +150,8 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
     public static Map<Structure, LongSet> getStructureReferences(ServerLevel world, ChunkPos center, int chunkRadius) {
         Map<Structure, LongSet> references = new HashMap<>();
 
-        for (int cx = center.x - chunkRadius; cx <= center.x + chunkRadius; ++cx) {
-            for (int cz = center.z - chunkRadius; cz <= center.z + chunkRadius; ++cz) {
+        for (int cx = center.x() - chunkRadius; cx <= center.x() + chunkRadius; ++cx) {
+            for (int cz = center.z() - chunkRadius; cz <= center.z() + chunkRadius; ++cz) {
                 getReferencesFromChunk(cx, cz, world, references);
             }
         }
@@ -223,11 +223,11 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
             while (iter.hasNext()) {
                 ChunkPos pos = new ChunkPos(iter.nextLong());
 
-                if (!world.hasChunk(pos.x, pos.z)) {
+                if (!world.hasChunk(pos.x(), pos.z())) {
                     continue;
                 }
 
-                ChunkAccess chunk = world.getChunk(pos.x, pos.z, ChunkStatus.STRUCTURE_STARTS, false);
+                ChunkAccess chunk = world.getChunk(pos.x(), pos.z(), ChunkStatus.STRUCTURE_STARTS, false);
                 StructureStart start = null;
                 if (chunk != null) {
                     start = chunk.getStartForStructure(structure);
@@ -271,7 +271,7 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
                 if (isOutOfRange(pos, center)) {
                     map.remove(pos);
                 } else {
-                    getReferencesFromChunk(pos.x, pos.z, world, references);
+                    getReferencesFromChunk(pos.x(), pos.z(), world, references);
 
                     Timeout timeout = map.get(pos);
 
@@ -288,7 +288,7 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
     }
 
     protected static boolean isOutOfRange(ChunkPos pos, ChunkPos center) {
-        return Math.abs(pos.x - center.x) > retainDistance || Math.abs(pos.z - center.z) > retainDistance;
+        return Math.abs(pos.x() - center.x()) > retainDistance || Math.abs(pos.z() - center.z()) > retainDistance;
     }
 
     public static void addOrRefreshTimeouts(final UUID uuid, final Map<Structure, LongSet> references, final int tickCounter) {

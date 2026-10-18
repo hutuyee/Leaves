@@ -209,7 +209,6 @@ public class LithiumStackList extends NonNullList<ItemStack> implements LithiumD
      * @return the signal strength for this inventory
      */
     int calculateSignalStrength(int inventorySize) {
-        int i = 0;
         float f = 0.0F;
 
         inventorySize = Math.min(inventorySize, this.size());
@@ -217,12 +216,11 @@ public class LithiumStackList extends NonNullList<ItemStack> implements LithiumD
             ItemStack itemStack = this.get(j);
             if (!itemStack.isEmpty()) {
                 f += org.leavesmc.leaves.util.ItemOverstackUtils.getItemStackSignalStrength(this.maxCountPerStack, itemStack);
-                ++i;
             }
         }
 
         f /= (float) inventorySize;
-        return Mth.floor(f * 14.0F) + (i > 0 ? 1 : 0);
+        return Mth.lerpDiscrete(f, 0, 15);
     }
 
     public void setReducedSignalStrengthOverride() {
