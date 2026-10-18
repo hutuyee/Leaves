@@ -1,0 +1,229 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: hutuyee <hutuyee@outlook.com>
+Date: Sun, 18 Oct 2026 14:55:43 +0800
+Subject: [PATCH] fix: adapt minecraft patches for 26.3
+
+
+diff --git a/net/minecraft/server/network/ServerCommonPacketListenerImpl.java b/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
+index 6a05b1636a53825b15a0a16abea0fe59bdac9305..81830f6b47e7c8059dff2c7576edb9a79f095983 100644
+--- a/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
++++ b/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
+@@ -90,6 +90,10 @@ public abstract class ServerCommonPacketListenerImpl implements ServerCommonPack
+         }
+     }
+ 
++    public boolean isClosed() {
++        return this.closed;
++    }
++
+     @Override
+     public void onDisconnect(final DisconnectionDetails details) {
+         org.leavesmc.leaves.network.AsyncKeepaliveManager.unregister(this); // Leaves - async keepalive
+@@ -336,7 +340,7 @@ public abstract class ServerCommonPacketListenerImpl implements ServerCommonPack
+ 
+     // Leaves start - async keepalive
+     public void keepConnectionAliveAsync(long currentTimeNs, long currentTimeMs) {
+-        if (this.closed || this.processedDisconnect || !this.connection.isConnected()) {
++        if (this.closed || !this.connection.isConnected()) {
+             return;
+         }
+ 
+diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
+index 89c85d8bfe0ca4ee913d9382e8b414d62ba2b8a2..7cd42cde4da0325675c055f737b458a471f446ed 100644
+--- a/net/minecraft/server/players/PlayerList.java
++++ b/net/minecraft/server/players/PlayerList.java
+@@ -163,7 +163,6 @@ public abstract class PlayerList {
+         player.isRealPlayer = true;
+         player.loginTime = System.currentTimeMillis();
+         player.setServerLevel(level);
+-        player.spawnIn(level);
+         player.gameMode.setLevel(player.level());
+ 
+         LevelData levelData = level.getLevelData();
+diff --git a/net/minecraft/world/SimpleContainer.java b/net/minecraft/world/SimpleContainer.java
+index 0f412551685a8ea76be3b389e0782e57d22bb87c..499c9ff11b56cff07959072fcb9bbac21f668a59 100644
+--- a/net/minecraft/world/SimpleContainer.java
++++ b/net/minecraft/world/SimpleContainer.java
+@@ -1,6 +1,7 @@
+ package net.minecraft.world;
+ 
+ import java.util.List;
++import java.util.function.Consumer;
+ import java.util.stream.Collectors;
+ import net.minecraft.core.NonNullList;
+ import net.minecraft.world.entity.player.Player;
+@@ -14,6 +15,7 @@ import net.minecraft.world.level.storage.ValueOutput;
+ public class SimpleContainer implements Container, StackedContentsCompatible {
+     private final int size;
+     private final NonNullList<ItemStack> items;
++    private final List<Consumer<SimpleContainer>> changeListeners = new java.util.ArrayList<>();
+ 
+     // Paper start - add fields and methods
+     public List<org.bukkit.entity.HumanEntity> transaction = new java.util.ArrayList<>();
+@@ -199,6 +201,11 @@ public class SimpleContainer implements Container, StackedContentsCompatible {
+ 
+     @Override
+     public void setChanged() {
++        this.changeListeners.forEach(listener -> listener.accept(this));
++    }
++
++    public void addListener(final Consumer<SimpleContainer> listener) {
++        this.changeListeners.add(listener);
+     }
+ 
+     @Override
+diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
+index 13bbff4764c958034f19b5adc48db3996af923f7..b42f4a93dec0897c5fe86746d8ee365ce3922ccf 100644
+--- a/net/minecraft/world/entity/Entity.java
++++ b/net/minecraft/world/entity/Entity.java
+@@ -308,7 +308,7 @@ public abstract class Entity
+     private final EntityFluidInteraction fluidInteraction = new EntityFluidInteraction(FLUIDS_WITH_CURRENT);
+     protected boolean wasTouchingWater;
+     protected boolean wasEyeInWater;
+-    private int invulnerableTime;
++    protected int invulnerableTime;
+     protected boolean firstTick = true;
+     protected final SynchedEntityData entityData;
+     protected static final EntityDataAccessor<Byte> DATA_SHARED_FLAGS_ID = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.BYTE);
+diff --git a/net/minecraft/world/entity/item/ItemEntity.java b/net/minecraft/world/entity/item/ItemEntity.java
+index b3e002f57240050f3c6a88eb618f98ae24f9f2d2..c31163bfa64f97da7a097d0da32ce285bcac6304 100644
+--- a/net/minecraft/world/entity/item/ItemEntity.java
++++ b/net/minecraft/world/entity/item/ItemEntity.java
+@@ -72,7 +72,7 @@ public class ItemEntity extends Entity implements TraceableEntity, ChangePublish
+         this.setItem(itemStack);
+         // Leaves start - vanilla yes, safe no
+         if (org.leavesmc.leaves.LeavesConfig.modify.useVanillaRandom) {
+-            this.setDeltaMovement(level.random.nextDouble() * 0.2 - 0.1, 0.2, level.random.nextDouble() * 0.2 - 0.1);
++            this.setDeltaMovement(level.getRandom().nextDouble() * 0.2 - 0.1, 0.2, level.getRandom().nextDouble() * 0.2 - 0.1);
+         } else {
+             this.setDeltaMovement(this.random.nextDouble() * 0.2 - 0.1, 0.2, this.random.nextDouble() * 0.2 - 0.1);
+         }
+diff --git a/net/minecraft/world/entity/item/PrimedTnt.java b/net/minecraft/world/entity/item/PrimedTnt.java
+index 21829d68b5d374377ef05a10301914dcdf6307b0..a6cc4d47d6613021700bd0764c492896626d6d16 100644
+--- a/net/minecraft/world/entity/item/PrimedTnt.java
++++ b/net/minecraft/world/entity/item/PrimedTnt.java
+@@ -73,7 +73,7 @@ public class PrimedTnt extends Entity implements TraceableEntity {
+     public PrimedTnt(final Level level, final double x, final double y, final double z, final @Nullable LivingEntity owner) {
+         this(EntityTypes.TNT, level);
+         this.setPos(x, y, z);
+-        double rot = (org.leavesmc.leaves.LeavesConfig.modify.useVanillaRandom ? level.random.nextDouble() : this.getRandom().nextDouble()) * (float) (Math.PI * 2); // Paper - Don't use level random in entity constructors // Leaves - configurable vanilla random
++        double rot = (org.leavesmc.leaves.LeavesConfig.modify.useVanillaRandom ? level.getRandom().nextDouble() : this.getRandom().nextDouble()) * (float) (Math.PI * 2); // Paper - Don't use level random in entity constructors // Leaves - configurable vanilla random
+         this.setDeltaMovement(-Math.sin(rot) * 0.02, 0.2F, -Math.cos(rot) * 0.02);
+         this.setFuse(80);
+         this.xo = x;
+diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
+index 2727a255fc9ec463b98245767042f5673b9b03d7..90ec12cc2810c7ba614f9396854e52d94e4bfe0b 100644
+--- a/net/minecraft/world/entity/player/Player.java
++++ b/net/minecraft/world/entity/player/Player.java
+@@ -155,7 +155,7 @@ public abstract class Player extends Avatar implements ContainerUser {
+     protected FoodData foodData = new FoodData();
+     protected int jumpTriggerTime;
+     public int takeXpDelay;
+-    private int sleepCounter = 0;
++    protected int sleepCounter = 0;
+     protected boolean wasUnderwater;
+     private final Abilities abilities = new Abilities();
+     public int experienceLevel = 0;
+diff --git a/net/minecraft/world/entity/raid/Raid.java b/net/minecraft/world/entity/raid/Raid.java
+index cff1f13d30779d8db9d2a54da1007a40a404ffe4..a57689e7ecb62007da634f8935dfaa1d625a1a6e 100644
+--- a/net/minecraft/world/entity/raid/Raid.java
++++ b/net/minecraft/world/entity/raid/Raid.java
+@@ -731,9 +731,9 @@ public class Raid {
+         BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos();
+         SpawnPlacementType spawnPlacementType = SpawnPlacements.getPlacementType(EntityTypes.RAVAGER);
+         for (int i = 0; i < n2; ++i) {
+-            float f = level.random.nextFloat() * ((float)Math.PI * 2);
+-            int n4 = this.center.getX() + Mth.floor(Mth.cos(f) * 32.0f * (float)n3) + level.random.nextInt(5);
+-            int n5 = this.center.getZ() + Mth.floor(Mth.sin(f) * 32.0f * (float)n3) + level.random.nextInt(5);
++            float f = level.getRandom().nextFloat() * ((float)Math.PI * 2);
++            int n4 = this.center.getX() + Mth.floor(Mth.cos(f) * 32.0f * (float)n3) + level.getRandom().nextInt(5);
++            int n5 = this.center.getZ() + Mth.floor(Mth.sin(f) * 32.0f * (float)n3) + level.getRandom().nextInt(5);
+             int n6 = level.getHeight(Heightmap.Types.WORLD_SURFACE, n4, n5);
+             mutableBlockPos.set(n4, n6, n5);
+             if (level.isVillage(mutableBlockPos) && n < 2) continue;
+@@ -762,9 +762,9 @@ public class Raid {
+         SpawnPlacementType spawnLocation = SpawnPlacements.getPlacementType(EntityTypes.RAVAGER);
+ 
+         for (int j = 0; j < tries; j++) {
+-            float f = serverWorld.random.nextFloat() * (float) (Math.PI * 2);
+-            int k = this.center.getX() + Mth.floor(Mth.cos(f) * 32.0F * (float) i + serverWorld.random.nextInt(5));
+-            int l = this.center.getZ() + Mth.floor(Mth.sin(f) * 32.0F * (float) i + serverWorld.random.nextInt(5));
++            float f = serverWorld.getRandom().nextFloat() * (float) (Math.PI * 2);
++            int k = this.center.getX() + Mth.floor(Mth.cos(f) * 32.0F * (float) i + serverWorld.getRandom().nextInt(5));
++            int l = this.center.getZ() + Mth.floor(Mth.sin(f) * 32.0F * (float) i + serverWorld.getRandom().nextInt(5));
+             int m = serverWorld.getHeight(Heightmap.Types.WORLD_SURFACE, k, l);
+             mutable.set(k, m, l);
+ 
+diff --git a/net/minecraft/world/item/ShearsItem.java b/net/minecraft/world/item/ShearsItem.java
+index 2b4ab3039ac59dbd89f894e13c12ca3a4ca37314..1913b30f1bfe013261b340fdf9917db90c98c695 100644
+--- a/net/minecraft/world/item/ShearsItem.java
++++ b/net/minecraft/world/item/ShearsItem.java
+@@ -81,7 +81,7 @@ public class ShearsItem extends Item {
+             return InteractionResult.SUCCESS;
+         } else {
+             // Leaves start - shears wrench
+-            InteractionResult result = org.leavesmc.leaves.util.ShearsWrenchUtil.tryApplyRotate(context, blockState);
++            InteractionResult result = org.leavesmc.leaves.util.ShearsWrenchUtil.tryApplyRotate(context, state);
+             return result == null ? super.useOn(context) : result;
+             // Leaves end - shears wrench
+         }
+diff --git a/net/minecraft/world/level/block/BuddingAmethystBlock.java b/net/minecraft/world/level/block/BuddingAmethystBlock.java
+index c5de54827ba65ab4b2d0615c9f4577711b9bf814..e2ceea06d973706ad9ddb962c5acd439a3531ed7 100644
+--- a/net/minecraft/world/level/block/BuddingAmethystBlock.java
++++ b/net/minecraft/world/level/block/BuddingAmethystBlock.java
+@@ -56,7 +56,7 @@ public class BuddingAmethystBlock extends AmethystBlock {
+     @Override
+     @org.jetbrains.annotations.Nullable
+     public net.minecraft.world.level.material.PushReaction getResetPushReaction() {
+-        return org.leavesmc.leaves.LeavesConfig.modify.movableBuddingAmethyst ? net.minecraft.world.level.material.PushReaction.NORMAL : null;
++        return org.leavesmc.leaves.LeavesConfig.modify.movableBuddingAmethyst ? net.minecraft.world.level.material.PushReaction.PUSH_PULL : null;
+     }
+     // Leaves end - budding amethyst can push by piston
+ }
+diff --git a/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java b/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
+index 2db8527f98487af603423cf811e34b018cfc2dda..5d8587b6888a9d7ecb8769ed3766c80fd88c782a 100644
+--- a/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
++++ b/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
+@@ -35,6 +35,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
+ import net.minecraft.world.item.crafting.RecipeManager;
+ import net.minecraft.world.item.crafting.RecipeType;
+ import net.minecraft.world.item.crafting.SingleRecipeInput;
++import net.minecraft.world.level.block.Blocks;
+ import net.minecraft.world.level.block.AbstractFurnaceBlock;
+ import net.minecraft.world.level.block.state.BlockState;
+ import net.minecraft.world.level.storage.ValueInput;
+diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
+index 4a2adc115ae6ebfac4a111f96cdd7da30adfe5c7..2bc4c3a9b326140b743384fe9f1a7854f1d6ccab 100644
+--- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
++++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
+@@ -1410,7 +1410,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+             //Remember failed entity search timestamp. This allows shortcutting if no entity movement happens.
+             return null;
+         }
+-        Container inventory = inventoryEntities.get(world.random.nextInt(inventoryEntities.size()));
++        Container inventory = inventoryEntities.get(world.getRandom().nextInt(inventoryEntities.size()));
+         if (inventory instanceof LithiumInventory optimizedInventory) {
+             LithiumStackList insertInventoryStackList = InventoryHelper.getLithiumStackList(optimizedInventory);
+             if (inventory != this.insertInventory || this.insertStackList != insertInventoryStackList) {
+@@ -1476,7 +1476,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+             //shortcutting the entity present case requires checking its change counter
+             return null;
+         }
+-        Container inventory = inventoryEntities.get(world.random.nextInt(inventoryEntities.size()));
++        Container inventory = inventoryEntities.get(world.getRandom().nextInt(inventoryEntities.size()));
+         if (inventory instanceof LithiumInventory optimizedInventory) {
+             LithiumStackList extractInventoryStackList = InventoryHelper.getLithiumStackList(optimizedInventory);
+             if (inventory != this.extractInventory || this.extractStackList != extractInventoryStackList) {
+diff --git a/net/minecraft/world/level/chunk/storage/RegionFileStorage.java b/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
+index cc50f2a23aa833379129f7aaef0f8c7a190bb83c..e5c3373a4d4cd6486669a4946bb5385422cddc9c 100644
+--- a/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
++++ b/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
+@@ -240,7 +240,7 @@ public class RegionFileStorage implements AutoCloseable, ca.spottedleaf.moonrise
+         this.isChunkData = info.dfuType()[0] == net.minecraft.util.datafix.DataFixTypes.CHUNK; // Paper - recalculate region file headers
+     }
+ 
+-    private @Nullable org.leavesmc.leaves.region.IRegionFile getRegionFile(final ChunkPos pos, final boolean create) throws IOException { // Leaves - more region format
++    private org.leavesmc.leaves.region.@Nullable IRegionFile getRegionFile(final ChunkPos pos, final boolean create) throws IOException { // Leaves - more region format
+         // Paper start - rewrite chunk system
+         synchronized (this) {
+             final long key = ChunkPos.pack(pos.x() >> REGION_SHIFT, pos.z() >> REGION_SHIFT);
