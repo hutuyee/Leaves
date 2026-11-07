@@ -5,10 +5,10 @@ Subject: [PATCH] Bytebuf API
 
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index a004984544499b200551d1bf8fa3af4b2653df09..0be7e9a6e7c72fbbb9b507ddbfde4a997fd2d886 100644
+index 66fe601d21ece91de0264deb227014e369f65eaa..bcadd9272fb351c647e63c73ded261993d8a4c3b 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -3071,4 +3071,10 @@ public final class Bukkit {
+@@ -3108,4 +3108,10 @@ public final class Bukkit {
          return server.getPhotographerManager();
      }
      // Leaves end - Photographer API
@@ -20,10 +20,10 @@ index a004984544499b200551d1bf8fa3af4b2653df09..0be7e9a6e7c72fbbb9b507ddbfde4a99
 +    // Leaves end - Bytebuf API
  }
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 49ec437cdca98beebf4266a90906cad9f05ae11d..4991d566007b01bfaf56178cd842da5fce3d3e93 100644
+index f3f52e67926846144f531ae8ab16d55419038e4e..d17af41d9d4ab3ffb42580979fa5f5d3d9280202 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -2826,4 +2826,6 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -2861,4 +2861,6 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
      // Leaves end - Bot API
  
      @NotNull org.leavesmc.leaves.entity.photographer.PhotographerManager getPhotographerManager(); // Leaves - Photographer API

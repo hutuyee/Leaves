@@ -84,7 +84,7 @@
  abstract class GenerateApiVersioningFile : DefaultTask() {
      @get:OutputFile
      abstract val outputFile: RegularFileProperty
-@@ -198,7 +_,7 @@
+@@ -193,7 +_,7 @@
  
  tasks.withType<Javadoc>().configureEach {
      val options = options as StandardJavadocDocletOptions
@@ -93,7 +93,7 @@
      options.use()
      options.isDocFilesSubDirs = true
      options.links(
-@@ -213,8 +_,6 @@
+@@ -208,8 +_,6 @@
          "https://logging.apache.org/log4j/2.x/javadoc/log4j-api/",
          "https://www.javadocs.dev/org.apache.maven.resolver/maven-resolver-api/1.7.3",
      )
@@ -102,7 +102,7 @@
      inputs.files(javadocSourcepath).ignoreEmptyDirectories().withPropertyName(javadocSourcepath.name + "-configuration")
      val javadocSourcepathElements = javadocSourcepath.elements
      doFirst {
-@@ -225,16 +_,18 @@
+@@ -220,16 +_,18 @@
      }
  
      // workaround for https://github.com/gradle/gradle/issues/4046

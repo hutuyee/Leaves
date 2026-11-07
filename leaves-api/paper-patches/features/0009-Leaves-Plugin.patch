@@ -6,10 +6,10 @@ Subject: [PATCH] Leaves Plugin
 This patch is licensed under the MIT license.
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index 66492e9e787592617707957a43e6be9c6ce6ef5b..bdc23b877e047f6e92d310932fd60114f0e09a53 100644
+index 7fce951a2d0629609c38fa0980027b4a9f00b555..3b8802cf2f7474c457415db04fd6aeb3f9416619 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -3055,6 +3055,12 @@ public final class Bukkit {
+@@ -3092,6 +3092,12 @@ public final class Bukkit {
          server.restart();
      }
  
@@ -23,10 +23,10 @@ index 66492e9e787592617707957a43e6be9c6ce6ef5b..bdc23b877e047f6e92d310932fd60114
      /**
       * Returns a bot manager.
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 568aaaa5c6aa76fc5428b3600ea238563b5c763d..c5a9c5169683f5090a81abd05d32061fa74130ed 100644
+index bc4d1a7f2a7b82e94c152fa550a04b3434cb96fb..47cbdac2441f2dc253bacfe756d4a12ec3e1e3a7 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -2816,6 +2816,10 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -2851,6 +2851,10 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
      void allowPausing(@NotNull org.bukkit.plugin.Plugin plugin, boolean value);
      // Paper end - API to check if the server is sleeping
  
