@@ -50,7 +50,7 @@ public class NewInputSlotCrafter<T extends AbstractContainerMenu> extends InputS
     @Override
     protected void cleanInputs() {
         for (SlotAccessor slot : getInputSlots()) {
-            org.bukkit.inventory.ItemStack bukkitStack = org.bukkit.craftbukkit.inventory.CraftItemStack.asBukkitMirror(slot.getItemStack());
+            org.bukkit.inventory.ItemStack bukkitStack = slot.getItemStack().asBukkitMirror();
             if (bukkitStack.getType().isAir()) {
                 continue;
             }
