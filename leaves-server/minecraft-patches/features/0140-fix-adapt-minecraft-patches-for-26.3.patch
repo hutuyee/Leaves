@@ -73,7 +73,7 @@ index 0f412551685a8ea76be3b389e0782e57d22bb87c..499c9ff11b56cff07959072fcb9bbac2
  
      @Override
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 13bbff4764c958034f19b5adc48db3996af923f7..b42f4a93dec0897c5fe86746d8ee365ce3922ccf 100644
+index 718017972cc78a46cebc891b3c292398e7f21b3d..caa08d172bdee0f654787798ba6e0983a44e2bd2 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -308,7 +308,7 @@ public abstract class Entity
@@ -112,7 +112,7 @@ index 21829d68b5d374377ef05a10301914dcdf6307b0..a6cc4d47d6613021700bd0764c492896
          this.setFuse(80);
          this.xo = x;
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 2727a255fc9ec463b98245767042f5673b9b03d7..90ec12cc2810c7ba614f9396854e52d94e4bfe0b 100644
+index f89d1a560ce4e699b0cda6a524fcc2f6487e1bf0..7f7b7f63238ab1997b5842e1530b52eeb51782fd 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -155,7 +155,7 @@ public abstract class Player extends Avatar implements ContainerUser {
@@ -215,11 +215,11 @@ index 4a2adc115ae6ebfac4a111f96cdd7da30adfe5c7..2bc4c3a9b326140b743384fe9f1a7854
              LithiumStackList extractInventoryStackList = InventoryHelper.getLithiumStackList(optimizedInventory);
              if (inventory != this.extractInventory || this.extractStackList != extractInventoryStackList) {
 diff --git a/net/minecraft/world/level/chunk/storage/RegionFileStorage.java b/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
-index cc50f2a23aa833379129f7aaef0f8c7a190bb83c..e5c3373a4d4cd6486669a4946bb5385422cddc9c 100644
+index 68a17dacd199e29459a81c2f66157903b1c65823..e2534d01b64951130b0a725b361fb991e28ddc2f 100644
 --- a/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
 +++ b/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
-@@ -240,7 +240,7 @@ public class RegionFileStorage implements AutoCloseable, ca.spottedleaf.moonrise
-         this.isChunkData = info.dfuType()[0] == net.minecraft.util.datafix.DataFixTypes.CHUNK; // Paper - recalculate region file headers
+@@ -226,7 +226,7 @@ public class RegionFileStorage implements AutoCloseable, ca.spottedleaf.moonrise
+         this.info = info;
      }
  
 -    private @Nullable org.leavesmc.leaves.region.IRegionFile getRegionFile(final ChunkPos pos, final boolean create) throws IOException { // Leaves - more region format

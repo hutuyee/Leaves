@@ -32,10 +32,10 @@ index fde0a0e4b2a3b2bd4f2ac893703c70dd55b1ddc2..b303d23869fc5bab79b833b53cbb413b
          this.bits = bits;
          this.values = values;
 diff --git a/net/minecraft/world/level/chunk/PalettedContainer.java b/net/minecraft/world/level/chunk/PalettedContainer.java
-index 80136bf48b7a58af2c9382fc032200f9033fc89c..66eb1a1e80b86e5b6dd19cb698ee309fd47c3e54 100644
+index d564338ddc3dc13f0d11a18e26ea36e1f9343745..07c61ff0e2451830c996baf464a08a4a536665d0 100644
 --- a/net/minecraft/world/level/chunk/PalettedContainer.java
 +++ b/net/minecraft/world/level/chunk/PalettedContainer.java
-@@ -477,13 +477,27 @@ public class PalettedContainer<T> implements PaletteResize<T>, PalettedContainer
+@@ -481,13 +481,27 @@ public class PalettedContainer<T> implements PaletteResize<T>, PalettedContainer
  
      @Override
      public void count(final PalettedContainer.CountConsumer<T> output) {

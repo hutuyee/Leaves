@@ -6,10 +6,10 @@ Subject: [PATCH] Return nether portal fix
 Part of this patch is powered by NetherPortalFix(https://github.com/TwelveIterationMods/NetherPortalFix)
 
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 47941bf8b69b5a1c08fb3ac574dd41da46564645..a52ce312d9aa90bff5e62f03abbf221e5e37abb6 100644
+index 2a8eb944db638a28c8a37873329ec0037dc656a8..b5d456047a8a08a161b74821a362102bdc882e15 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -3696,6 +3696,18 @@ public abstract class Entity
+@@ -3702,6 +3702,18 @@ public abstract class Entity
      public void teleportToPortalDestination(final ServerLevel level, final TeleportTransition teleportTransition) {
          ServerLevel newLevel = teleportTransition.newLevel();
          if (level.isAllowedToEnterPortal(newLevel) && (newLevel.dimension() == level.dimension() || this.canTeleport(level, newLevel))) {
@@ -29,7 +29,7 @@ index 47941bf8b69b5a1c08fb3ac574dd41da46564645..a52ce312d9aa90bff5e62f03abbf221e
          }
      }
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 750c4223b815ab4b5b99dd542b103b9c9fc2a7bf..175d4bb3e720d8cee89485c9451ea079d6556de5 100644
+index 340c21a1a5117df2f25673683d4466424fa7395b..7bcb0734e3c924af420a9581bc4cd05dc9bab578 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -276,7 +276,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin

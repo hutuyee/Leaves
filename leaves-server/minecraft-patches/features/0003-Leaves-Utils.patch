@@ -5,7 +5,7 @@ Subject: [PATCH] Leaves Utils
 
 
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 9757a49eca1d52194881841e5f8661b523b375a5..48372f0e0db21cba9b1073a0e99705c4bf27c730 100644
+index bea975af0b8be42883bac92d0366cf93ebadc0fc..7584ce024852eb90272affc0efb7411a66276394 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -394,6 +394,8 @@ public abstract class Entity
@@ -17,7 +17,7 @@ index 9757a49eca1d52194881841e5f8661b523b375a5..48372f0e0db21cba9b1073a0e99705c4
      public void inactiveTick() {
      }
      // Paper end - EAR 2
-@@ -2832,6 +2834,7 @@ public abstract class Entity
+@@ -2838,6 +2840,7 @@ public abstract class Entity
                  output.putBoolean("Paper.FreezeLock", true);
              }
              // Paper end
@@ -25,7 +25,7 @@ index 9757a49eca1d52194881841e5f8661b523b375a5..48372f0e0db21cba9b1073a0e99705c4
          } catch (Throwable t) {
              CrashReport report = CrashReport.forThrowable(t, "Saving entity NBT");
              CrashReportCategory category = report.addCategory("Entity being saved");
-@@ -2961,6 +2964,7 @@ public abstract class Entity
+@@ -2967,6 +2970,7 @@ public abstract class Entity
              }
              freezeLocked = input.getBooleanOr("Paper.FreezeLock", false);
              // Paper end
@@ -33,7 +33,7 @@ index 9757a49eca1d52194881841e5f8661b523b375a5..48372f0e0db21cba9b1073a0e99705c4
          } catch (Throwable t) {
              CrashReport report = CrashReport.forThrowable(t, "Loading entity NBT");
              CrashReportCategory category = report.addCategory("Entity being loaded");
-@@ -5620,4 +5624,9 @@ public abstract class Entity
+@@ -5626,4 +5630,9 @@ public abstract class Entity
          return ((ServerLevel) this.level()).isPositionEntityTicking(this.blockPosition());
      }
      // Paper end
@@ -44,7 +44,7 @@ index 9757a49eca1d52194881841e5f8661b523b375a5..48372f0e0db21cba9b1073a0e99705c4
 +    // Leaves end - leaves ex data
  }
 diff --git a/net/minecraft/world/level/Level.java b/net/minecraft/world/level/Level.java
-index 21878bd770f6c0bc10dd0a67be5bd94d7e16f741..e7fdd7a857741c2f46c43e2a3c9606ee3acc998e 100644
+index ab49bb83b51a3ac210f4c51ec48c11036912149e..adbf6ab208f9b1a9e98033bc38e22c2d40f26771 100644
 --- a/net/minecraft/world/level/Level.java
 +++ b/net/minecraft/world/level/Level.java
 @@ -979,7 +979,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl

@@ -6,10 +6,10 @@ Subject: [PATCH] Reduce chunk loading & lookups
 This patch is Powered by Pufferfish(https://github.com/pufferfish-gg/Pufferfish)
 
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index b0b9d78e58e29a85b0174b67c3c74584ad92e030..750c4223b815ab4b5b99dd542b103b9c9fc2a7bf 100644
+index 5c3124310e3a926d00a602638c11a8c0a140e0b2..340c21a1a5117df2f25673683d4466424fa7395b 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -4560,10 +4560,14 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -4571,10 +4571,14 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          WorldBorder worldBorder = level.getWorldBorder();
          Vec3 clamped = worldBorder.clampVec3ToBound(xx, y, zz);
          BlockPos.MutableBlockPos pos = BlockPos.containing(clamped).mutable();
@@ -26,7 +26,7 @@ index b0b9d78e58e29a85b0174b67c3c74584ad92e030..750c4223b815ab4b5b99dd542b103b9c
                  if (state.is(BlockTags.ENTITIES_CAN_TELEPORT_TO)) {
                      return this.checkPositionAndTeleport(clamped.x, y, clamped.z, showParticles, isInvalidPosition, state, level, cause); // Paper - teleport cause API
                  }
-@@ -4571,6 +4575,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -4582,6 +4586,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
                  y--;
              }
          }

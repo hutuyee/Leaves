@@ -5,10 +5,10 @@ Subject: [PATCH] Fix EntityPortalExitEvent logic
 
 
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 415a43baddc9f6425d0f54141cc1e94931ce32f4..b0ee5d1237330be479470bd53f42f76ec2cec916 100644
+index 361f2e580058940d7bd28996b9c2dded7e25a910..deb9fe6ddb90f6c29866acfbd9195712af4bf6b7 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -4294,16 +4294,18 @@ public abstract class Entity
+@@ -4300,16 +4300,18 @@ public abstract class Entity
  
                  // Only change the target if actually needed, since we reset relative flags
                  if (event.isCancelled() || !to.equals(event.getTo()) || !after.equals(event.getAfter())) {

@@ -18,10 +18,10 @@ index f85c7ac29f5f6c423d2122cb0174894bd0523958..de7149f3aed36621033eb39665b1bb8b
          this.maxHealthCache = this.getMaxHealth();
          // CraftBukkit end
 diff --git a/net/minecraft/world/scores/Scoreboard.java b/net/minecraft/world/scores/Scoreboard.java
-index 4a15851bda30c918c58c96d2cb98b74f30db396c..f1d975e886f3972559f5c47cdbc7e0f8a07eb31c 100644
+index ccff13ea50431fbde5b1e0238a8534fab06aa786..f0242ec3ff5a386feaeb403bb617f6e50e15b3af 100644
 --- a/net/minecraft/world/scores/Scoreboard.java
 +++ b/net/minecraft/world/scores/Scoreboard.java
-@@ -275,6 +275,16 @@ public class Scoreboard {
+@@ -276,6 +276,16 @@ public class Scoreboard {
          }
  
          this.teamsByPlayer.put(player, team);
@@ -38,7 +38,7 @@ index 4a15851bda30c918c58c96d2cb98b74f30db396c..f1d975e886f3972559f5c47cdbc7e0f8
          return team.getPlayers().add(player);
      }
  
-@@ -295,6 +305,14 @@ public class Scoreboard {
+@@ -296,6 +306,14 @@ public class Scoreboard {
  
          this.teamsByPlayer.remove(player);
          team.getPlayers().remove(player);

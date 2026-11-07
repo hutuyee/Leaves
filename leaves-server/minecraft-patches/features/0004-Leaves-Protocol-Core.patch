@@ -33,10 +33,10 @@ index 08e253662a2c183c0ab53a51cc07485cff33bf2c..2f1e5c3de421bd07e30c417bf88935be
          };
      }
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 8515b302ea57f5ef197edcda3223c586c14b60d2..1d59a218ccef22dc28a4620ddd38b302d2df05b5 100644
+index 39360c51d0ea9f1902106748b234505da93e5f66..132abbe5f70a01957da7caefbf94a55dc76da3e5 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1828,6 +1828,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1830,6 +1830,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
          profiler.popPush("server gui refresh");
  

@@ -195,7 +195,7 @@ index 1aa888376784dfc9ddd9c4e2493031ff2a564b59..6a4bbaf6c7422921bfb844dd057dff75
 +    // Leaves end - Lithium - equipment tracking
  }
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 45197e132c97b38f54aa40c6ec902a24fc4ce67d..ac08796ace70059008ae53c17c4b2159211bb142 100644
+index 27a3fab934f543fd39b8fa9aecb398faccbea9c8..85676a3b3adbcd334ce8ef1158a1c60fb5000d34 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -448,9 +448,15 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
@@ -215,7 +215,7 @@ index 45197e132c97b38f54aa40c6ec902a24fc4ce67d..ac08796ace70059008ae53c17c4b2159
  
          super.baseTick();
          ProfilerFiller profiler = Profiler.get();
-@@ -3587,6 +3593,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -3598,6 +3604,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
      public void detectEquipmentUpdates() {
          Map<EquipmentSlot, ItemStack> changedItems = this.collectEquipmentChanges(this.lastEquipmentItems);
          if (changedItems != null) {
@@ -223,7 +223,7 @@ index 45197e132c97b38f54aa40c6ec902a24fc4ce67d..ac08796ace70059008ae53c17c4b2159
              this.handleHandSwap(changedItems);
              if (!changedItems.isEmpty()) {
                  this.handleEquipmentChanges(changedItems);
-@@ -3595,6 +3602,14 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -3606,6 +3613,14 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
      }
  
      protected @Nullable Map<EquipmentSlot, ItemStack> collectEquipmentChanges(final Map<EquipmentSlot, ItemStack> lastEquipmentItems) {
@@ -239,7 +239,7 @@ index 45197e132c97b38f54aa40c6ec902a24fc4ce67d..ac08796ace70059008ae53c17c4b2159
          // Paper start - EntityEquipmentChangedEvent
          record EquipmentChangeImpl(org.bukkit.inventory.ItemStack oldItem, org.bukkit.inventory.ItemStack newItem) implements io.papermc.paper.event.entity.EntityEquipmentChangedEvent.EquipmentChange {
 diff --git a/net/minecraft/world/entity/decoration/ArmorStand.java b/net/minecraft/world/entity/decoration/ArmorStand.java
-index 7feb76336cf48ad0bb5ff4017b307c33ce2a41ce..c236adf16fbdbcc9ff0c4d3530d248daac769007 100644
+index aa5f0a0c32b3ec942015a4468a4ca1fac86ecd1b..5a511dbc75038d62814ecd557dc9fd2394d9aee6 100644
 --- a/net/minecraft/world/entity/decoration/ArmorStand.java
 +++ b/net/minecraft/world/entity/decoration/ArmorStand.java
 @@ -93,7 +93,7 @@ public class ArmorStand extends LivingEntity {
@@ -261,4 +261,4 @@ index 7feb76336cf48ad0bb5ff4017b307c33ce2a41ce..c236adf16fbdbcc9ff0c4d3530d248da
 +                if (org.leavesmc.leaves.LeavesConfig.performance.equipmentTracking) this.noTickEquipmentDirty = false; // Leaves - Lithium - equipment tracking
              }
  
-             return;
+             // Still tick for death, otherwise leaves permanent entities

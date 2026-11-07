@@ -31,7 +31,7 @@ index de7149f3aed36621033eb39665b1bb8b7db2de2f..213d8aaaf61d70e41132d8d1cce1f4e1
          AABB aabb = new AABB(this.blockPosition()).inflate(32.0, 10.0, 32.0);
          this.level()
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 3e75d662c8cab3ab4146e9fb40996110b91aa695..cb37082a99232163c810ce4cf165363eb095e1d1 100644
+index 420922f222e1b00556d18b7bb4d1ebefdb00c781..1459f2aa18b2ccb40259c1ba96ebbf357520289d 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -296,6 +296,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
@@ -42,7 +42,7 @@ index 3e75d662c8cab3ab4146e9fb40996110b91aa695..cb37082a99232163c810ce4cf165363e
      public @Nullable List<DefaultDrop> deathDropItems = null;
      public final org.bukkit.craftbukkit.attribute.CraftAttributeMap craftAttributes;
      public boolean collides = true;
-@@ -1943,7 +1944,13 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -1954,7 +1955,13 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          }
  
          this.dropEquipment(level);

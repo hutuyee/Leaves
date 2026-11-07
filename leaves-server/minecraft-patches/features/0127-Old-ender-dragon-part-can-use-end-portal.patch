@@ -26,7 +26,7 @@ This patch is Powered by CrystalCarpetAddition(https://github.com/Crystal0404/Cr
  */
 
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 004c73d9c8d66c4da9ae83f7c472ff54fc02aead..27ec2b75835c4ccb086c49447c56d9ece4f26295 100644
+index fde6ab895ddcaa2369389263d0db2601e4b40664..6ce5ee679595bb80abf025c99d110fabd39628a9 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -203,7 +203,7 @@ public abstract class Entity
@@ -38,7 +38,7 @@ index 004c73d9c8d66c4da9ae83f7c472ff54fc02aead..27ec2b75835c4ccb086c49447c56d9ec
  
      public org.bukkit.craftbukkit.entity.CraftEntity getBukkitEntity() {
          if (this.bukkitEntity == null) {
-@@ -4264,7 +4264,8 @@ public abstract class Entity
+@@ -4270,7 +4270,8 @@ public abstract class Entity
  
      public @Nullable Entity teleport(TeleportTransition transition) { // Paper - remove param final
          // Paper start - Fix item duplication and teleport issues
@@ -48,7 +48,7 @@ index 004c73d9c8d66c4da9ae83f7c472ff54fc02aead..27ec2b75835c4ccb086c49447c56d9ec
              LOGGER.warn("Illegal Entity Teleport {} to {}:{}", this, transition.newLevel(), transition.position(), new Throwable());
              return null;
          }
-@@ -4381,7 +4382,7 @@ public abstract class Entity
+@@ -4387,7 +4388,7 @@ public abstract class Entity
          newEntity.restoreFrom(this);
          this.removeAfterChangingDimensions();
          newEntity.teleportSetPosition(PositionMoveRotation.of(this), PositionMoveRotation.of(transition), transition.relatives());
@@ -57,7 +57,7 @@ index 004c73d9c8d66c4da9ae83f7c472ff54fc02aead..27ec2b75835c4ccb086c49447c56d9ec
  
          for (Entity newPassenger : newPassengers) {
              newPassenger.startRiding(newEntity, true, false);
-@@ -4511,6 +4512,7 @@ public abstract class Entity
+@@ -4517,6 +4518,7 @@ public abstract class Entity
      }
  
      public boolean canTeleport(final Level from, final Level to) {

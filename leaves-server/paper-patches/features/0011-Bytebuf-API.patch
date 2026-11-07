@@ -5,10 +5,10 @@ Subject: [PATCH] Bytebuf API
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 6e1808c2369c9e2a6feb6165e5eea5c19c40292b..cc15ea3fb4abe706fa2ddbe0178049fa2e6fa8b3 100644
+index 40a04f54b5a5a76cc2b99d8ff62fd572b4450650..51ca4b54e5613432733fc691a88fdd2a6fbfdc78 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -397,6 +397,8 @@ public final class CraftServer implements Server {
+@@ -399,6 +399,8 @@ public final class CraftServer implements Server {
  
          CraftRegistry.setMinecraftRegistry(console.registryAccess());
  
@@ -17,7 +17,7 @@ index 6e1808c2369c9e2a6feb6165e5eea5c19c40292b..cc15ea3fb4abe706fa2ddbe0178049fa
          if (!Main.useConsole) {
              this.getLogger().info("Console input is disabled due to --noconsole command argument");
          }
-@@ -2971,4 +2973,11 @@ public final class CraftServer implements Server {
+@@ -2992,4 +2994,11 @@ public final class CraftServer implements Server {
          return photographerManager;
      }
      // Leaves end - replay mod api

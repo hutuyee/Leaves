@@ -5,10 +5,10 @@ Subject: [PATCH] Add isShrink to EntityResurrectEvent
 
 
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 181b58182a0be3f188600190630290446af049a6..e08c298f2a92f4657c7f4cfc239c2d5b29098d01 100644
+index cc89dbe7aab716737b6b30021bf5f2f7a6d85ae0..b1874505e4ae0aba4b82305aa05b20e87abeaa1a 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -1769,14 +1769,14 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -1780,14 +1780,14 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          }
  
          final org.bukkit.inventory.EquipmentSlot handSlot = (usedHand != null) ? org.bukkit.craftbukkit.CraftEquipmentSlot.getHand(usedHand) : null;

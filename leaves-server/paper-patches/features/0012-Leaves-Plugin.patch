@@ -242,10 +242,10 @@ index 26422904751647a061397ce978bba752149003cd..884ed63dab16acca83fe8f421762f256
      }
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index cc15ea3fb4abe706fa2ddbe0178049fa2e6fa8b3..1bc7990c6a79fdca6fd6c64a4457f9587fa589c5 100644
+index 51ca4b54e5613432733fc691a88fdd2a6fbfdc78..a6dce0cfdde2dd1f3510eddea552c961c39927e5 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -2960,6 +2960,13 @@ public final class CraftServer implements Server {
+@@ -2981,6 +2981,13 @@ public final class CraftServer implements Server {
          this.console.addPluginAllowingSleep(plugin.getName(), value);
      }
  

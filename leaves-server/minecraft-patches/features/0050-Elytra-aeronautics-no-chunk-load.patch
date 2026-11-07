@@ -41,7 +41,7 @@ index 10331713201a8cb8116cd1dec487b7f7590d6f39..cc999d87b27063c8def51f484483a74b
              profiler.popPush("blockEntities");
              this.tickBlockEntities();
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index fa8da607a70bc614b01112384c4a9426cfd07faf..aaed702d476902197814cf36e6c86244e06a204f 100644
+index f20941e0080bc1dbf4ac824e7c50a613f6df62ea..90fe16553a3081abd5776cbf64775f39aee407c8 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -622,7 +622,7 @@ public class ServerGamePacketListenerImpl
@@ -62,10 +62,10 @@ index fa8da607a70bc614b01112384c4a9426cfd07faf..aaed702d476902197814cf36e6c86244
                  if (!allowMovement) {
                      io.papermc.paper.event.player.PlayerFailMoveEvent event = fireFailMove(io.papermc.paper.event.player.PlayerFailMoveEvent.FailReason.CLIPPED_INTO_BLOCK,
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index b1ce5562a781d73bfabd89c9a5d87a4bf017894b..e2cd317983220c94968a04168f73b243d2ada5fb 100644
+index 2746ba8cf565e2d98c532712b9fcbbd7b3c0af80..1a1a566daa5a71732f661e1898dc224a9883c1e4 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -1195,6 +1195,15 @@ public abstract class Entity
+@@ -1196,6 +1196,15 @@ public abstract class Entity
                  }
              }
  
@@ -81,7 +81,7 @@ index b1ce5562a781d73bfabd89c9a5d87a4bf017894b..e2cd317983220c94968a04168f73b243
              ProfilerFiller profiler = Profiler.get();
              profiler.push("move");
              if (this.stuckSpeedMultiplier.lengthSqr() > 1.0E-7) {
-@@ -2365,6 +2374,7 @@ public abstract class Entity
+@@ -2371,6 +2380,7 @@ public abstract class Entity
          this.yo = y;
          this.zo = cz;
          this.setPos(cx, y, cz);
@@ -90,10 +90,10 @@ index b1ce5562a781d73bfabd89c9a5d87a4bf017894b..e2cd317983220c94968a04168f73b243
      }
  
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 175d4bb3e720d8cee89485c9451ea079d6556de5..a908d868a3fdbc13e5c3b4b311a7cfb3726c4ee7 100644
+index 7bcb0734e3c924af420a9581bc4cd05dc9bab578..fa0168c058ff4a3a56d7d02745be359c9606df5e 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -3482,6 +3482,11 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -3493,6 +3493,11 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
              this.fallFlyTicks++;
          } else {
              this.fallFlyTicks = 0;
@@ -106,7 +106,7 @@ index 175d4bb3e720d8cee89485c9451ea079d6556de5..a908d868a3fdbc13e5c3b4b311a7cfb3
  
          if (this.isSleeping()) {
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 67e863ed86d8c30b25f6ac769a2063bbcd93dbb1..8b30dd7a94f1439d98179363f3a00a799a2b180e 100644
+index 5d143fe6973a34d9f0688ce0530aedf1be3b146e..ed666b0435ff59d871b1054b141dde0b677b0ada 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -174,6 +174,7 @@ public abstract class Player extends Avatar implements ContainerUser {

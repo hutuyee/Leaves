@@ -30,10 +30,10 @@ index 76596e87945f0b95af8032338a64817a8faed4d0..8a9803c569510528e72be0a734063157
      private boolean disconnectionHandled;
      private int receivedPackets;
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 1d59a218ccef22dc28a4620ddd38b302d2df05b5..4b5f290a4a00ea778b1b3a422b5512f3e191b50f 100644
+index 132abbe5f70a01957da7caefbf94a55dc76da3e5..afb5801c913683b71338ce045acd8822289ebfc3 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -282,6 +282,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -283,6 +283,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      private final StructureTemplateManager structureTemplateManager;
      private final ServerTickRateManager tickRateManager;
      private final ServerDebugSubscribers debugSubscribers = new ServerDebugSubscribers(this);
@@ -41,7 +41,7 @@ index 1d59a218ccef22dc28a4620ddd38b302d2df05b5..4b5f290a4a00ea778b1b3a422b5512f3
      protected WorldData worldData;
      private LevelData.RespawnData effectiveRespawnData = LevelData.RespawnData.DEFAULT;
      private int emptyTicks;
-@@ -1004,6 +1005,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1005,6 +1006,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
          LOGGER.info("Stopping server");
          Commands.COMMAND_SENDING_POOL.shutdownNow(); // Paper - Perf: Async command map building; Shutdown and don't bother finishing
@@ -49,7 +49,7 @@ index 1d59a218ccef22dc28a4620ddd38b302d2df05b5..4b5f290a4a00ea778b1b3a422b5512f3
          // CraftBukkit start
          if (this.server != null) {
              this.server.spark.disable(); // Paper - spark
-@@ -1564,7 +1566,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1566,7 +1568,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          int emptyTickThreshold = this.pauseWhenEmptySeconds() * 20;
          this.removeDisabledPluginsBlockingSleep(); // Paper - API to allow/disallow tick sleeping
          if (emptyTickThreshold > 0) {
@@ -58,7 +58,7 @@ index 1d59a218ccef22dc28a4620ddd38b302d2df05b5..4b5f290a4a00ea778b1b3a422b5512f3
                  this.emptyTicks++;
              } else {
                  this.emptyTicks = 0;
-@@ -1617,6 +1619,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1619,6 +1621,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              this.isSaving = true;
              if (playerSaveInterval > 0) {
                  this.playerList.saveAll(playerSaveInterval);
@@ -66,7 +66,7 @@ index 1d59a218ccef22dc28a4620ddd38b302d2df05b5..4b5f290a4a00ea778b1b3a422b5512f3
              }
              if (fullSave) {
                  this.saveGlobalData(false);
-@@ -1856,6 +1859,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1858,6 +1861,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      protected void tickConnection() {
          this.getConnection().tick();
@@ -74,7 +74,7 @@ index 1d59a218ccef22dc28a4620ddd38b302d2df05b5..4b5f290a4a00ea778b1b3a422b5512f3
      }
  
      public void forceGameTimeSynchronization() {
-@@ -3027,6 +3031,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -3029,6 +3033,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          return this.debugSubscribers;
      }
  
@@ -535,10 +535,10 @@ index b9748a392c9f76e61a1b673085b4dd74c007c70d..654e7956e7d540842a16d797247b6aa1
  
          if (this.locatorBarEnabled) { // Paper - optimize ServerWaypointManager with locator bar disabled
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 48372f0e0db21cba9b1073a0e99705c4bf27c730..47941bf8b69b5a1c08fb3ac574dd41da46564645 100644
+index 7584ce024852eb90272affc0efb7411a66276394..2a8eb944db638a28c8a37873329ec0037dc656a8 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -1254,7 +1254,7 @@ public abstract class Entity
+@@ -1255,7 +1255,7 @@ public abstract class Entity
  
              BlockPos effectPos = this.getOnPosLegacy();
              BlockState effectState = this.level().getBlockState(effectPos);
@@ -547,7 +547,7 @@ index 48372f0e0db21cba9b1073a0e99705c4bf27c730..47941bf8b69b5a1c08fb3ac574dd41da
                  this.checkFallDamage(movement.y, this.onGround(), effectState, effectPos);
              }
  
-@@ -1655,7 +1655,7 @@ public abstract class Entity
+@@ -1656,7 +1656,7 @@ public abstract class Entity
          return colliders.isEmpty() ? maxDistance : -Shapes.collide(Direction.Axis.Y, aabb, colliders, -maxDistance);
      }
  
@@ -556,7 +556,7 @@ index 48372f0e0db21cba9b1073a0e99705c4bf27c730..47941bf8b69b5a1c08fb3ac574dd41da
          // Paper start - optimise collisions
          final boolean xZero = movement.x == 0.0;
          final boolean yZero = movement.y == 0.0;
-@@ -4902,7 +4902,9 @@ public abstract class Entity
+@@ -4908,7 +4908,9 @@ public abstract class Entity
  
      public boolean isClientAuthoritative() {
          LivingEntity passenger = this.getControllingPassenger();
@@ -568,10 +568,10 @@ index 48372f0e0db21cba9b1073a0e99705c4bf27c730..47941bf8b69b5a1c08fb3ac574dd41da
  
      public MoveSimulationType getMoveSimulationType() {
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 23297b54c74684765f90e9e599d051a44357e9a5..181b58182a0be3f188600190630290446af049a6 100644
+index a0d10e4c3f78128029125bae8e8e476208f28d42..cc89dbe7aab716737b6b30021bf5f2f7a6d85ae0 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -3264,7 +3264,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -3275,7 +3275,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
      private void travelRidden(final Player controller, final Vec3 selfInput) {
          Vec3 riddenInput = this.getRiddenInput(controller, selfInput);
          this.tickRidden(controller, riddenInput);
@@ -580,7 +580,7 @@ index 23297b54c74684765f90e9e599d051a44357e9a5..181b58182a0be3f18860019063029044
              this.setSpeed(this.getRiddenSpeed(controller));
              this.travel(riddenInput);
          } else {
-@@ -4205,7 +4205,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -4216,7 +4216,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          // Paper start - lag compensate eating
          // we add 1 to the expected time to avoid lag compensating when we should not
          final boolean shouldLagCompensate = this.useItem.has(DataComponents.FOOD) && this.eatStartTime != -1 && (System.nanoTime() - this.eatStartTime) > ((1L + this.totalEatTimeTicks) * 50L * (1000L * 1000L));
@@ -589,7 +589,7 @@ index 23297b54c74684765f90e9e599d051a44357e9a5..181b58182a0be3f18860019063029044
              this.useItemRemaining = 0;
              // Paper end - lag compensate eating
              this.completeUsingItem();
-@@ -4395,6 +4395,23 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -4406,6 +4406,23 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          this.stopUsingItem();
      }
  
@@ -614,7 +614,7 @@ index 23297b54c74684765f90e9e599d051a44357e9a5..181b58182a0be3f18860019063029044
          if (!this.level().isClientSide()) {
              boolean wasUsingItem = this.isUsingItem();
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 4068dc1cea4edca196dc0c58b4804e94dd07881e..21fb9bff3f2fee87da91d83b383995ba0b9d87d2 100644
+index 4ba3fb85b0473b4e7aa237701034d25f84e955cd..078f3f925133284e710a75b25e38f4149078e9c3 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -166,7 +166,7 @@ public abstract class Player extends Avatar implements ContainerUser {

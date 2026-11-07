@@ -5,10 +5,10 @@ Subject: [PATCH] Fix SculkCatalyst exp skip
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-index 384ecbb4ca54a1497531ec5785a7c63eb50892ac..b7c5851c89dd5b0410706b4f6583756b47c70a25 100644
+index 0c59a164ac59c23c0a5e4f47009747e587d4d101..745b0bd283e3db60352ecd0bcddbe5556385a0a9 100644
 --- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 +++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-@@ -974,7 +974,7 @@ public class CraftEventFactory {
+@@ -978,7 +978,7 @@ public class CraftEventFactory {
      public static EntityDeathEvent callEntityDeathEvent(ServerLevel level, net.minecraft.world.entity.LivingEntity victim, DamageSource damageSource, List<Entity.DefaultDrop> drops, boolean delayedDrops) { // Paper - Restore vanilla drops behavior
          CraftLivingEntity entity = (CraftLivingEntity) victim.getBukkitEntity();
          CraftDamageSource bukkitDamageSource = new CraftDamageSource(damageSource);
@@ -17,7 +17,7 @@ index 384ecbb4ca54a1497531ec5785a7c63eb50892ac..b7c5851c89dd5b0410706b4f6583756b
          populateFields(victim, event); // Paper - make cancellable
          event.callEvent();
  
-@@ -984,6 +984,7 @@ public class CraftEventFactory {
+@@ -988,6 +988,7 @@ public class CraftEventFactory {
  
          playDeathSound(victim, event, damageSource);
          victim.expToDrop = event.getDroppedExp();
@@ -25,7 +25,7 @@ index 384ecbb4ca54a1497531ec5785a7c63eb50892ac..b7c5851c89dd5b0410706b4f6583756b
  
          Runnable dropAll = () -> {
              dropAllItems(drops, item -> victim.spawnAtLocation(level, item));
-@@ -1031,6 +1032,7 @@ public class CraftEventFactory {
+@@ -1035,6 +1036,7 @@ public class CraftEventFactory {
          victim.newLevel = event.getNewLevel();
          victim.newTotalExp = event.getNewTotalExp();
          victim.expToDrop = event.getDroppedExp();
