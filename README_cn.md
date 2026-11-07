@@ -10,6 +10,8 @@ Leaves
 
 > 一个致力于修复原版服务端被破坏特性的 [Paper](https://github.com/PaperMC/Paper) 分支
 
+此分支适配 **Minecraft 26.2**，需要 **Java 25**。
+
 > 你可以在 [这里](https://docs.leavesmc.org/zh_Hans/leaves/reference/configuration) 查看所有的修改和修复内容
 
 ## 对于服务器管理员
@@ -30,7 +32,7 @@ maven {
 }
 
 dependencies {
-    compileOnly("org.leavesmc.leaves:leaves-api:26.3-R0.1-SNAPSHOT")
+    compileOnly("org.leavesmc.leaves:leaves-api:26.2-R0.1-SNAPSHOT")
 }
  ```
 
@@ -39,17 +41,31 @@ dependencies {
 Leaves-Server:
 ```kotlin
 dependencies {
-    compileOnly("org.leavesmc.leaves:leaves:26.3-R0.1-SNAPSHOT")
+    compileOnly("org.leavesmc.leaves:leaves:26.2-R0.1-SNAPSHOT")
 }
  ```
 
 ## 自行构建
 
-你需要 JDK 25 和一个可以正常访问各种 git/maven 库的网络
+安装 Git 和 JDK 25，并将 `JAVA_HOME` 指向 JDK 25 的安装目录。构建过程需要访问 GitHub 和 Maven 仓库，以下载上游源码和依赖。
 
-首先克隆此储存库，然后在你的终端里依次执行 `./gradlew applyAllPatches` 和 `./gradlew createMojmapLeavesclipJar`
+克隆此仓库并切换到 `codex/26.2-adaptation` 后，在仓库根目录依次执行以下命令。
 
-最后 你可以在 `leaves-server/build/libs` 文件夹里找到对应的jar文件
+**Windows（PowerShell）：**
+
+```powershell
+.\gradlew.bat applyAllPatches
+.\gradlew.bat createLeavesclipJar
+```
+
+**Linux / macOS：**
+
+```bash
+./gradlew applyAllPatches
+./gradlew createLeavesclipJar
+```
+
+可直接运行的服务端文件位于 `leaves-server/build/libs/leaves-leavesclip-26.2-R0.1-SNAPSHOT-*.jar`。
 
 ## 对于想要出一份力的开发者
 

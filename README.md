@@ -10,6 +10,8 @@ Leaves
 
 > Fork of [Paper](https://github.com/PaperMC/Paper) aims at repairing broken vanilla properties.
 
+This branch targets **Minecraft 26.2** and requires **Java 25**.
+
 > You can see what we modify and fix at [here](https://docs.leavesmc.org/en/leaves/reference/configuration)
 
 ## How To (Server Admins)
@@ -30,7 +32,7 @@ maven {
 }
 
 dependencies {
-    compileOnly("org.leavesmc.leaves:leaves-api:26.3-R0.1-SNAPSHOT")
+    compileOnly("org.leavesmc.leaves:leaves-api:26.2-R0.1-SNAPSHOT")
 }
  ```
 
@@ -40,17 +42,31 @@ Each time you want to update your dependency, you must re-build Leaves.
 Leaves-Server:
 ```kotlin
 dependencies {
-    compileOnly("org.leavesmc.leaves:leaves:26.3-R0.1-SNAPSHOT")
+    compileOnly("org.leavesmc.leaves:leaves:26.2-R0.1-SNAPSHOT")
 }
  ```
 
 ## Building
 
-You need JDK 25 and good Internet conditions
+Install Git and JDK 25, and make sure `JAVA_HOME` points to your JDK 25 installation. The build needs access to GitHub and the Maven repositories to download upstream sources and dependencies.
 
-Clone this repo, run `./gradlew applyAllPatches`, then run `./gradlew createMojmapLeavesclipJar` in your terminal.  
+After cloning this repository and checking out `codex/26.2-adaptation`, run these commands from the repository root.
 
-You can find the jars in the `leaves-server/build/libs` directory.
+**Windows (PowerShell):**
+
+```powershell
+.\gradlew.bat applyAllPatches
+.\gradlew.bat createLeavesclipJar
+```
+
+**Linux / macOS:**
+
+```bash
+./gradlew applyAllPatches
+./gradlew createLeavesclipJar
+```
+
+The runnable server jar is `leaves-server/build/libs/leaves-leavesclip-26.2-R0.1-SNAPSHOT-*.jar`.
 
 ## Pull Requests
 
