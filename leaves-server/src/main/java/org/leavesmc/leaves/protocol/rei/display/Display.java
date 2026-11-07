@@ -18,7 +18,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.Fireworks;
-import net.minecraft.world.item.component.ProvidesTrimMaterial;
 import net.minecraft.world.item.crafting.FireworkRocketRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -159,8 +158,7 @@ public abstract class Display {
     }
 
     private static Optional<Holder<TrimMaterial>> getMaterialFromIngredient(HolderLookup.Provider provider, Holder<Item> item) {
-        return Optional.ofNullable(new ItemStack(item).get(DataComponents.PROVIDES_TRIM_MATERIAL))
-            .map(ProvidesTrimMaterial::material);
+        return Optional.ofNullable(new ItemStack(item).get(DataComponents.PROVIDES_TRIM_MATERIAL));
     }
 
     public static EntryIngredient ofSlotDisplay(SlotDisplay slot) {

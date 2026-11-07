@@ -5,19 +5,19 @@ Subject: [PATCH] Renewable coral
 
 
 diff --git a/net/minecraft/world/level/block/CoralFanBlock.java b/net/minecraft/world/level/block/CoralFanBlock.java
-index b9db4321f1f206dc2d3b223d50518fbe74351d65..5699aa578a2afcd46fd3e1d17808e34f99ff091b 100644
+index 7a8cd7a7bf00cc0b29b0d4ee9b2241bf3a0f9905..4a02a40aa1109f0c074b97f6683fd06d4f4de534 100644
 --- a/net/minecraft/world/level/block/CoralFanBlock.java
 +++ b/net/minecraft/world/level/block/CoralFanBlock.java
-@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
+@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
  import net.minecraft.world.level.block.state.BlockState;
  import net.minecraft.world.level.material.Fluids;
  
 -public class CoralFanBlock extends BaseCoralFanBlock {
 +public class CoralFanBlock extends BaseCoralFanBlock implements org.leavesmc.leaves.util.FertilizableCoral { // Leaves - renewable coral
-     private final Block deadBlock;
- 
-     protected CoralFanBlock(final Block deadBlock, final BlockBehaviour.Properties properties) {
-@@ -58,4 +58,11 @@ public class CoralFanBlock extends BaseCoralFanBlock {
+     public static final MapCodec<CoralFanBlock> CODEC = RecordCodecBuilder.mapCodec(
+         i -> i.group(CoralBlock.DEAD_CORAL_FIELD.forGetter(b -> b.deadBlock), propertiesCodec()).apply(i, CoralFanBlock::new)
+     );
+@@ -68,4 +68,11 @@ public class CoralFanBlock extends BaseCoralFanBlock {
  
          return super.updateShape(state, level, ticks, pos, directionToNeighbour, neighbourPos, neighbourState, random);
      }
@@ -30,19 +30,19 @@ index b9db4321f1f206dc2d3b223d50518fbe74351d65..5699aa578a2afcd46fd3e1d17808e34f
 +    // Leaves end - renewable coral
  }
 diff --git a/net/minecraft/world/level/block/CoralPlantBlock.java b/net/minecraft/world/level/block/CoralPlantBlock.java
-index 9a17b41db60be75f2d7dce7fb184249061fb0436..f50cc4e5e022bf95c8a35d80e9d8f7d5c2cf09a0 100644
+index 4111ec67b81e05b59d1ad2e55723356f0c9474f5..2aecaa8d3414405503dbffd4b93817d6e2cd4d35 100644
 --- a/net/minecraft/world/level/block/CoralPlantBlock.java
 +++ b/net/minecraft/world/level/block/CoralPlantBlock.java
-@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.Fluids;
+@@ -16,7 +16,7 @@ import net.minecraft.world.level.material.Fluids;
  import net.minecraft.world.phys.shapes.CollisionContext;
  import net.minecraft.world.phys.shapes.VoxelShape;
  
 -public class CoralPlantBlock extends BaseCoralPlantTypeBlock {
 +public class CoralPlantBlock extends BaseCoralPlantTypeBlock implements org.leavesmc.leaves.util.FertilizableCoral { // Leaves - renewable coral
-     private final Block deadBlock;
-     private static final VoxelShape SHAPE = Block.column(12.0, 0.0, 15.0);
- 
-@@ -67,4 +67,12 @@ public class CoralPlantBlock extends BaseCoralPlantTypeBlock {
+     public static final MapCodec<CoralPlantBlock> CODEC = RecordCodecBuilder.mapCodec(
+         i -> i.group(CoralBlock.DEAD_CORAL_FIELD.forGetter(b -> b.deadBlock), propertiesCodec()).apply(i, CoralPlantBlock::new)
+     );
+@@ -77,4 +77,12 @@ public class CoralPlantBlock extends BaseCoralPlantTypeBlock {
      protected VoxelShape getShape(final BlockState state, final BlockGetter level, final BlockPos pos, final CollisionContext context) {
          return SHAPE;
      }
@@ -56,19 +56,19 @@ index 9a17b41db60be75f2d7dce7fb184249061fb0436..f50cc4e5e022bf95c8a35d80e9d8f7d5
 +    // Leaves end - renewable coral
  }
 diff --git a/net/minecraft/world/level/block/CoralWallFanBlock.java b/net/minecraft/world/level/block/CoralWallFanBlock.java
-index 90d09065fd946ba882cd7421f29ba25b39a4fc22..c1f51c5e64fb660d901edbe94f03ba19a48ba76f 100644
+index 8e58e5d5f3b32323f28fc668eeebe59b320cce34..1e9118b309000fe732517c233772889452b538e8 100644
 --- a/net/minecraft/world/level/block/CoralWallFanBlock.java
 +++ b/net/minecraft/world/level/block/CoralWallFanBlock.java
-@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
+@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
  import net.minecraft.world.level.block.state.BlockState;
  import net.minecraft.world.level.material.Fluids;
  
 -public class CoralWallFanBlock extends BaseCoralWallFanBlock {
 +public class CoralWallFanBlock extends BaseCoralWallFanBlock implements org.leavesmc.leaves.util.FertilizableCoral { // Leaves - renewable coral
-     private final Block deadBlock;
- 
-     protected CoralWallFanBlock(final Block deadBlock, final BlockBehaviour.Properties properties) {
-@@ -58,4 +58,11 @@ public class CoralWallFanBlock extends BaseCoralWallFanBlock {
+     public static final MapCodec<CoralWallFanBlock> CODEC = RecordCodecBuilder.mapCodec(
+         i -> i.group(CoralBlock.DEAD_CORAL_FIELD.forGetter(b -> b.deadBlock), propertiesCodec()).apply(i, CoralWallFanBlock::new)
+     );
+@@ -68,4 +68,11 @@ public class CoralWallFanBlock extends BaseCoralWallFanBlock {
          this.tryScheduleDieTick(state, level, ticks, random, pos);
          return super.updateShape(state, level, ticks, pos, directionToNeighbour, neighbourPos, neighbourState, random);
      }
@@ -80,3 +80,55 @@ index 90d09065fd946ba882cd7421f29ba25b39a4fc22..c1f51c5e64fb660d901edbe94f03ba19
 +    }
 +    // Leaves end - renewable coral
  }
+diff --git a/net/minecraft/world/level/levelgen/feature/CoralClawFeature.java b/net/minecraft/world/level/levelgen/feature/CoralClawFeature.java
+index 01eedebb5125c5200d1f60a5c7006a5846ab3327..c06e983e11a347261e4da9b4d59042b8c2507cc8 100644
+--- a/net/minecraft/world/level/levelgen/feature/CoralClawFeature.java
++++ b/net/minecraft/world/level/levelgen/feature/CoralClawFeature.java
+@@ -17,7 +17,7 @@ public class CoralClawFeature extends CoralFeature {
+     }
+ 
+     @Override
+-    protected boolean placeFeature(final LevelAccessor level, final RandomSource random, final BlockPos origin, final BlockState state) {
++    public boolean placeFeature(final LevelAccessor level, final RandomSource random, final BlockPos origin, final BlockState state) {
+         if (!this.placeCoralBlock(level, random, origin, state)) {
+             return false;
+         }
+diff --git a/net/minecraft/world/level/levelgen/feature/CoralFeature.java b/net/minecraft/world/level/levelgen/feature/CoralFeature.java
+index 0ab324d8435826878861547fe3309ace9c37abe8..cb54c8b06ba1ba833f9bf26a5372651eaef29977 100644
+--- a/net/minecraft/world/level/levelgen/feature/CoralFeature.java
++++ b/net/minecraft/world/level/levelgen/feature/CoralFeature.java
+@@ -31,7 +31,7 @@ public abstract class CoralFeature extends Feature<NoneFeatureConfiguration> {
+         return !coral.isEmpty() && this.placeFeature(level, random, origin, coral.get().defaultBlockState());
+     }
+ 
+-    protected abstract boolean placeFeature(final LevelAccessor level, final RandomSource random, final BlockPos origin, final BlockState state);
++    public abstract boolean placeFeature(final LevelAccessor level, final RandomSource random, final BlockPos origin, final BlockState state);
+ 
+     protected boolean placeCoralBlock(final LevelAccessor level, final RandomSource random, final BlockPos pos, final BlockState state) {
+         BlockPos above = pos.above();
+diff --git a/net/minecraft/world/level/levelgen/feature/CoralMushroomFeature.java b/net/minecraft/world/level/levelgen/feature/CoralMushroomFeature.java
+index 15cdf75f5039334de38eb7a413453cdd7988938c..7713b295503db438e9456802e42574bf21b6f999 100644
+--- a/net/minecraft/world/level/levelgen/feature/CoralMushroomFeature.java
++++ b/net/minecraft/world/level/levelgen/feature/CoralMushroomFeature.java
+@@ -14,7 +14,7 @@ public class CoralMushroomFeature extends CoralFeature {
+     }
+ 
+     @Override
+-    protected boolean placeFeature(final LevelAccessor level, final RandomSource random, final BlockPos origin, final BlockState state) {
++    public boolean placeFeature(final LevelAccessor level, final RandomSource random, final BlockPos origin, final BlockState state) {
+         int height = random.nextInt(3) + 3;
+         int width = random.nextInt(3) + 3;
+         int length = random.nextInt(3) + 3;
+diff --git a/net/minecraft/world/level/levelgen/feature/CoralTreeFeature.java b/net/minecraft/world/level/levelgen/feature/CoralTreeFeature.java
+index 789ddf552066a4adebab13c61ed895ed74d85741..28bef6c2ef297152e68e2024369e536b1d063f2f 100644
+--- a/net/minecraft/world/level/levelgen/feature/CoralTreeFeature.java
++++ b/net/minecraft/world/level/levelgen/feature/CoralTreeFeature.java
+@@ -15,7 +15,7 @@ public class CoralTreeFeature extends CoralFeature {
+     }
+ 
+     @Override
+-    protected boolean placeFeature(final LevelAccessor level, final RandomSource random, final BlockPos origin, final BlockState state) {
++    public boolean placeFeature(final LevelAccessor level, final RandomSource random, final BlockPos origin, final BlockState state) {
+         BlockPos.MutableBlockPos mutPos = origin.mutable();
+         int trunckHeight = random.nextInt(3) + 1;
+ 

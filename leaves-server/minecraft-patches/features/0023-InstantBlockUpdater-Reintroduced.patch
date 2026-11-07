@@ -6,10 +6,10 @@ Subject: [PATCH] InstantBlockUpdater Reintroduced
 This patch is Powered by Carpet-TIS-Addition(https://github.com/plusls/Carpet-TIS-Addition)
 
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 5f4bc0ab0251dc1daa6f1eb763600ac930dc4d99..15a71caaaefbbf7a862d31fbdc0b004513e9899c 100644
+index 49ffe35e1133cbe50358b4106835d1db53d6ac53..0a2c8e51ede39f4fb83e41b835c32eec2a574c7a 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
-@@ -955,12 +955,16 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
+@@ -948,12 +948,16 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
          // Paper - rewrite chunk system
          profiler.pop();
          profiler.push("debugSynchronizers");
@@ -32,10 +32,10 @@ index 5f4bc0ab0251dc1daa6f1eb763600ac930dc4d99..15a71caaaefbbf7a862d31fbdc0b0045
          this.debugSynchronizers.tick(this.server.debugSubscribers());
          profiler.pop();
 diff --git a/net/minecraft/world/level/Level.java b/net/minecraft/world/level/Level.java
-index e7fdd7a857741c2f46c43e2a3c9606ee3acc998e..fcdd3843aed5d2ffd858569c6b224d4194d281fa 100644
+index 7eea0737eb05274d4a9ac059b6a6a174f2e67626..2b8a8f79b946076989a14989960116657169331b 100644
 --- a/net/minecraft/world/level/Level.java
 +++ b/net/minecraft/world/level/Level.java
-@@ -118,7 +118,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
+@@ -120,7 +120,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
          .add(new ExplosionParticleInfo(ParticleTypes.SMOKE, 1.0F, 1.0F))
          .build();
      public final List<TickingBlockEntity> blockEntityTickers = Lists.newArrayList();
@@ -44,7 +44,7 @@ index e7fdd7a857741c2f46c43e2a3c9606ee3acc998e..fcdd3843aed5d2ffd858569c6b224d41
      private final List<TickingBlockEntity> pendingBlockEntityTickers = Lists.newArrayList();
      private boolean tickingBlockEntities;
      protected final Thread thread;
-@@ -867,7 +867,13 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
+@@ -869,7 +869,13 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
          this.thread = Thread.currentThread();
          this.biomeManager = new BiomeManager(this, biomeZoomSeed);
          this.isDebug = isDebug;

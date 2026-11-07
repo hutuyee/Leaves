@@ -18,10 +18,10 @@ index ed5a5fb38bfe8fb9216c7eab00b833485c4bbade..fc45703525901d700c98b5ad0c6eb10b
      ) {
          for (int x = 0; x < this.width; x++) {
 diff --git a/net/minecraft/world/level/dimension/end/EnderDragonFight.java b/net/minecraft/world/level/dimension/end/EnderDragonFight.java
-index 5440b181eca0a97b42742fdd21f7c27accc0a3ec..022460343f64720e679028f8239ceec9c36875f6 100644
+index 26926083cbb2722bb5fbcbc81bcc44a99799ad9e..92b3bbecb56f3ff8d5c68b3e3ed02c44cf452d87 100644
 --- a/net/minecraft/world/level/dimension/end/EnderDragonFight.java
 +++ b/net/minecraft/world/level/dimension/end/EnderDragonFight.java
-@@ -318,7 +318,69 @@ public class EnderDragonFight extends SavedData {
+@@ -311,7 +311,69 @@ public class EnderDragonFight extends SavedData {
          return false;
      }
  
@@ -91,7 +91,7 @@ index 5440b181eca0a97b42742fdd21f7c27accc0a3ec..022460343f64720e679028f8239ceec9
          ChunkPos chunkOrigin = ChunkPos.containing(this.origin);
  
          for (int x = -8 + chunkOrigin.x(); x <= 8 + chunkOrigin.x(); x++) {
-@@ -615,6 +677,11 @@ public class EnderDragonFight extends SavedData {
+@@ -607,6 +669,11 @@ public class EnderDragonFight extends SavedData {
      }
  
      public boolean respawnDragon(final List<EndCrystal> crystals) { // CraftBukkit - return boolean

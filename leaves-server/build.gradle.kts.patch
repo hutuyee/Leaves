@@ -30,7 +30,6 @@
  
 -    updatingMinecraft {
 -        // oldPaperCommit = "d4fe85375af18bfa88f44d7c1e6a61904ae550cc"
--    }
 +    // Leaves start - build change
 +    val leaves = forks.register("leaves") {
 +        upstream.patchDir("paperServer") {
@@ -39,7 +38,7 @@
 +            patchesDir = rootDirectory.dir("leaves-server/paper-patches")
 +            outputDir = rootDirectory.dir("paper-server")
 +        }
-+    }
+     }
 +    activeFork = leaves
 +    // Leaves end - build change
  }
@@ -188,12 +187,11 @@
 -            }
 -        }
 -    }
--}
 +// Leaves end - build change
 +// Leaves start - create config file
 +tasks.registerRunTask("createLeavesConfig") {
 +    description = "Create a new leaves.yml"
 +    mainClass = "org.leavesmc.leaves.config.GlobalConfigCreator"
 +    classpath(sourceSets.main.map { it.runtimeClasspath })
-+}
+ }
 +// Leaves end - create config file

@@ -6,10 +6,10 @@ Subject: [PATCH] MC Technical Survival Mode
 Will automatically overwrite some configuration after startup
 
 diff --git a/src/main/java/io/papermc/paper/configuration/PaperConfigurations.java b/src/main/java/io/papermc/paper/configuration/PaperConfigurations.java
-index 0b42ade71258a53dcc65dab932cc1a48802135fc..612b26001e95ecdf508c438f4fffb174f83a10cf 100644
+index aa5ff7fb46b068fcb27abfdcb81f10220c5d1e89..362f485bef6a35a05895f7ffb8090d6730dde88d 100644
 --- a/src/main/java/io/papermc/paper/configuration/PaperConfigurations.java
 +++ b/src/main/java/io/papermc/paper/configuration/PaperConfigurations.java
-@@ -320,7 +320,11 @@ public class PaperConfigurations extends Configurations<GlobalConfiguration, Wor
+@@ -318,7 +318,11 @@ public class PaperConfigurations extends Configurations<GlobalConfiguration, Wor
      public WorldConfiguration createWorldConfig(final ContextMap contextMap) {
          final String levelKey = contextMap.require(WORLD_KEY).toString();
          try {
@@ -22,7 +22,7 @@ index 0b42ade71258a53dcc65dab932cc1a48802135fc..612b26001e95ecdf508c438f4fffb174
          } catch (IOException exception) {
              throw new RuntimeException("Could not create world config for " + levelKey, exception);
          }
-@@ -338,6 +342,7 @@ public class PaperConfigurations extends Configurations<GlobalConfiguration, Wor
+@@ -336,6 +340,7 @@ public class PaperConfigurations extends Configurations<GlobalConfiguration, Wor
              for (ServerLevel level : server.getAllLevels()) {
                  this.createWorldConfig(createWorldContextMap(level), reloader(this.worldConfigClass, level.paperConfig()));
              }

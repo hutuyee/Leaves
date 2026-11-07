@@ -5,10 +5,10 @@ Subject: [PATCH] Fix FallingBlockEntity Duplicate
 
 
 diff --git a/net/minecraft/world/entity/item/FallingBlockEntity.java b/net/minecraft/world/entity/item/FallingBlockEntity.java
-index d32af0f840e76004b637f84e91270382ded5287a..aa082f947aa413366ff7c5e879001285fe7b747a 100644
+index 899f4ac76ae1397146bf15c4e5b9f5996451c2b5..3e46afc4f7dafd07fb84e69f5d3b800f76ca40f4 100644
 --- a/net/minecraft/world/entity/item/FallingBlockEntity.java
 +++ b/net/minecraft/world/entity/item/FallingBlockEntity.java
-@@ -390,7 +390,7 @@ public class FallingBlockEntity extends Entity {
+@@ -384,7 +384,7 @@ public class FallingBlockEntity extends Entity {
          ResourceKey<Level> oldDimension = this.level().dimension();
          boolean fromOrToEnd = (oldDimension == Level.END || newDimension == Level.END) && oldDimension != newDimension;
          Entity newEntity = super.teleport(transition);
@@ -16,4 +16,4 @@ index d32af0f840e76004b637f84e91270382ded5287a..aa082f947aa413366ff7c5e879001285
 +        this.forceTickAfterTeleportToDuplicate = newEntity != null && fromOrToEnd; // Paper // Leaves
          return newEntity;
      }
- 
+ }

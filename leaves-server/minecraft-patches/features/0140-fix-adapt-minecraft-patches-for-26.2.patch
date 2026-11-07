@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: hutuyee <hutuyee@outlook.com>
 Date: Sun, 18 Oct 2026 14:55:43 +0800
-Subject: [PATCH] fix: adapt minecraft patches for 26.3
+Subject: [PATCH] fix: adapt minecraft patches for 26.2
 
 
 diff --git a/net/minecraft/server/network/ServerCommonPacketListenerImpl.java b/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
@@ -29,10 +29,10 @@ index 6a05b1636a53825b15a0a16abea0fe59bdac9305..81830f6b47e7c8059dff2c7576edb9a7
          }
  
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 89c85d8bfe0ca4ee913d9382e8b414d62ba2b8a2..7cd42cde4da0325675c055f737b458a471f446ed 100644
+index 774f5d092c69737685ddcfcf04f00d27fb90fede..f0efc04aad282bb8208be9895cb07798c66afe04 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -163,7 +163,6 @@ public abstract class PlayerList {
+@@ -161,7 +161,6 @@ public abstract class PlayerList {
          player.isRealPlayer = true;
          player.loginTime = System.currentTimeMillis();
          player.setServerLevel(level);
@@ -72,24 +72,11 @@ index 0f412551685a8ea76be3b389e0782e57d22bb87c..499c9ff11b56cff07959072fcb9bbac2
      }
  
      @Override
-diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 718017972cc78a46cebc891b3c292398e7f21b3d..caa08d172bdee0f654787798ba6e0983a44e2bd2 100644
---- a/net/minecraft/world/entity/Entity.java
-+++ b/net/minecraft/world/entity/Entity.java
-@@ -308,7 +308,7 @@ public abstract class Entity
-     private final EntityFluidInteraction fluidInteraction = new EntityFluidInteraction(FLUIDS_WITH_CURRENT);
-     protected boolean wasTouchingWater;
-     protected boolean wasEyeInWater;
--    private int invulnerableTime;
-+    protected int invulnerableTime;
-     protected boolean firstTick = true;
-     protected final SynchedEntityData entityData;
-     protected static final EntityDataAccessor<Byte> DATA_SHARED_FLAGS_ID = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.BYTE);
 diff --git a/net/minecraft/world/entity/item/ItemEntity.java b/net/minecraft/world/entity/item/ItemEntity.java
-index b3e002f57240050f3c6a88eb618f98ae24f9f2d2..c31163bfa64f97da7a097d0da32ce285bcac6304 100644
+index e58e588bdb6ddf7ecc494bc82146f5fa5cb146a7..ddd7855682f765834b164288ade551308f62ba05 100644
 --- a/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/net/minecraft/world/entity/item/ItemEntity.java
-@@ -72,7 +72,7 @@ public class ItemEntity extends Entity implements TraceableEntity, ChangePublish
+@@ -71,7 +71,7 @@ public class ItemEntity extends Entity implements TraceableEntity, ChangePublish
          this.setItem(itemStack);
          // Leaves start - vanilla yes, safe no
          if (org.leavesmc.leaves.LeavesConfig.modify.useVanillaRandom) {
@@ -99,10 +86,10 @@ index b3e002f57240050f3c6a88eb618f98ae24f9f2d2..c31163bfa64f97da7a097d0da32ce285
              this.setDeltaMovement(this.random.nextDouble() * 0.2 - 0.1, 0.2, this.random.nextDouble() * 0.2 - 0.1);
          }
 diff --git a/net/minecraft/world/entity/item/PrimedTnt.java b/net/minecraft/world/entity/item/PrimedTnt.java
-index 21829d68b5d374377ef05a10301914dcdf6307b0..a6cc4d47d6613021700bd0764c492896626d6d16 100644
+index 2323856ce4e3ca6b72c1845af614b007e5abfcc5..6ae507eee760002bf52dc41375f0ed2047cc8d23 100644
 --- a/net/minecraft/world/entity/item/PrimedTnt.java
 +++ b/net/minecraft/world/entity/item/PrimedTnt.java
-@@ -73,7 +73,7 @@ public class PrimedTnt extends Entity implements TraceableEntity {
+@@ -72,7 +72,7 @@ public class PrimedTnt extends Entity implements TraceableEntity {
      public PrimedTnt(final Level level, final double x, final double y, final double z, final @Nullable LivingEntity owner) {
          this(EntityTypes.TNT, level);
          this.setPos(x, y, z);
@@ -112,10 +99,10 @@ index 21829d68b5d374377ef05a10301914dcdf6307b0..a6cc4d47d6613021700bd0764c492896
          this.setFuse(80);
          this.xo = x;
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index f89d1a560ce4e699b0cda6a524fcc2f6487e1bf0..7f7b7f63238ab1997b5842e1530b52eeb51782fd 100644
+index 6b9b0435356ba47a3b055685bc9169d315ffa9cb..3771b4650100b0233c205c8cdf9e97ed35f8dc46 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
-@@ -155,7 +155,7 @@ public abstract class Player extends Avatar implements ContainerUser {
+@@ -156,7 +156,7 @@ public abstract class Player extends Avatar implements ContainerUser {
      protected FoodData foodData = new FoodData();
      protected int jumpTriggerTime;
      public int takeXpDelay;
@@ -167,36 +154,23 @@ index 2b4ab3039ac59dbd89f894e13c12ca3a4ca37314..1913b30f1bfe013261b340fdf9917db9
              return result == null ? super.useOn(context) : result;
              // Leaves end - shears wrench
          }
-diff --git a/net/minecraft/world/level/block/BuddingAmethystBlock.java b/net/minecraft/world/level/block/BuddingAmethystBlock.java
-index c5de54827ba65ab4b2d0615c9f4577711b9bf814..e2ceea06d973706ad9ddb962c5acd439a3531ed7 100644
---- a/net/minecraft/world/level/block/BuddingAmethystBlock.java
-+++ b/net/minecraft/world/level/block/BuddingAmethystBlock.java
-@@ -56,7 +56,7 @@ public class BuddingAmethystBlock extends AmethystBlock {
-     @Override
-     @org.jetbrains.annotations.Nullable
-     public net.minecraft.world.level.material.PushReaction getResetPushReaction() {
--        return org.leavesmc.leaves.LeavesConfig.modify.movableBuddingAmethyst ? net.minecraft.world.level.material.PushReaction.NORMAL : null;
-+        return org.leavesmc.leaves.LeavesConfig.modify.movableBuddingAmethyst ? net.minecraft.world.level.material.PushReaction.PUSH_PULL : null;
-     }
-     // Leaves end - budding amethyst can push by piston
- }
 diff --git a/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java b/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
-index 2db8527f98487af603423cf811e34b018cfc2dda..5d8587b6888a9d7ecb8769ed3766c80fd88c782a 100644
+index fee6f60acd71586ad7c5b3f6356e37266257739e..ebd2841a1bdf297208dd31e6acc3a8d1bb6aae72 100644
 --- a/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
-@@ -35,6 +35,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
+@@ -31,6 +31,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
  import net.minecraft.world.item.crafting.RecipeManager;
  import net.minecraft.world.item.crafting.RecipeType;
  import net.minecraft.world.item.crafting.SingleRecipeInput;
 +import net.minecraft.world.level.block.Blocks;
  import net.minecraft.world.level.block.AbstractFurnaceBlock;
+ import net.minecraft.world.level.block.Block;
  import net.minecraft.world.level.block.state.BlockState;
- import net.minecraft.world.level.storage.ValueInput;
 diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index 4a2adc115ae6ebfac4a111f96cdd7da30adfe5c7..2bc4c3a9b326140b743384fe9f1a7854f1d6ccab 100644
+index 61e69ed1a007537b5abc42cf651cac70c3f4fc31..7c3f0acec2732a0cfe2039b4123220572ba129dc 100644
 --- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-@@ -1410,7 +1410,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -1384,7 +1384,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
              //Remember failed entity search timestamp. This allows shortcutting if no entity movement happens.
              return null;
          }
@@ -205,7 +179,7 @@ index 4a2adc115ae6ebfac4a111f96cdd7da30adfe5c7..2bc4c3a9b326140b743384fe9f1a7854
          if (inventory instanceof LithiumInventory optimizedInventory) {
              LithiumStackList insertInventoryStackList = InventoryHelper.getLithiumStackList(optimizedInventory);
              if (inventory != this.insertInventory || this.insertStackList != insertInventoryStackList) {
-@@ -1476,7 +1476,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -1450,7 +1450,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
              //shortcutting the entity present case requires checking its change counter
              return null;
          }
@@ -215,15 +189,15 @@ index 4a2adc115ae6ebfac4a111f96cdd7da30adfe5c7..2bc4c3a9b326140b743384fe9f1a7854
              LithiumStackList extractInventoryStackList = InventoryHelper.getLithiumStackList(optimizedInventory);
              if (inventory != this.extractInventory || this.extractStackList != extractInventoryStackList) {
 diff --git a/net/minecraft/world/level/chunk/storage/RegionFileStorage.java b/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
-index 68a17dacd199e29459a81c2f66157903b1c65823..e2534d01b64951130b0a725b361fb991e28ddc2f 100644
+index 59b4d5c0e95d3bdef470ca66dd25ba121af4c702..511cb5758afd749010213800ffcecc0d2af9e353 100644
 --- a/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
 +++ b/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
-@@ -226,7 +226,7 @@ public class RegionFileStorage implements AutoCloseable, ca.spottedleaf.moonrise
-         this.info = info;
+@@ -282,7 +282,7 @@ public class RegionFileStorage implements AutoCloseable, ca.spottedleaf.moonrise
+         this.isChunkData = info.dfuType()[0] == net.minecraft.util.datafix.DataFixTypes.CHUNK; // Paper - recalculate region file headers
      }
  
--    private @Nullable org.leavesmc.leaves.region.IRegionFile getRegionFile(final ChunkPos pos, final boolean create) throws IOException { // Leaves - more region format
-+    private org.leavesmc.leaves.region.@Nullable IRegionFile getRegionFile(final ChunkPos pos, final boolean create) throws IOException { // Leaves - more region format
+-    @org.jetbrains.annotations.Contract("_, false -> !null") private @Nullable org.leavesmc.leaves.region.IRegionFile getRegionFile(final ChunkPos pos, boolean existingOnly) throws IOException { // CraftBukkit
++    @org.jetbrains.annotations.Contract("_, false -> !null") private org.leavesmc.leaves.region.@Nullable IRegionFile getRegionFile(final ChunkPos pos, boolean existingOnly) throws IOException { // CraftBukkit
          // Paper start - rewrite chunk system
-         synchronized (this) {
-             final long key = ChunkPos.pack(pos.x() >> REGION_SHIFT, pos.z() >> REGION_SHIFT);
+         if (existingOnly) {
+             return this.moonrise$getRegionFileIfExists(pos.x(), pos.z());

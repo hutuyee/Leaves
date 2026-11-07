@@ -6,31 +6,25 @@ Subject: [PATCH] Reduce chunk loading & lookups
 This patch is Powered by Pufferfish(https://github.com/pufferfish-gg/Pufferfish)
 
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 5c3124310e3a926d00a602638c11a8c0a140e0b2..340c21a1a5117df2f25673683d4466424fa7395b 100644
+index 24b98ba55c76de9d6febd01f3a8280f06a2bb9f7..78c04b339b8b1aa2d1fc05304a1970aa02c92edb 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -4571,10 +4571,14 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
-         WorldBorder worldBorder = level.getWorldBorder();
-         Vec3 clamped = worldBorder.clampVec3ToBound(xx, y, zz);
-         BlockPos.MutableBlockPos pos = BlockPos.containing(clamped).mutable();
+@@ -4540,12 +4540,16 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+         boolean ok = false;
+         BlockPos pos = BlockPos.containing(xx, y, zz);
+         Level level = this.level();
 -        if (level.hasChunkAt(pos)) {
 +        // Leaves start - single chunk lookup
 +        net.minecraft.world.level.chunk.LevelChunk chunk = org.leavesmc.leaves.LeavesConfig.performance.reduceChuckLoadAndLookup
 +            ? level.getChunkIfLoaded(pos)
 +            : null;
 +        if (org.leavesmc.leaves.LeavesConfig.performance.reduceChuckLoadAndLookup ? chunk != null : level.hasChunkAt(pos)) {
-             while (pos.getY() > level.getMinY()) {
-                 pos.move(Direction.DOWN);
--                BlockState state = level.getBlockState(pos);
-+                BlockState state = chunk == null ? level.getBlockState(pos) : chunk.getBlockState(pos);
-                 if (state.is(BlockTags.ENTITIES_CAN_TELEPORT_TO)) {
-                     return this.checkPositionAndTeleport(clamped.x, y, clamped.z, showParticles, isInvalidPosition, state, level, cause); // Paper - teleport cause API
-                 }
-@@ -4582,6 +4586,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
-                 y--;
-             }
-         }
-+        // Leaves end - single chunk lookup
+             boolean landed = false;
  
-         return RandomTeleportResult.FAILURE; // Paper - teleport event
-     }
+             while (!landed && pos.getY() > level.getMinY()) {
+                 BlockPos below = pos.below();
+-                BlockState state = level.getBlockState(below);
++                BlockState state = chunk == null ? level.getBlockState(below) : chunk.getBlockState(below); // Leaves - single chunk lookup
+                 if (state.blocksMotion()) {
+                     landed = true;
+                 } else {

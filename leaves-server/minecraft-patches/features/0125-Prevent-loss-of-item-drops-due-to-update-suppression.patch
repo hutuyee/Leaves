@@ -6,10 +6,10 @@ Subject: [PATCH] Prevent loss of item drops due to update suppression when
 
 
 diff --git a/net/minecraft/server/level/ServerPlayerGameMode.java b/net/minecraft/server/level/ServerPlayerGameMode.java
-index 19981c0b3cd3f6de9b02eb5e97bd273cafc3d9f4..54a8606d27f393c8705e8a01507b5ea9d0202195 100644
+index 424cbd6a61e09983c2bf390ae28e2fbb1661d890..99569d5543f1a0b4fd730b109ed0c4300dc6e09d 100644
 --- a/net/minecraft/server/level/ServerPlayerGameMode.java
 +++ b/net/minecraft/server/level/ServerPlayerGameMode.java
-@@ -438,11 +438,22 @@ public class ServerPlayerGameMode {
+@@ -407,11 +407,22 @@ public class ServerPlayerGameMode {
          BlockState adjustedState = org.leavesmc.leaves.command.leaves.subcommands.BlockUpdateCommand.isNoBlockUpdate()
              ? state
              : block.playerWillDestroy(this.level, pos, state, this.player); // Leaves - no block update
@@ -33,7 +33,7 @@ index 19981c0b3cd3f6de9b02eb5e97bd273cafc3d9f4..54a8606d27f393c8705e8a01507b5ea9
          if (changed) {
              block.destroy(this.level, pos, adjustedState);
          }
-@@ -466,6 +477,7 @@ public class ServerPlayerGameMode {
+@@ -435,6 +446,7 @@ public class ServerPlayerGameMode {
          if (event.isDropItems()) {
              org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockDropItemEvent(bblock, bState, this.player, itemsToDrop); // Paper - capture all item additions to the world
          }

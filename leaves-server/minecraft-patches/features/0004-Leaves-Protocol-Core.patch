@@ -33,10 +33,10 @@ index 08e253662a2c183c0ab53a51cc07485cff33bf2c..2f1e5c3de421bd07e30c417bf88935be
          };
      }
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 39360c51d0ea9f1902106748b234505da93e5f66..132abbe5f70a01957da7caefbf94a55dc76da3e5 100644
+index f7112d7e146c353260f15c3ffe1f61f8e8931ce2..5370536d096e111cf8e01447e19f7646979eae4d 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1830,6 +1830,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1846,6 +1846,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
          profiler.popPush("server gui refresh");
  
@@ -98,10 +98,10 @@ index 5dbb2849f32ac3418f8fdf76c04022d7e9dc165b..d2585f4362ad3111e0bb23a0f25c7df0
  
      @Override
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 62f57eb254321902692550d0a86c24292ef9e87d..6acf3448c96a0c68fb4d5f580ca4fa7e86f9d660 100644
+index 79d33646da088d02c54bbf2824deced107c1ce5f..031bac59eddf289b5a6b8f0d028ba838c3dbb6be 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -248,6 +248,8 @@ public abstract class PlayerList {
+@@ -246,6 +246,8 @@ public abstract class PlayerList {
              return;
          }
  
@@ -110,7 +110,7 @@ index 62f57eb254321902692550d0a86c24292ef9e87d..6acf3448c96a0c68fb4d5f580ca4fa7e
          final net.kyori.adventure.text.Component jm = playerJoinEvent.joinMessage();
  
          if (jm != null && !jm.equals(net.kyori.adventure.text.Component.empty())) { // Paper - Adventure
-@@ -435,6 +437,7 @@ public abstract class PlayerList {
+@@ -432,6 +434,7 @@ public abstract class PlayerList {
          return this.remove(player, net.kyori.adventure.text.Component.translatable("multiplayer.player.left", net.kyori.adventure.text.format.NamedTextColor.YELLOW, io.papermc.paper.configuration.GlobalConfiguration.get().messages.useDisplayNameInQuitMessage ? player.getBukkitEntity().displayName() : io.papermc.paper.adventure.PaperAdventure.asAdventure(player.getDisplayName())));
      }
      public net.kyori.adventure.text.@Nullable Component remove(final ServerPlayer player, final net.kyori.adventure.text.Component leaveMessage) {
@@ -118,10 +118,11 @@ index 62f57eb254321902692550d0a86c24292ef9e87d..6acf3448c96a0c68fb4d5f580ca4fa7e
          // Paper end - Fix kick event leave message not being sent
          ServerLevel level = player.level();
          player.awardStat(Stats.LEAVE_GAME);
-@@ -1299,5 +1302,6 @@ public abstract class PlayerList {
+@@ -1298,6 +1301,7 @@ public abstract class PlayerList {
              player.connection.send(recipes);
              player.getRecipeBook().sendInitialRecipeBook(player);
          }
 +        org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handleDataPackReload(); // Leaves - protocol core
      }
- }
+ 
+     public boolean isAllowCommandsForAllPlayers() {

@@ -5,10 +5,10 @@ Subject: [PATCH] Bytebuf API
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 40a04f54b5a5a76cc2b99d8ff62fd572b4450650..51ca4b54e5613432733fc691a88fdd2a6fbfdc78 100644
+index 1c60977fb471edb3a6775cbf4bbe4bd777d3792c..9b0ad9ecce658001d70551f36a645bad5868e762 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -399,6 +399,8 @@ public final class CraftServer implements Server {
+@@ -416,6 +416,8 @@ public final class CraftServer implements Server {
  
          CraftRegistry.setMinecraftRegistry(console.registryAccess());
  
@@ -17,7 +17,7 @@ index 40a04f54b5a5a76cc2b99d8ff62fd572b4450650..51ca4b54e5613432733fc691a88fdd2a
          if (!Main.useConsole) {
              this.getLogger().info("Console input is disabled due to --noconsole command argument");
          }
-@@ -2992,4 +2994,11 @@ public final class CraftServer implements Server {
+@@ -2981,4 +2983,11 @@ public final class CraftServer implements Server {
          return photographerManager;
      }
      // Leaves end - replay mod api
@@ -30,13 +30,14 @@ index 40a04f54b5a5a76cc2b99d8ff62fd572b4450650..51ca4b54e5613432733fc691a88fdd2a
 +    // Leaves end - Bytebuf API
  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index ad0b2210dc9da23495c7dff301f9743bb6a693b8..858e1d095b0709d7f42aba83cd6aea65c51f6b56 100644
+index 38b78a8ecac7a7cf4e4eeea1191ebaa3d8c6089b..828bddba2d43c2d847316258c65cfd51894b1048 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-@@ -3405,4 +3405,15 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
-     public PlayerPostEffects postEffects() {
-         return new PaperPlayerPostEffects(this.getHandle());
+@@ -3391,4 +3391,16 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PluginMessa
+         this.getHandle().fixedPose = false;
+         this.getHandle().updatePlayerPose();
      }
++
 +    // Leaves start - Bytebuf API
 +    @Override
 +    public void send(org.leavesmc.leaves.bytebuf.PacketType packetType, org.leavesmc.leaves.bytebuf.Bytebuf bytebuf) {

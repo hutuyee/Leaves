@@ -5,10 +5,10 @@ Subject: [PATCH] Spectator dont get Advancement
 
 
 diff --git a/net/minecraft/server/PlayerAdvancements.java b/net/minecraft/server/PlayerAdvancements.java
-index 9f1737d812369a871cec372ce473a1761d68bee1..928d676d40452a04fe47a49469b0c8f2bc6549a1 100644
+index 6052b1a052118ff44b91a774f473623ebcddc691..ceffa9e06abeaead449f6149ca11bad567db5951 100644
 --- a/net/minecraft/server/PlayerAdvancements.java
 +++ b/net/minecraft/server/PlayerAdvancements.java
-@@ -167,6 +167,12 @@ public class PlayerAdvancements {
+@@ -166,6 +166,12 @@ public class PlayerAdvancements {
      }
  
      public boolean award(final AdvancementHolder holder, final String criterion) {

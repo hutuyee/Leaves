@@ -5,10 +5,10 @@ Subject: [PATCH] Build changes
 
 
 diff --git a/ca/spottedleaf/moonrise/paper/PaperHooks.java b/ca/spottedleaf/moonrise/paper/PaperHooks.java
-index 26e252d229dd1a63afa70b41299bc92fc367afdf..7009a8f651d79d94b6108dab2127afc064751370 100644
+index c34b3c1c0e4fe6503a5702e544a192d2bb11d263..2c996781195b0d41232a345152833aeb5c71f164 100644
 --- a/ca/spottedleaf/moonrise/paper/PaperHooks.java
 +++ b/ca/spottedleaf/moonrise/paper/PaperHooks.java
-@@ -30,7 +30,7 @@ import net.minecraft.world.phys.AABB;
+@@ -29,7 +29,7 @@ import net.minecraft.world.phys.AABB;
  import java.util.List;
  import java.util.function.Predicate;
  
@@ -18,10 +18,10 @@ index 26e252d229dd1a63afa70b41299bc92fc367afdf..7009a8f651d79d94b6108dab2127afc0
      private static final org.slf4j.Logger LOGGER = com.mojang.logging.LogUtils.getLogger();
  
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 7517b872794f3bbe556f3abbeb294f426c8da899..fbccfe0421143bf7d4023194966817079dd8cbfa 100644
+index 879f53a64e3070aca5f6c58a0e200b62c3e51117..11c149f9261cbbf6372a00cf73d163b089721a25 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1276,7 +1276,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1292,7 +1292,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
                  LOGGER.info("*************************************************************************************");
                  LOGGER.info("This is the first time you're starting this server.");
                  LOGGER.info("It's recommended you read our 'Getting Started' documentation for guidance.");
@@ -30,7 +30,7 @@ index 7517b872794f3bbe556f3abbeb294f426c8da899..fbccfe0421143bf7d402319496681707
                  LOGGER.info("*************************************************************************************");
              }
              // Paper end - Add onboarding message for initial server start
-@@ -1932,7 +1932,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1948,7 +1948,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      }
  
      public String getServerModName() {
@@ -40,7 +40,7 @@ index 7517b872794f3bbe556f3abbeb294f426c8da899..fbccfe0421143bf7d402319496681707
  
      public ServerClockManager clockManager() {
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index 68675926ee85f738b3693a76fc29b80b80c717ed..d7317d209ed5c150f732878bd1abc703e03b9379 100644
+index 0b6d7f99edde802cb464baa5a4b2b4a4dcce684a..cc851c23a9d2ba4329fdbca79c4cfbbc3c6c2e09 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -249,9 +249,10 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface

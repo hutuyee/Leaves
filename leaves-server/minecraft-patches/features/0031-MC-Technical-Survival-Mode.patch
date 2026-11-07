@@ -6,10 +6,10 @@ Subject: [PATCH] MC Technical Survival Mode
 Will automatically overwrite some configuration after startup
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 0ad6be68ab5023caa74e35a5ef3ebd620a9fc117..f052db7eafdfae6d5a0e246932e117d914c4645b 100644
+index 6efd17b3846178ab8a2b49ed0dc0c2700e41b17b..2fc3fd72bc132b68760589685b5e757b7ecc6cbc 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -1820,7 +1820,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1750,7 +1750,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
      public boolean isInvulnerableTo(final ServerLevel level, final DamageSource source) {
          // Paper start - disable player cramming
          return (super.isInvulnerableTo(level, source) || this.isChangingDimension() && !source.is(DamageTypes.ENDER_PEARL) || !this.connection.hasClientLoaded())
@@ -32,7 +32,7 @@ index e2eb02d8a0a9481be2308c9052582591bc4f9850..ae8512e3aa1371f4a98536af12e2d970
                          batchCache.long2ObjectEntrySet().removeIf(entry -> !entry.getValue().isStillValid(timestamp));
                          Predicate<BlockPos> cacheTest = pos -> {
 diff --git a/net/minecraft/world/entity/boss/enderdragon/EndCrystal.java b/net/minecraft/world/entity/boss/enderdragon/EndCrystal.java
-index f846a219726b137272e8d9ed1fca221f52cf3129..3c667a6c940af7350646cec5d2097cf7351ab14e 100644
+index a7aa928fe6f5ef77151d096bd532af8db1b230ec..7213dd25ae68bc4c4344dd6e636227b350c6c58b 100644
 --- a/net/minecraft/world/entity/boss/enderdragon/EndCrystal.java
 +++ b/net/minecraft/world/entity/boss/enderdragon/EndCrystal.java
 @@ -66,7 +66,7 @@ public class EndCrystal extends Entity {
@@ -45,10 +45,10 @@ index f846a219726b137272e8d9ed1fca221f52cf3129..3c667a6c940af7350646cec5d2097cf7
                  || ((ServerLevel) this.level()).getDragonFight() == null
                  || ((ServerLevel) this.level()).getDragonFight().respawnStage == null
 diff --git a/net/minecraft/world/entity/item/PrimedTnt.java b/net/minecraft/world/entity/item/PrimedTnt.java
-index d0961a772aef797c9374af28c15282ff9761d9c9..82dd3a28bfeb4ec455e43b70fc8bd01f1009f998 100644
+index 237d579c4fa760e6f6c8f8e747873b115d04d1bd..ffb23ae34060c349e7200fc8475412295bd54c7e 100644
 --- a/net/minecraft/world/entity/item/PrimedTnt.java
 +++ b/net/minecraft/world/entity/item/PrimedTnt.java
-@@ -105,7 +105,7 @@ public class PrimedTnt extends Entity implements TraceableEntity {
+@@ -104,7 +104,7 @@ public class PrimedTnt extends Entity implements TraceableEntity {
  
      @Override
      public void tick() {
@@ -58,10 +58,10 @@ index d0961a772aef797c9374af28c15282ff9761d9c9..82dd3a28bfeb4ec455e43b70fc8bd01f
          this.applyGravity();
          this.move(MoverType.SELF, this.getDeltaMovement());
 diff --git a/net/minecraft/world/level/NaturalSpawner.java b/net/minecraft/world/level/NaturalSpawner.java
-index 06c63a3429d010546c8b9de610cbae7bf6bb6935..f2f12a283a63098f744f1c59f0ac97b3c66cc464 100644
+index e193cbed115663e9ca7a611837d5b8540dda03db..b5d172c28bf101dfaecfc706142fe92ef32b2cc0 100644
 --- a/net/minecraft/world/level/NaturalSpawner.java
 +++ b/net/minecraft/world/level/NaturalSpawner.java
-@@ -89,7 +89,7 @@ public final class NaturalSpawner {
+@@ -90,7 +90,7 @@ public final class NaturalSpawner {
                  MobCategory category = entity.getType().getCategory();
                  if (category != MobCategory.MISC) {
                      // Paper start - Only count natural spawns
@@ -71,10 +71,10 @@ index 06c63a3429d010546c8b9de610cbae7bf6bb6935..f2f12a283a63098f744f1c59f0ac97b3
                              entity.spawnReason == org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.CHUNK_GEN)) {
                          continue;
 diff --git a/net/minecraft/world/level/block/entity/BeehiveBlockEntity.java b/net/minecraft/world/level/block/entity/BeehiveBlockEntity.java
-index 3ec85bd0e49f8adcf6adcbf92adb104a12743cf0..eb1d6f1dd88f71bcf46cc89dc28294053498df6f 100644
+index 07900366f5f159d86a7b2f72c6dc0f998fe3f62c..8bdcde04d127a3638be98bddbd9d81e3a7c35396 100644
 --- a/net/minecraft/world/level/block/entity/BeehiveBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/BeehiveBlockEntity.java
-@@ -332,7 +332,7 @@ public class BeehiveBlockEntity extends BlockEntity {
+@@ -338,7 +338,7 @@ public class BeehiveBlockEntity extends BlockEntity {
                      // Leaves end - pca
                  }
                  // Paper start - Fix bees aging inside; use exitTickCounter to keep actual bee life
@@ -84,10 +84,10 @@ index 3ec85bd0e49f8adcf6adcbf92adb104a12743cf0..eb1d6f1dd88f71bcf46cc89dc2829405
                  }
                  // Paper end - Fix bees aging inside; use exitTickCounter to keep actual bee life
 diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index 07cfc77a9f4f1271c2c460648fe052b7415dac65..269e5884865a6d1e6c968a918014c626f993263d 100644
+index 49fcc1ab1c8de89af68e058a263633fdd24a336c..9a4123bb6de9591c5656b04b9cfc2d4ffc74297d 100644
 --- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-@@ -278,7 +278,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -276,7 +276,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
                  origItemStack.setCount(originalItemCount);
              }
          }
@@ -96,9 +96,9 @@ index 07cfc77a9f4f1271c2c460648fe052b7415dac65..269e5884865a6d1e6c968a918014c626
              hopper.setCooldown(level.spigotConfig.hopperTransfer);
          }
          return false;
-@@ -324,7 +324,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -317,7 +317,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
          }
-         updatedContainer.setChanged();
+         origItemStack.setCount(originalItemCount);
  
 -        if (level.paperConfig().hopper.cooldownWhenFull) {
 +        if (level.paperConfig().hopper.cooldownWhenFull && !org.leavesmc.leaves.LeavesConfig.modify.mcTechnicalMode) { // Leaves - mc technical survival mode

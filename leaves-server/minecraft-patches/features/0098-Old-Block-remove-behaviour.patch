@@ -23,10 +23,10 @@ index e9e2ef680cfc72cd47fa13d72c03619d2f1ca5fc..05aa28ddc5162d5d35e12e5824eef2e2
 +    // Leaves end - behaviour 1.21.1-
  }
 diff --git a/net/minecraft/world/level/block/AbstractFurnaceBlock.java b/net/minecraft/world/level/block/AbstractFurnaceBlock.java
-index 27e86cb9f4e031b9441b251ae809248e63ab99f2..0d2052cf49eabfb06a7e034b20e33f60c4418776 100644
+index 98561dcc465ca9d5394e58b05ad3e8dc59773ebc..16b9f7eaccbe63aa13fcc89571e0b9c95ff9fd25 100644
 --- a/net/minecraft/world/level/block/AbstractFurnaceBlock.java
 +++ b/net/minecraft/world/level/block/AbstractFurnaceBlock.java
-@@ -49,6 +49,26 @@ public abstract class AbstractFurnaceBlock extends BaseEntityBlock {
+@@ -53,6 +53,26 @@ public abstract class AbstractFurnaceBlock extends BaseEntityBlock {
          return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
      }
  
@@ -54,10 +54,10 @@ index 27e86cb9f4e031b9441b251ae809248e63ab99f2..0d2052cf49eabfb06a7e034b20e33f60
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          Containers.updateNeighboursAfterDestroy(state, level, pos);
 diff --git a/net/minecraft/world/level/block/BarrelBlock.java b/net/minecraft/world/level/block/BarrelBlock.java
-index 69935c4c243d729f2649cc8df290aee9cd60ebb8..865ec90f250aa433370b31c6b3e3b5c604b5f7c3 100644
+index 7bb880bfa9008a431acfd7c5d543f1e5a4bb67b2..3cb08bf2ad4f8489272546a2b49dd34deb6a1805 100644
 --- a/net/minecraft/world/level/block/BarrelBlock.java
 +++ b/net/minecraft/world/level/block/BarrelBlock.java
-@@ -44,6 +44,14 @@ public class BarrelBlock extends BaseEntityBlock {
+@@ -51,6 +51,14 @@ public class BarrelBlock extends BaseEntityBlock {
          return InteractionResult.SUCCESS;
      }
  
@@ -73,10 +73,10 @@ index 69935c4c243d729f2649cc8df290aee9cd60ebb8..865ec90f250aa433370b31c6b3e3b5c6
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          Containers.updateNeighboursAfterDestroy(state, level, pos);
 diff --git a/net/minecraft/world/level/block/BasePressurePlateBlock.java b/net/minecraft/world/level/block/BasePressurePlateBlock.java
-index f77e9bc43fbaa9286f921bbd775f7f2025772ea3..07ed3e458ad052f40224a70bbce1be1a1a8ace95 100644
+index f2d7c5fc0339a62c4fc56aa5871cd999e1136ca6..3d0fb0a3719373a3540f72c3f2b0faa516feb8bd 100644
 --- a/net/minecraft/world/level/block/BasePressurePlateBlock.java
 +++ b/net/minecraft/world/level/block/BasePressurePlateBlock.java
-@@ -129,6 +129,19 @@ public abstract class BasePressurePlateBlock extends Block {
+@@ -133,6 +133,19 @@ public abstract class BasePressurePlateBlock extends Block {
          }
      }
  
@@ -97,10 +97,10 @@ index f77e9bc43fbaa9286f921bbd775f7f2025772ea3..07ed3e458ad052f40224a70bbce1be1a
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          if (!movedByPiston && this.getSignalForState(state) > 0) {
 diff --git a/net/minecraft/world/level/block/BaseRailBlock.java b/net/minecraft/world/level/block/BaseRailBlock.java
-index 4efa741b223997312141040087bb8fc0f04f73e0..3b961c7b13e112e6378592b89bb4fbde376a13e9 100644
+index dff6c7868065c93c8b1a8b41a3323b3f1cec4e02..a071a61121cd02776af684b1d311f307ce94df60 100644
 --- a/net/minecraft/world/level/block/BaseRailBlock.java
 +++ b/net/minecraft/world/level/block/BaseRailBlock.java
-@@ -114,6 +114,23 @@ public abstract class BaseRailBlock extends Block implements SimpleWaterloggedBl
+@@ -118,6 +118,23 @@ public abstract class BaseRailBlock extends Block implements SimpleWaterloggedBl
          return new RailState(level, pos, state).place(level.hasNeighborSignal(pos), first, current).getState();
      }
  
@@ -125,10 +125,10 @@ index 4efa741b223997312141040087bb8fc0f04f73e0..3b961c7b13e112e6378592b89bb4fbde
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          if (!movedByPiston) {
 diff --git a/net/minecraft/world/level/block/BrewingStandBlock.java b/net/minecraft/world/level/block/BrewingStandBlock.java
-index a3b29ef6da86759b268fe657bec60ad5bbd45120..ec76410fc20ce99e01aa4427aa825e016cb02adb 100644
+index 5f14be7cd9abe30292c4c6c614d048cd1e0a9c1f..015cff54eed540906ea7acb8a7f53402ba6dbfde 100644
 --- a/net/minecraft/world/level/block/BrewingStandBlock.java
 +++ b/net/minecraft/world/level/block/BrewingStandBlock.java
-@@ -78,6 +78,14 @@ public class BrewingStandBlock extends BaseEntityBlock {
+@@ -81,6 +81,14 @@ public class BrewingStandBlock extends BaseEntityBlock {
          level.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0, 0.0, 0.0);
      }
  
@@ -144,10 +144,10 @@ index a3b29ef6da86759b268fe657bec60ad5bbd45120..ec76410fc20ce99e01aa4427aa825e01
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          Containers.updateNeighboursAfterDestroy(state, level, pos);
 diff --git a/net/minecraft/world/level/block/ButtonBlock.java b/net/minecraft/world/level/block/ButtonBlock.java
-index 1337331c60fc15e227cf9a7a77785836d676f44e..baf383e093ea6365dee8dac80cfde911478a0524 100644
+index 9c859b04519f78988e765a164cf39cd8a99447df..8cb247b4f665eb45e08076a06f345f2503746347 100644
 --- a/net/minecraft/world/level/block/ButtonBlock.java
 +++ b/net/minecraft/world/level/block/ButtonBlock.java
-@@ -115,6 +115,19 @@ public class ButtonBlock extends FaceAttachedHorizontalDirectionalBlock {
+@@ -131,6 +131,19 @@ public class ButtonBlock extends FaceAttachedHorizontalDirectionalBlock {
          return pressed ? this.type.buttonClickOn() : this.type.buttonClickOff();
      }
  
@@ -168,11 +168,11 @@ index 1337331c60fc15e227cf9a7a77785836d676f44e..baf383e093ea6365dee8dac80cfde911
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          if (!movedByPiston && state.getValue(POWERED)) {
 diff --git a/net/minecraft/world/level/block/CampfireBlock.java b/net/minecraft/world/level/block/CampfireBlock.java
-index 59c9a2890dc1bda4c28394c0aac9c0d315b1c4af..119a27e340edfe4bc54df7461e6b5b4fd53643fc 100644
+index 4a24a36e022356d44a77306028ef2c09cd221fa5..d395fa84d29df3355e3fee75b70ba401bf095977 100644
 --- a/net/minecraft/world/level/block/CampfireBlock.java
 +++ b/net/minecraft/world/level/block/CampfireBlock.java
-@@ -108,6 +108,20 @@ public class CampfireBlock extends BaseEntityBlock implements SimpleWaterloggedB
-         }
+@@ -112,6 +112,20 @@ public class CampfireBlock extends BaseEntityBlock implements SimpleWaterloggedB
+         return InteractionResult.TRY_WITH_EMPTY_HAND;
      }
  
 +    // Leaves start - behaviour 1.21.1-
@@ -193,10 +193,10 @@ index 59c9a2890dc1bda4c28394c0aac9c0d315b1c4af..119a27e340edfe4bc54df7461e6b5b4f
      protected void entityInside(
          final BlockState state,
 diff --git a/net/minecraft/world/level/block/ChestBlock.java b/net/minecraft/world/level/block/ChestBlock.java
-index 4b3f5c92f3caf6d68f60b906d1f7eb552698ef05..636d3010689e32385d9e7b0ffc66a5e74ec5dd8a 100644
+index 4bd84b80199c7f625475ca62da02266d871a8639..51e623981301079912f8bb0f2fc1db82e68cb9a6 100644
 --- a/net/minecraft/world/level/block/ChestBlock.java
 +++ b/net/minecraft/world/level/block/ChestBlock.java
-@@ -239,6 +239,14 @@ public class ChestBlock extends AbstractChestBlock<ChestBlockEntity> implements
+@@ -253,6 +253,14 @@ public class ChestBlock extends AbstractChestBlock<ChestBlockEntity> implements
          return this.chestCanConnectTo(state) && state.getValue(TYPE) == ChestType.SINGLE ? state.getValue(FACING) : null;
      }
  
@@ -212,10 +212,10 @@ index 4b3f5c92f3caf6d68f60b906d1f7eb552698ef05..636d3010689e32385d9e7b0ffc66a5e7
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          Containers.updateNeighboursAfterDestroy(state, level, pos);
 diff --git a/net/minecraft/world/level/block/ChiseledBookShelfBlock.java b/net/minecraft/world/level/block/ChiseledBookShelfBlock.java
-index d9859833c7dc78c212b2d637f84b711a197baf2d..0de9a44f9c740e9c3da0131c21bf83587fcdc2f1 100644
+index b7d7f1acf8e5cb3dddb7fb39fe003d25a9a41840..81c51667b8a89cc9ffc904406a5af7041fd7616d 100644
 --- a/net/minecraft/world/level/block/ChiseledBookShelfBlock.java
 +++ b/net/minecraft/world/level/block/ChiseledBookShelfBlock.java
-@@ -165,6 +165,27 @@ public class ChiseledBookShelfBlock extends BaseEntityBlock implements Selectabl
+@@ -171,6 +171,27 @@ public class ChiseledBookShelfBlock extends BaseEntityBlock implements Selectabl
          SLOT_OCCUPIED_PROPERTIES.forEach(xva$0 -> var2.add(xva$0));
      }
  
@@ -244,10 +244,10 @@ index d9859833c7dc78c212b2d637f84b711a197baf2d..0de9a44f9c740e9c3da0131c21bf8358
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          Containers.updateNeighboursAfterDestroy(state, level, pos);
 diff --git a/net/minecraft/world/level/block/CrafterBlock.java b/net/minecraft/world/level/block/CrafterBlock.java
-index 6c7dfa8dda503419b417805fe5b3fb6d0d55332f..f136453dca181697f2a4edda0f934d99d75607ca 100644
+index 5a994703cc62288eab1131c931d4dc94d3382751..0047617c18bac71de641779f6244171ba089d540 100644
 --- a/net/minecraft/world/level/block/CrafterBlock.java
 +++ b/net/minecraft/world/level/block/CrafterBlock.java
-@@ -124,6 +124,14 @@ public class CrafterBlock extends BaseEntityBlock {
+@@ -131,6 +131,14 @@ public class CrafterBlock extends BaseEntityBlock {
          }
      }
  
@@ -263,10 +263,10 @@ index 6c7dfa8dda503419b417805fe5b3fb6d0d55332f..f136453dca181697f2a4edda0f934d99
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          Containers.updateNeighboursAfterDestroy(state, level, pos);
 diff --git a/net/minecraft/world/level/block/CreakingHeartBlock.java b/net/minecraft/world/level/block/CreakingHeartBlock.java
-index 63ddfd24b55f98409dbaea02bc0eb0c9604a0400..d66b66c23405820c9fad0318f724dff9a548b3f4 100644
+index 57292f216052110c5f03e8f3fe51709c87b7995c..b15c0f447260fb6372a02ab38441a60a9b15bba8 100644
 --- a/net/minecraft/world/level/block/CreakingHeartBlock.java
 +++ b/net/minecraft/world/level/block/CreakingHeartBlock.java
-@@ -146,6 +146,16 @@ public class CreakingHeartBlock extends BaseEntityBlock {
+@@ -153,6 +153,16 @@ public class CreakingHeartBlock extends BaseEntityBlock {
          builder.add(AXIS, STATE, NATURAL);
      }
  
@@ -284,10 +284,10 @@ index 63ddfd24b55f98409dbaea02bc0eb0c9604a0400..d66b66c23405820c9fad0318f724dff9
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          Containers.updateNeighboursAfterDestroy(state, level, pos);
 diff --git a/net/minecraft/world/level/block/DecoratedPotBlock.java b/net/minecraft/world/level/block/DecoratedPotBlock.java
-index e75f19a84ff3e21f93edea2ae1cdb4458c46bddd..19d8bdd099c18f0d477b6cefa45e62cf66a0cc3b 100644
+index 1c131955ba7a01348d9d9d5cf733d107c2531915..2e59bcf4bd1b3bb26b58c5194c6d245ec501fbd2 100644
 --- a/net/minecraft/world/level/block/DecoratedPotBlock.java
 +++ b/net/minecraft/world/level/block/DecoratedPotBlock.java
-@@ -164,6 +164,14 @@ public class DecoratedPotBlock extends BaseEntityBlock implements SimpleWaterlog
+@@ -172,6 +172,14 @@ public class DecoratedPotBlock extends BaseEntityBlock implements SimpleWaterlog
          return new DecoratedPotBlockEntity(worldPosition, blockState);
      }
  
@@ -303,10 +303,10 @@ index e75f19a84ff3e21f93edea2ae1cdb4458c46bddd..19d8bdd099c18f0d477b6cefa45e62cf
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          Containers.updateNeighboursAfterDestroy(state, level, pos);
 diff --git a/net/minecraft/world/level/block/DiodeBlock.java b/net/minecraft/world/level/block/DiodeBlock.java
-index fc007b164c7fc4e9608d02c64c5cd4dc6934b4e2..934ad3f42cada92c75efa0ef991e53a22f14bdba 100644
+index 2339099e05af80b234e64778822b012cc6318157..c09a425333daf5c032db0a0410e4a8fd579d9b00 100644
 --- a/net/minecraft/world/level/block/DiodeBlock.java
 +++ b/net/minecraft/world/level/block/DiodeBlock.java
-@@ -177,6 +177,16 @@ public abstract class DiodeBlock extends HorizontalDirectionalBlock {
+@@ -181,6 +181,16 @@ public abstract class DiodeBlock extends HorizontalDirectionalBlock {
          this.updateNeighborsInFront(level, pos, state);
      }
  
@@ -324,10 +324,10 @@ index fc007b164c7fc4e9608d02c64c5cd4dc6934b4e2..934ad3f42cada92c75efa0ef991e53a2
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          if (!movedByPiston) {
 diff --git a/net/minecraft/world/level/block/DispenserBlock.java b/net/minecraft/world/level/block/DispenserBlock.java
-index f777b67e0d90c1bb25c3aeef8e5b1710ab8ac96e..0552ae19d4ffdf6ec93271f88a454f6c7f6fdbda 100644
+index 754f2a541e80947553c56420bdc962dbcf80d36e..953c20e306ef0a713a233c6bb5f3190dc80cd58c 100644
 --- a/net/minecraft/world/level/block/DispenserBlock.java
 +++ b/net/minecraft/world/level/block/DispenserBlock.java
-@@ -154,6 +154,14 @@ public class DispenserBlock extends BaseEntityBlock {
+@@ -161,6 +161,14 @@ public class DispenserBlock extends BaseEntityBlock {
          return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite());
      }
  
@@ -343,10 +343,10 @@ index f777b67e0d90c1bb25c3aeef8e5b1710ab8ac96e..0552ae19d4ffdf6ec93271f88a454f6c
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          Containers.updateNeighboursAfterDestroy(state, level, pos);
 diff --git a/net/minecraft/world/level/block/HopperBlock.java b/net/minecraft/world/level/block/HopperBlock.java
-index c2d18458ce81c2d1523b3cf932e3c133c75b6f3f..2cc394a000562e06448205e456aafc857d740e7c 100644
+index 3932da81757ea0ab7a41617165f5b64dc44ea3eb..6f32bf6dfba981ebdfdfe8e9cfccaf8b5438bd03 100644
 --- a/net/minecraft/world/level/block/HopperBlock.java
 +++ b/net/minecraft/world/level/block/HopperBlock.java
-@@ -121,6 +121,14 @@ public class HopperBlock extends BaseEntityBlock {
+@@ -128,6 +128,14 @@ public class HopperBlock extends BaseEntityBlock {
          }
      }
  
@@ -362,10 +362,10 @@ index c2d18458ce81c2d1523b3cf932e3c133c75b6f3f..2cc394a000562e06448205e456aafc85
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          Containers.updateNeighboursAfterDestroy(state, level, pos);
 diff --git a/net/minecraft/world/level/block/JukeboxBlock.java b/net/minecraft/world/level/block/JukeboxBlock.java
-index 04938f131397bf3d4f32c5ed63d2cca1903de80e..f0b360e4f3f2a8805f4af293d86d9e3d26d4cfb5 100644
+index f202953a0eacfa61635ad1b13e4dbf9960e004ec..1af3df5616866afeb2c436891d188ec9f66b26bb 100644
 --- a/net/minecraft/world/level/block/JukeboxBlock.java
 +++ b/net/minecraft/world/level/block/JukeboxBlock.java
-@@ -76,6 +76,19 @@ public class JukeboxBlock extends BaseEntityBlock {
+@@ -83,6 +83,19 @@ public class JukeboxBlock extends BaseEntityBlock {
          return !result.consumesAction() ? InteractionResult.TRY_WITH_EMPTY_HAND : result;
      }
  
@@ -386,10 +386,10 @@ index 04938f131397bf3d4f32c5ed63d2cca1903de80e..f0b360e4f3f2a8805f4af293d86d9e3d
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          Containers.updateNeighboursAfterDestroy(state, level, pos);
 diff --git a/net/minecraft/world/level/block/LecternBlock.java b/net/minecraft/world/level/block/LecternBlock.java
-index 072510a71764838c982761309a6f887de289bada..4969f8e8c235deb23a24e4bccfe5792b21181da8 100644
+index b5ac0a094d7c67afe59716857cef425e11545054..97345f917d8e83fdee2ab4e4fd6ec26cb93a725d 100644
 --- a/net/minecraft/world/level/block/LecternBlock.java
 +++ b/net/minecraft/world/level/block/LecternBlock.java
-@@ -193,6 +193,36 @@ public class LecternBlock extends BaseEntityBlock {
+@@ -200,6 +200,36 @@ public class LecternBlock extends BaseEntityBlock {
          changePowered(level, pos, state, false);
      }
  
@@ -427,10 +427,10 @@ index 072510a71764838c982761309a6f887de289bada..4969f8e8c235deb23a24e4bccfe5792b
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          if (state.getValue(POWERED)) {
 diff --git a/net/minecraft/world/level/block/LeverBlock.java b/net/minecraft/world/level/block/LeverBlock.java
-index 7b9989c23f248dcde9a0730b5d898fd674c53edf..043ddc757dc09330f191b4018d3ca38a7ef107e4 100644
+index 772a1cb8b275506ed0310294369b985746f8f567..ae9937ea5323a5be3fba6d419b3e7bec11c4e8fb 100644
 --- a/net/minecraft/world/level/block/LeverBlock.java
 +++ b/net/minecraft/world/level/block/LeverBlock.java
-@@ -120,6 +120,19 @@ public class LeverBlock extends FaceAttachedHorizontalDirectionalBlock {
+@@ -127,6 +127,19 @@ public class LeverBlock extends FaceAttachedHorizontalDirectionalBlock {
          }
      }
  
@@ -451,10 +451,10 @@ index 7b9989c23f248dcde9a0730b5d898fd674c53edf..043ddc757dc09330f191b4018d3ca38a
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          if (!movedByPiston && state.getValue(POWERED)) {
 diff --git a/net/minecraft/world/level/block/LightningRodBlock.java b/net/minecraft/world/level/block/LightningRodBlock.java
-index baa1b147f79a7c93d8cac557318a69a2afe1acbf..838f40cebb86f79d19085232341dfdac12bd1df5 100644
+index 9b696d6ffeaa5302c713c011d74f40c67aa59473..ee7c02fa0d0740121fd447fac3fb3841ce297c1d 100644
 --- a/net/minecraft/world/level/block/LightningRodBlock.java
 +++ b/net/minecraft/world/level/block/LightningRodBlock.java
-@@ -116,6 +116,18 @@ public class LightningRodBlock extends RodBlock implements SimpleWaterloggedBloc
+@@ -123,6 +123,18 @@ public class LightningRodBlock extends RodBlock implements SimpleWaterloggedBloc
          }
      }
  
@@ -474,10 +474,10 @@ index baa1b147f79a7c93d8cac557318a69a2afe1acbf..838f40cebb86f79d19085232341dfdac
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          if (state.getValue(POWERED)) {
 diff --git a/net/minecraft/world/level/block/ObserverBlock.java b/net/minecraft/world/level/block/ObserverBlock.java
-index 8e7e2b197c19bd5abdb3b2f5133927f52ad5cfaf..3993a6f028a31d0319651af24abf0456c95207a5 100644
+index 680a357db27407e2dc21c615fadaf9754421c361..c06dbb089270455c095f4136e3cee43ff868ac75 100644
 --- a/net/minecraft/world/level/block/ObserverBlock.java
 +++ b/net/minecraft/world/level/block/ObserverBlock.java
-@@ -132,6 +132,17 @@ public class ObserverBlock extends DirectionalBlock {
+@@ -133,6 +133,17 @@ public class ObserverBlock extends DirectionalBlock {
          }
      }
  
@@ -495,31 +495,11 @@ index 8e7e2b197c19bd5abdb3b2f5133927f52ad5cfaf..3993a6f028a31d0319651af24abf0456
      @Override
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          if (state.getValue(POWERED) && level.getBlockTicks().hasScheduledTick(pos, this)) {
-diff --git a/net/minecraft/world/level/block/RedstoneTorchBlock.java b/net/minecraft/world/level/block/RedstoneTorchBlock.java
-index e6680b9bfa001e6c00598256f13d4e74b64dc32c..e519ee36604222e5ae0581f21d28e80d27df356a 100644
---- a/net/minecraft/world/level/block/RedstoneTorchBlock.java
-+++ b/net/minecraft/world/level/block/RedstoneTorchBlock.java
-@@ -47,6 +47,15 @@ public class RedstoneTorchBlock extends BaseTorchBlock {
-         }
-     }
- 
-+    // Leaves start - behaviour 1.21.1-
-+    @Override
-+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-+        if (!isMoving) {
-+            this.notifyNeighbors(level, pos, state);
-+        }
-+    }
-+    // Leaves end - behaviour 1.21.1-
-+
-     @Override
-     protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
-         if (!movedByPiston) {
-diff --git a/net/minecraft/world/level/block/RedstoneWireBlock.java b/net/minecraft/world/level/block/RedstoneWireBlock.java
-index 1fbf94c158610ec3482c3205e279cabfbf58b503..56e37412d65131cae2c9984da47d1ec037332717 100644
---- a/net/minecraft/world/level/block/RedstoneWireBlock.java
-+++ b/net/minecraft/world/level/block/RedstoneWireBlock.java
-@@ -362,6 +362,27 @@ public class RedstoneWireBlock extends Block {
+diff --git a/net/minecraft/world/level/block/RedStoneWireBlock.java b/net/minecraft/world/level/block/RedStoneWireBlock.java
+index 03341ea26017249caa8bfa7363f655a14daa70fa..a7fe9ed86d7dedad6df275bfdf02d2f9751e6cde 100644
+--- a/net/minecraft/world/level/block/RedStoneWireBlock.java
++++ b/net/minecraft/world/level/block/RedStoneWireBlock.java
+@@ -369,6 +369,27 @@ public class RedStoneWireBlock extends Block {
          }
      }
  
@@ -547,11 +527,31 @@ index 1fbf94c158610ec3482c3205e279cabfbf58b503..56e37412d65131cae2c9984da47d1ec0
      @Override
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          if (!movedByPiston) {
+diff --git a/net/minecraft/world/level/block/RedstoneTorchBlock.java b/net/minecraft/world/level/block/RedstoneTorchBlock.java
+index e51c99908d95069da1e9746d50396bb275e2ff2b..21c822630b9aba09281398eaf5c07e5efbbb07c4 100644
+--- a/net/minecraft/world/level/block/RedstoneTorchBlock.java
++++ b/net/minecraft/world/level/block/RedstoneTorchBlock.java
+@@ -54,6 +54,15 @@ public class RedstoneTorchBlock extends BaseTorchBlock {
+         }
+     }
+ 
++    // Leaves start - behaviour 1.21.1-
++    @Override
++    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
++        if (!isMoving) {
++            this.notifyNeighbors(level, pos, state);
++        }
++    }
++    // Leaves end - behaviour 1.21.1-
++
+     @Override
+     protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
+         if (!movedByPiston) {
 diff --git a/net/minecraft/world/level/block/SculkSensorBlock.java b/net/minecraft/world/level/block/SculkSensorBlock.java
-index 6e217dea06365d2125b51b8222f49e186fcf6c08..94086896d42816f1791ee8e2d2efbd083e25e259 100644
+index 10cff0f9db2910c543c20fa055c0c5b759becc15..3da6b26423c0810827159d2df64640817c8e8cd4 100644
 --- a/net/minecraft/world/level/block/SculkSensorBlock.java
 +++ b/net/minecraft/world/level/block/SculkSensorBlock.java
-@@ -123,6 +123,18 @@ public class SculkSensorBlock extends BaseEntityBlock implements SimpleWaterlogg
+@@ -130,6 +130,18 @@ public class SculkSensorBlock extends BaseEntityBlock implements SimpleWaterlogg
          }
      }
  
@@ -571,10 +571,10 @@ index 6e217dea06365d2125b51b8222f49e186fcf6c08..94086896d42816f1791ee8e2d2efbd08
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          if (getPhase(state) == SculkSensorPhase.ACTIVE) {
 diff --git a/net/minecraft/world/level/block/SculkShriekerBlock.java b/net/minecraft/world/level/block/SculkShriekerBlock.java
-index fc3fcb07cec78126c1bf7ae37065db7a5cfa232f..d95904e3212f61993fcbbb9318320993b0fc9bb4 100644
+index 5a15671202a0129b1ce97fae5515ddefa5b3fb01..d2cb8e8efeb49a63f9d65c879ad48933d1a1301c 100644
 --- a/net/minecraft/world/level/block/SculkShriekerBlock.java
 +++ b/net/minecraft/world/level/block/SculkShriekerBlock.java
-@@ -62,6 +62,16 @@ public class SculkShriekerBlock extends BaseEntityBlock implements SimpleWaterlo
+@@ -69,6 +69,16 @@ public class SculkShriekerBlock extends BaseEntityBlock implements SimpleWaterlo
          super.stepOn(level, pos, onState, entity);
      }
  
@@ -592,10 +592,10 @@ index fc3fcb07cec78126c1bf7ae37065db7a5cfa232f..d95904e3212f61993fcbbb9318320993
      protected void tick(final BlockState state, final ServerLevel level, final BlockPos pos, final RandomSource random) {
          if (state.getValue(SHRIEKING)) {
 diff --git a/net/minecraft/world/level/block/ShulkerBoxBlock.java b/net/minecraft/world/level/block/ShulkerBoxBlock.java
-index 7c51cbf890480c66556ada59dba08e80a677b2b9..1bcc9e09bc898d7521ec65cc2462066f61c13130 100644
+index 476dda0acace6e79c158bb4d7bbc79ce362a96cb..30a335f74e54f73d1d4927c20a2782aac0832231 100644
 --- a/net/minecraft/world/level/block/ShulkerBoxBlock.java
 +++ b/net/minecraft/world/level/block/ShulkerBoxBlock.java
-@@ -140,6 +140,19 @@ public class ShulkerBoxBlock extends BaseEntityBlock {
+@@ -152,6 +152,19 @@ public class ShulkerBoxBlock extends BaseEntityBlock {
          // Paper end - re-set loot table if it was cleared
      }
  
@@ -616,10 +616,10 @@ index 7c51cbf890480c66556ada59dba08e80a677b2b9..1bcc9e09bc898d7521ec65cc2462066f
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          Containers.updateNeighboursAfterDestroy(state, level, pos);
 diff --git a/net/minecraft/world/level/block/TripWireBlock.java b/net/minecraft/world/level/block/TripWireBlock.java
-index 51c5b039e5c4da0273077fe405ab1c3c377ceb23..88a52802ff306f277e691e96572a88164ea2f36a 100644
+index 49510dc0ef82621953be8e485708872bd8b2b88b..d30787110ca25f53772a73e9f8005c39fa1918b5 100644
 --- a/net/minecraft/world/level/block/TripWireBlock.java
 +++ b/net/minecraft/world/level/block/TripWireBlock.java
-@@ -96,6 +96,16 @@ public class TripWireBlock extends Block {
+@@ -107,6 +107,16 @@ public class TripWireBlock extends Block {
          }
      }
  
@@ -637,10 +637,10 @@ index 51c5b039e5c4da0273077fe405ab1c3c377ceb23..88a52802ff306f277e691e96572a8816
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          if (io.papermc.paper.configuration.GlobalConfiguration.get().blockUpdates.disableTripwireUpdates) return; // Paper - prevent adjacent tripwires from updating
 diff --git a/net/minecraft/world/level/block/TripWireHookBlock.java b/net/minecraft/world/level/block/TripWireHookBlock.java
-index 21fb04489585c278d59a01ffca21ec856d9fe468..50f53cf4ee2ba62cfa74b546b86f166b7a3485d3 100644
+index c485c1e82b9a00f70c9fe1f0c55f1d142f1473f7..fed1375d8d4e8bea9fe44a316ff256ee7cf4cdb5 100644
 --- a/net/minecraft/world/level/block/TripWireHookBlock.java
 +++ b/net/minecraft/world/level/block/TripWireHookBlock.java
-@@ -240,6 +240,25 @@ public class TripWireHookBlock extends Block {
+@@ -247,6 +247,25 @@ public class TripWireHookBlock extends Block {
          level.updateNeighborsAt(pos.relative(front), block, orientation);
      }
  
@@ -680,10 +680,10 @@ index 4c91a0cd674e23ae31e21ba7014fdbb15514cc45..960dca72c74a75669d96ffa159785b62
  
      @Deprecated
 diff --git a/net/minecraft/world/level/block/piston/MovingPistonBlock.java b/net/minecraft/world/level/block/piston/MovingPistonBlock.java
-index f2824c8d16036b6e0baa4d41b83d2ddfa614eb30..affcb817cc17b4b66891fd95b5ebb7216e1d4ea5 100644
+index 6138c8bd76fc405b67282ac349d41e02a4f9deba..04984f700963a1070e964294164682d6cd6f6e67 100644
 --- a/net/minecraft/world/level/block/piston/MovingPistonBlock.java
 +++ b/net/minecraft/world/level/block/piston/MovingPistonBlock.java
-@@ -64,6 +64,18 @@ public class MovingPistonBlock extends BaseEntityBlock {
+@@ -71,6 +71,18 @@ public class MovingPistonBlock extends BaseEntityBlock {
          return createTickerHelper(type, BlockEntityTypes.PISTON, PistonMovingBlockEntity::tick);
      }
  
@@ -703,10 +703,10 @@ index f2824c8d16036b6e0baa4d41b83d2ddfa614eb30..affcb817cc17b4b66891fd95b5ebb721
      public void destroy(final LevelAccessor level, final BlockPos pos, final BlockState state) {
          BlockPos relative = pos.relative(state.getValue(FACING).getOpposite());
 diff --git a/net/minecraft/world/level/block/piston/PistonHeadBlock.java b/net/minecraft/world/level/block/piston/PistonHeadBlock.java
-index c00cbfa4d0238ae42a91023a29d674ae98de6400..899ed80405935bcbb3a43b1203a1693cc60b0b8c 100644
+index f8caa0b3c21766dbad73c524c1680346e4257188..343660d3e5fbdc25aba84a5cacbc367d40533848 100644
 --- a/net/minecraft/world/level/block/piston/PistonHeadBlock.java
 +++ b/net/minecraft/world/level/block/piston/PistonHeadBlock.java
-@@ -71,6 +71,19 @@ public class PistonHeadBlock extends DirectionalBlock {
+@@ -78,6 +78,19 @@ public class PistonHeadBlock extends DirectionalBlock {
          return super.playerWillDestroy(level, pos, state, player);
      }
  
@@ -727,10 +727,10 @@ index c00cbfa4d0238ae42a91023a29d674ae98de6400..899ed80405935bcbb3a43b1203a1693c
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
          BlockPos basePos = pos.relative(state.getValue(FACING).getOpposite());
 diff --git a/net/minecraft/world/level/block/state/BlockBehaviour.java b/net/minecraft/world/level/block/state/BlockBehaviour.java
-index fa5c2b2020d6bec3d9640534c84085d93afeb071..1bd8a9dd8b65daf3f4ddff22d54f5756aa0d3bf2 100644
+index af47032728316f071de658a7cb9a945fb1b8416a..c904902424d9ec75a10a39b8e6b166e709f893f4 100644
 --- a/net/minecraft/world/level/block/state/BlockBehaviour.java
 +++ b/net/minecraft/world/level/block/state/BlockBehaviour.java
-@@ -162,6 +162,15 @@ public abstract class BlockBehaviour implements FeatureElement {
+@@ -171,6 +171,15 @@ public abstract class BlockBehaviour implements FeatureElement {
          org.spigotmc.AsyncCatcher.catchOp("block onPlace"); // Spigot
      }
  
@@ -746,7 +746,7 @@ index fa5c2b2020d6bec3d9640534c84085d93afeb071..1bd8a9dd8b65daf3f4ddff22d54f5756
      protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
      }
  
-@@ -951,6 +960,12 @@ public abstract class BlockBehaviour implements FeatureElement {
+@@ -899,6 +908,12 @@ public abstract class BlockBehaviour implements FeatureElement {
              // CraftBukkit end
          }
  
@@ -760,10 +760,10 @@ index fa5c2b2020d6bec3d9640534c84085d93afeb071..1bd8a9dd8b65daf3f4ddff22d54f5756
              this.getBlock().affectNeighborsAfterRemoval(this.asState(), level, pos, movedByPiston);
          }
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index a5cbeb3273b9a55ba2ac9bb9c138b480f6f4ea5f..87bbe0b76c27493709d20ca610668dc034fc941d 100644
+index 6241eefbb8f2319426ec2e0c098135525a636c1f..8ef67572af7f5cd77c0fea5f970ac64469e7f00c 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
-@@ -408,22 +408,28 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
+@@ -404,22 +404,28 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
          boolean blockChanged = !oldState.is(newBlock);
          boolean movedByPiston = (flags & Block.UPDATE_MOVE_BY_PISTON) != 0;
          boolean sideEffects = (flags & Block.UPDATE_SKIP_BLOCK_ENTITY_SIDEEFFECTS) == 0;

@@ -5,10 +5,10 @@ Subject: [PATCH] Container open passthrough
 
 
 diff --git a/net/minecraft/world/entity/decoration/ItemFrame.java b/net/minecraft/world/entity/decoration/ItemFrame.java
-index 1b88b2427d24deae210be9f69da8c5a30e2d08df..f02f688ea79e1a4a1dc5e0152c9a4893a7c3ecc6 100644
+index 4d0d58d5cbfa88fdd0f5ea3b9d96b21a88f2f988..08685c9b6d69b0b85e52559e5f847d7684a2d2a0 100644
 --- a/net/minecraft/world/entity/decoration/ItemFrame.java
 +++ b/net/minecraft/world/entity/decoration/ItemFrame.java
-@@ -404,6 +404,20 @@ public class ItemFrame extends HangingEntity {
+@@ -397,6 +397,20 @@ public class ItemFrame extends HangingEntity {
          }
  
          if (!player.level().isClientSide()) {
@@ -30,10 +30,10 @@ index 1b88b2427d24deae210be9f69da8c5a30e2d08df..f02f688ea79e1a4a1dc5e0152c9a4893
                  if (hasHeldItem && !this.isRemoved()) {
                      MapItemSavedData data = MapItem.getSavedData(itemStack, this.level());
 diff --git a/net/minecraft/world/level/block/SignBlock.java b/net/minecraft/world/level/block/SignBlock.java
-index d5bd562412ac6704554baa79ce894d120019c731..9e2746112dccdfe7bd1330f20dce113c8ac0214c 100644
+index cd9164c3d2629e492bf903a0bd382ecadf203ef3..ca877574af7f4783022dbe16e1a8ba5383ddd50a 100644
 --- a/net/minecraft/world/level/block/SignBlock.java
 +++ b/net/minecraft/world/level/block/SignBlock.java
-@@ -108,6 +108,18 @@ public abstract class SignBlock extends BaseEntityBlock implements SimpleWaterlo
+@@ -113,6 +113,18 @@ public abstract class SignBlock extends BaseEntityBlock implements SimpleWaterlo
                      } else {
                          return InteractionResult.TRY_WITH_EMPTY_HAND;
                      }
@@ -52,17 +52,18 @@ index d5bd562412ac6704554baa79ce894d120019c731..9e2746112dccdfe7bd1330f20dce113c
                  } else {
                      return InteractionResult.TRY_WITH_EMPTY_HAND;
                  }
-@@ -132,6 +144,26 @@ public abstract class SignBlock extends BaseEntityBlock implements SimpleWaterlo
+@@ -137,7 +149,29 @@ public abstract class SignBlock extends BaseEntityBlock implements SimpleWaterlo
                      return InteractionResult.SUCCESS_SERVER;
                  } else if (executedClickCommand) {
                      return InteractionResult.SUCCESS_SERVER;
+-                } else if (!this.otherPlayerIsEditingSign(player, sign) && player.mayBuild() && this.hasEditableText(player, sign, isFrontText)) {
 +                // Leaves start - sign container passthrough
 +                } else if (org.leavesmc.leaves.LeavesConfig.modify.containerPassthrough) {
 +                    if (player.isShiftKeyDown()
 +                        && !this.otherPlayerIsEditingSign(player, sign)
 +                        && player.mayBuild()
-+                        && sign.getText(textSlot).hasEditableText(player.isTextFilteringEnabled())) {
-+                        this.openTextEdit(player, sign, textSlot, io.papermc.paper.event.player.PlayerOpenSignEvent.Cause.INTERACT);
++                        && this.hasEditableText(player, sign, isFrontText)) {
++                        this.openTextEdit(player, sign, isFrontText, io.papermc.paper.event.player.PlayerOpenSignEvent.Cause.INTERACT);
 +                        return InteractionResult.SUCCESS_SERVER;
 +                    }
 +
@@ -76,6 +77,9 @@ index d5bd562412ac6704554baa79ce894d120019c731..9e2746112dccdfe7bd1330f20dce113c
 +                    }
 +                    return InteractionResult.PASS;
 +                // Leaves end - sign container passthrough
-                 } else if (!this.otherPlayerIsEditingSign(player, sign)
-                     && player.mayBuild()
-                     && sign.getText(textSlot).hasEditableText(player.isTextFilteringEnabled())) {
++                } else if (!this.otherPlayerIsEditingSign(player, sign)
++                    && player.mayBuild()
++                    && this.hasEditableText(player, sign, isFrontText)) {
+                     this.openTextEdit(player, sign, isFrontText, io.papermc.paper.event.player.PlayerOpenSignEvent.Cause.INTERACT); // Paper - Add PlayerOpenSignEvent
+                     return InteractionResult.SUCCESS_SERVER;
+                 } else {

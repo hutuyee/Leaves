@@ -9,10 +9,10 @@ MasaGadget(https://github.com/plusls/MasaGadget)
 litematica(https://github.com/maruohon/litematica)
 
 diff --git a/net/minecraft/world/item/BlockItem.java b/net/minecraft/world/item/BlockItem.java
-index 68f1e9483b93ef071877a4c99f4bd14e0d363145..d52f7565d027799a9c67d3735d6572b08f3d9a1a 100644
+index b94c4f0a6908a37d8a07dba6ff3ece7193aca1b5..0f4ac8eeb8f5f866b22a81f255f7169754437bfc 100644
 --- a/net/minecraft/world/item/BlockItem.java
 +++ b/net/minecraft/world/item/BlockItem.java
-@@ -142,7 +142,7 @@ public class BlockItem extends Item {
+@@ -140,7 +140,7 @@ public class BlockItem extends Item {
      }
  
      protected @Nullable BlockState getPlacementState(final BlockPlaceContext context) {
@@ -43,10 +43,10 @@ index bb352c44fa951367907ebe403c59f03f3c21786f..1f17f966882320b3a2ced50b3f73925c
                      stateForPlacement = possibleState;
                      break;
 diff --git a/net/minecraft/world/level/block/Block.java b/net/minecraft/world/level/block/Block.java
-index 35eb733f51a133aee91ef8a2115fff7a3610741b..14dd542c3c9b6be4253106ac6118f8dbe39d4323 100644
+index debf613713016443060ed85440ac0f80b1d0ad21..066bd8aecdbefcd258579e7c3a3868dd19158698 100644
 --- a/net/minecraft/world/level/block/Block.java
 +++ b/net/minecraft/world/level/block/Block.java
-@@ -513,6 +513,32 @@ public class Block extends BlockBehaviour implements ItemLike {
+@@ -517,6 +517,32 @@ public class Block extends BlockBehaviour implements ItemLike {
      public void stepOn(final Level level, final BlockPos pos, final BlockState onState, final Entity entity) {
      }
  

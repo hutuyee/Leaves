@@ -5,10 +5,10 @@ Subject: [PATCH] Leaves Utils
 
 
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index bea975af0b8be42883bac92d0366cf93ebadc0fc..7584ce024852eb90272affc0efb7411a66276394 100644
+index d958c4717739e588c5f8985dec5d215c745f49fc..fe50ffe4bb115a178595729223b62ab217d9dced 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -394,6 +394,8 @@ public abstract class Entity
+@@ -389,6 +389,8 @@ public abstract class Entity
      public boolean isTemporarilyActive;
      public long activatedImmunityTick = Integer.MIN_VALUE;
  
@@ -17,7 +17,7 @@ index bea975af0b8be42883bac92d0366cf93ebadc0fc..7584ce024852eb90272affc0efb7411a
      public void inactiveTick() {
      }
      // Paper end - EAR 2
-@@ -2838,6 +2840,7 @@ public abstract class Entity
+@@ -2774,6 +2776,7 @@ public abstract class Entity
                  output.putBoolean("Paper.FreezeLock", true);
              }
              // Paper end
@@ -25,7 +25,7 @@ index bea975af0b8be42883bac92d0366cf93ebadc0fc..7584ce024852eb90272affc0efb7411a
          } catch (Throwable t) {
              CrashReport report = CrashReport.forThrowable(t, "Saving entity NBT");
              CrashReportCategory category = report.addCategory("Entity being saved");
-@@ -2967,6 +2970,7 @@ public abstract class Entity
+@@ -2893,6 +2896,7 @@ public abstract class Entity
              }
              freezeLocked = input.getBooleanOr("Paper.FreezeLock", false);
              // Paper end
@@ -33,7 +33,7 @@ index bea975af0b8be42883bac92d0366cf93ebadc0fc..7584ce024852eb90272affc0efb7411a
          } catch (Throwable t) {
              CrashReport report = CrashReport.forThrowable(t, "Loading entity NBT");
              CrashReportCategory category = report.addCategory("Entity being loaded");
-@@ -5626,4 +5630,9 @@ public abstract class Entity
+@@ -5470,4 +5474,9 @@ public abstract class Entity
          return ((ServerLevel) this.level()).isPositionEntityTicking(this.blockPosition());
      }
      // Paper end
@@ -44,10 +44,10 @@ index bea975af0b8be42883bac92d0366cf93ebadc0fc..7584ce024852eb90272affc0efb7411a
 +    // Leaves end - leaves ex data
  }
 diff --git a/net/minecraft/world/level/Level.java b/net/minecraft/world/level/Level.java
-index ab49bb83b51a3ac210f4c51ec48c11036912149e..adbf6ab208f9b1a9e98033bc38e22c2d40f26771 100644
+index 9286d9bcf3ec4069e77d3133f3d7bf29b2370c5a..7eea0737eb05274d4a9ac059b6a6a174f2e67626 100644
 --- a/net/minecraft/world/level/Level.java
 +++ b/net/minecraft/world/level/Level.java
-@@ -979,7 +979,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
+@@ -981,7 +981,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
      }
  
      // Paper start - if loaded
@@ -57,10 +57,10 @@ index ab49bb83b51a3ac210f4c51ec48c11036912149e..adbf6ab208f9b1a9e98033bc38e22c2d
      public final ChunkAccess getChunkIfLoadedImmediately(int x, int z) {
          return ((ServerLevel)this).getChunkSource().getChunkAtIfLoadedImmediately(x, z);
 diff --git a/net/minecraft/world/level/LevelAccessor.java b/net/minecraft/world/level/LevelAccessor.java
-index 0cfb4da0d2cf1c107427fdc59e2fe56ff374f4ee..266c1e216cd0339d7ddd874c5821ed8bf7aee7db 100644
+index 700b9e7f141c4a2689690224c86376c9b957540e..b7c52129df2ee880ac1f61e282184443953a3ae2 100644
 --- a/net/minecraft/world/level/LevelAccessor.java
 +++ b/net/minecraft/world/level/LevelAccessor.java
-@@ -43,7 +43,7 @@ public interface LevelAccessor extends CommonLevelAccessor, ScheduledTickAccess
+@@ -42,7 +42,7 @@ public interface LevelAccessor extends CommonLevelAccessor, ScheduledTickAccess
          return this.getLevelData().getGameTime();
      }
  
@@ -70,10 +70,10 @@ index 0cfb4da0d2cf1c107427fdc59e2fe56ff374f4ee..266c1e216cd0339d7ddd874c5821ed8b
      default Difficulty getDifficulty() {
          return this.getLevelData().getDifficulty();
 diff --git a/net/minecraft/world/level/block/Block.java b/net/minecraft/world/level/block/Block.java
-index 1b89d481168347f8edd078a8ac190b38a4390a6f..35eb733f51a133aee91ef8a2115fff7a3610741b 100644
+index 29f5182c8528bfdced6a3c2c145e58721e723777..debf613713016443060ed85440ac0f80b1d0ad21 100644
 --- a/net/minecraft/world/level/block/Block.java
 +++ b/net/minecraft/world/level/block/Block.java
-@@ -698,6 +698,13 @@ public class Block extends BlockBehaviour implements ItemLike {
+@@ -696,6 +696,13 @@ public class Block extends BlockBehaviour implements ItemLike {
      }
      // CraftBukkit end
  
@@ -88,15 +88,15 @@ index 1b89d481168347f8edd078a8ac190b38a4390a6f..35eb733f51a133aee91ef8a2115fff7a
          @Override
          public boolean equals(final Object o) {
 diff --git a/net/minecraft/world/level/block/state/BlockBehaviour.java b/net/minecraft/world/level/block/state/BlockBehaviour.java
-index 44fcc919a2de54c3ceb0fd0875aadaea083fabad..fa5c2b2020d6bec3d9640534c84085d93afeb071 100644
+index c78d77089e34c4bb559f173b449bfb7d91b05d5c..af47032728316f071de658a7cb9a945fb1b8416a 100644
 --- a/net/minecraft/world/level/block/state/BlockBehaviour.java
 +++ b/net/minecraft/world/level/block/state/BlockBehaviour.java
-@@ -844,7 +844,7 @@ public abstract class BlockBehaviour implements FeatureElement {
+@@ -792,7 +792,7 @@ public abstract class BlockBehaviour implements FeatureElement {
          }
  
          public PushReaction getPistonPushReaction() {
--            return !this.isDestroyable() ? PushReaction.IMMOVEABLE : this.pushReaction; // Paper - Protect Bedrock and End Portal/Frames from being destroyed
-+            return !this.isDestroyable() ? PushReaction.IMMOVEABLE : this.getBlock().getResetPushReaction() == null ? this.pushReaction : this.getBlock().getResetPushReaction(); // Paper - Protect Bedrock and End Portal/Frames from being destroyed // Leaves - reset push reaction
+-            return !this.isDestroyable() ? PushReaction.BLOCK : this.pushReaction; // Paper - Protect Bedrock and End Portal/Frames from being destroyed
++            return !this.isDestroyable() ? PushReaction.BLOCK : this.getBlock().getResetPushReaction() == null ? this.pushReaction : this.getBlock().getResetPushReaction(); // Paper - Protect Bedrock and End Portal/Frames from being destroyed // Leaves - reset push reaction
          }
  
          public boolean isSolidRender() {

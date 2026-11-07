@@ -6,10 +6,10 @@ Subject: [PATCH] Optimize sun burn tick
 This patch is Powered by Gale(https://github.com/GaleMC/Gale)
 
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 1a1a566daa5a71732f661e1898dc224a9883c1e4..6daa71441020d2e3ac1a19aee8e26d08d397fdc6 100644
+index 7eb5c92944658f01c3fb47a059ee0b0fc3a7e703..2fb272d1f5e381deab23a78c0014457490c2597d 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -2355,10 +2355,23 @@ public abstract class Entity
+@@ -2303,10 +2303,23 @@ public abstract class Entity
  
      @Deprecated
      public float getLightLevelDependentMagicValue() {
@@ -34,10 +34,10 @@ index 1a1a566daa5a71732f661e1898dc224a9883c1e4..6daa71441020d2e3ac1a19aee8e26d08
      public void absSnapTo(final double x, final double y, final double z, final float yRot, final float xRot) {
          this.absSnapTo(x, y, z);
 diff --git a/net/minecraft/world/entity/Mob.java b/net/minecraft/world/entity/Mob.java
-index 808414a2c04b94ec913e76c8b65b086f92645694..5177032eb4ebfb1be47c471f18dc673c8eb032a2 100644
+index 534ea5d0e6bd1e320c3997b9d4d37b7024658a64..917f506bcd385b8fc76f5a308654f04650f5e619 100644
 --- a/net/minecraft/world/entity/Mob.java
 +++ b/net/minecraft/world/entity/Mob.java
-@@ -577,6 +577,11 @@ public abstract class Mob extends LivingEntity implements Targeting, EquipmentUs
+@@ -562,6 +562,11 @@ public abstract class Mob extends LivingEntity implements Targeting, EquipmentUs
          return EquipmentSlot.HEAD;
      }
  
@@ -49,7 +49,7 @@ index 808414a2c04b94ec913e76c8b65b086f92645694..5177032eb4ebfb1be47c471f18dc673c
      private void burnUndead() {
          if (this.isAlive() && this.isSunBurnTick()) {
              EquipmentSlot slot = this.sunProtectionSlot();
-@@ -593,12 +598,30 @@ public abstract class Mob extends LivingEntity implements Targeting, EquipmentUs
+@@ -583,12 +588,30 @@ public abstract class Mob extends LivingEntity implements Targeting, EquipmentUs
  
      public boolean isSunBurnTick() {
          if (!this.level().isClientSide() && this.level().environmentAttributes().getValue(EnvironmentAttributes.MONSTERS_BURN, this.position())) {

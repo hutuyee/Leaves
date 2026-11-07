@@ -6,10 +6,10 @@ Subject: [PATCH] Config to disable method profiler
 This patch is Powered by Pufferfish(https://github.com/pufferfish-gg/Pufferfish)
 
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index afb5801c913683b71338ce045acd8822289ebfc3..a506f789c34dbe3f3888007a1886aed02c23d3ad 100644
+index 0e5b9f6ba338bb37626b3c27748bd78912eeceae..a698c18d9868fd0671494fefbdab300eb3703228 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1330,7 +1330,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1346,7 +1346,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
                  // Paper - improve tick loop - done above
  
@@ -19,10 +19,10 @@ index afb5801c913683b71338ce045acd8822289ebfc3..a506f789c34dbe3f3888007a1886aed0
                      ProfilerFiller profiler = Profiler.get();
                      profiler.push("nextTickWait");
 diff --git a/net/minecraft/util/profiling/Profiler.java b/net/minecraft/util/profiling/Profiler.java
-index ae5974d304abd7d240453f0376c5fd79359a9585..3eaf86b0fb208f50f6cd19264493827dd35256f7 100644
+index ee9794784a53cbe4ec02ec4ad94923ce8381b5dd..2f6f5075a04d9f2562e75f0099e72ce0acb7ce72 100644
 --- a/net/minecraft/util/profiling/Profiler.java
 +++ b/net/minecraft/util/profiling/Profiler.java
-@@ -49,6 +49,7 @@ public final class Profiler {
+@@ -45,6 +45,7 @@ public final class Profiler {
      }
  
      public static ProfilerFiller get() {

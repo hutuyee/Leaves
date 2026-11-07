@@ -5,10 +5,10 @@ Subject: [PATCH] Spider jockeys drop gapples
 
 
 diff --git a/net/minecraft/world/entity/monster/skeleton/Skeleton.java b/net/minecraft/world/entity/monster/skeleton/Skeleton.java
-index 4299aecea07926303b8a8d14fff007e19011076d..b34ad8c8e8b114bf1b8f1dc40edaceb2f73f5bdc 100644
+index f23ffcbc12867a5ed068c95f5c570497a0d53f13..3a69f22a0efe640ef4fb65d93b639de9ebafb664 100644
 --- a/net/minecraft/world/entity/monster/skeleton/Skeleton.java
 +++ b/net/minecraft/world/entity/monster/skeleton/Skeleton.java
-@@ -82,4 +82,16 @@ public class Skeleton extends AbstractSkeleton {
+@@ -131,4 +131,16 @@ public class Skeleton extends AbstractSkeleton {
      protected SoundEvent getStepSound() {
          return SoundEvents.SKELETON_STEP;
      }

@@ -5,24 +5,24 @@ Subject: [PATCH] Configurable MC-59471
 
 
 diff --git a/net/minecraft/world/level/block/TripWireHookBlock.java b/net/minecraft/world/level/block/TripWireHookBlock.java
-index b9090b80f9489431b11da29acf1f499e94c022ea..21fb04489585c278d59a01ffca21ec856d9fe468 100644
+index 9d08ce61f964bb3115c708091549a233dabcf0e3..c485c1e82b9a00f70c9fe1f0c55f1d142f1473f7 100644
 --- a/net/minecraft/world/level/block/TripWireHookBlock.java
 +++ b/net/minecraft/world/level/block/TripWireHookBlock.java
-@@ -193,10 +193,17 @@ public class TripWireHookBlock extends Block {
+@@ -200,10 +200,17 @@ public class TripWireHookBlock extends Block {
                      BlockPos testPos = pos.relative(direction, i);
                      BlockState wireData = wireStates[i];
                      if (wireData != null) {
 -                        BlockState testPosState = level.getBlockState(testPos);
 -                        if (testPosState.is(Blocks.TRIPWIRE) || testPosState.is(Blocks.TRIPWIRE_HOOK)) {
--                            if (!io.papermc.paper.configuration.GlobalConfiguration.get().blockUpdates.disableTripwireUpdates || !testPosState.is(Blocks.TRIPWIRE)) level.setBlockAndUpdate(testPos, wireData.trySetValue(ATTACHED, attached)); // Paper - prevent tripwire from updating
+-                            if (!io.papermc.paper.configuration.GlobalConfiguration.get().blockUpdates.disableTripwireUpdates || !testPosState.is(Blocks.TRIPWIRE)) level.setBlock(testPos, wireData.trySetValue(ATTACHED, attached), Block.UPDATE_ALL); // Paper - prevent tripwire from updating
 +                        // Leaves start - MC-59471
 +                        if (org.leavesmc.leaves.LeavesConfig.modify.oldMC.tripwire.stringTripwireHookDuplicate) {
-+                            level.setBlockAndUpdate(testPos, wireData.trySetValue(ATTACHED, attached));
++                            level.setBlock(testPos, wireData.trySetValue(ATTACHED, attached), Block.UPDATE_ALL);
 +                            level.getBlockState(testPos);
 +                        } else {
 +                            BlockState testPosState = level.getBlockState(testPos);
 +                            if (testPosState.is(Blocks.TRIPWIRE) || testPosState.is(Blocks.TRIPWIRE_HOOK)) {
-+                                if (!io.papermc.paper.configuration.GlobalConfiguration.get().blockUpdates.disableTripwireUpdates || !testPosState.is(Blocks.TRIPWIRE)) level.setBlockAndUpdate(testPos, wireData.trySetValue(ATTACHED, attached)); // Paper - prevent tripwire from updating
++                                if (!io.papermc.paper.configuration.GlobalConfiguration.get().blockUpdates.disableTripwireUpdates || !testPosState.is(Blocks.TRIPWIRE)) level.setBlock(testPos, wireData.trySetValue(ATTACHED, attached), Block.UPDATE_ALL); // Paper - prevent tripwire from updating
 +                            }
                          }
 +                        // Leaves end - MC-59471

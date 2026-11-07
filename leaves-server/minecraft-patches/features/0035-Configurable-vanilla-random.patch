@@ -5,10 +5,10 @@ Subject: [PATCH] Configurable vanilla random
 
 
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index a52ce312d9aa90bff5e62f03abbf221e5e37abb6..3807b87fc0876b1ce5a533b654dd393a99a4974b 100644
+index 375101d16d6750505d6794e9c21180198f8f4f28..c01eaa503ae98e927bb41619e433d0f3b0d16631 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -301,7 +301,7 @@ public abstract class Entity
+@@ -298,7 +298,7 @@ public abstract class Entity
      public double yOld;
      public double zOld;
      public boolean noPhysics;
@@ -16,12 +16,12 @@ index a52ce312d9aa90bff5e62f03abbf221e5e37abb6..3807b87fc0876b1ce5a533b654dd393a
 +    protected final RandomSource random = org.leavesmc.leaves.LeavesConfig.modify.useVanillaRandom ? RandomSource.create() : SHARED_RANDOM; // Paper - Share random for entities to make them more random // Leaves - configurable vanilla random
      public int tickCount;
      private int remainingFireTicks;
-     private final EntityFluidInteraction fluidInteraction = new EntityFluidInteraction(FLUIDS_WITH_CURRENT);
+     private final EntityFluidInteraction fluidInteraction = new EntityFluidInteraction(Set.of(FluidTags.WATER, FluidTags.LAVA));
 diff --git a/net/minecraft/world/entity/animal/bee/Bee.java b/net/minecraft/world/entity/animal/bee/Bee.java
-index fed07676ae1d7d8ce240e8ec8f0a2582ef45eea2..4199658c3d1b205a59bed3a2c12cafc7e794746b 100644
+index c8cb5bb059c06f440d32e88cbd517a5aab6963da..2d07e102238afcfe9f0eddc7689aefee3e2252ea 100644
 --- a/net/minecraft/world/entity/animal/bee/Bee.java
 +++ b/net/minecraft/world/entity/animal/bee/Bee.java
-@@ -800,7 +800,7 @@ public class Bee extends Animal implements NeutralMob {
+@@ -799,7 +799,7 @@ public class Bee extends Animal implements NeutralMob {
      @VisibleForDebug
      public class BeeGoToHiveGoal extends Bee.BaseBeeGoal {
          public static final int MAX_TRAVELLING_TICKS = 2400;
@@ -30,7 +30,7 @@ index fed07676ae1d7d8ce240e8ec8f0a2582ef45eea2..4199658c3d1b205a59bed3a2c12cafc7
          private static final int MAX_BLACKLISTED_TARGETS = 3;
          private final List<BlockPos> blacklistedTargets = Lists.newArrayList();
          private @Nullable Path lastPath;
-@@ -915,7 +915,7 @@ public class Bee extends Animal implements NeutralMob {
+@@ -914,7 +914,7 @@ public class Bee extends Animal implements NeutralMob {
  
      public class BeeGoToKnownFlowerGoal extends Bee.BaseBeeGoal {
          private static final int MAX_TRAVELLING_TICKS = 2400;
@@ -40,7 +40,7 @@ index fed07676ae1d7d8ce240e8ec8f0a2582ef45eea2..4199658c3d1b205a59bed3a2c12cafc7
          public BeeGoToKnownFlowerGoal() {
              this.setFlags(EnumSet.of(Goal.Flag.MOVE));
 diff --git a/net/minecraft/world/entity/animal/squid/Squid.java b/net/minecraft/world/entity/animal/squid/Squid.java
-index 11e3b1546e97beee7d6e702441ed28763ac25763..456f2a78c01ba617c2feb93d60d75c95b039adce 100644
+index cc6ecffa5eccdf8f12d37861ead767dbe5326397..f8bc083b95528cd9c7320e2ee29ac05ba96822c6 100644
 --- a/net/minecraft/world/entity/animal/squid/Squid.java
 +++ b/net/minecraft/world/entity/animal/squid/Squid.java
 @@ -52,6 +52,7 @@ public class Squid extends AgeableWaterCreature {
@@ -52,10 +52,10 @@ index 11e3b1546e97beee7d6e702441ed28763ac25763..456f2a78c01ba617c2feb93d60d75c95
      }
  
 diff --git a/net/minecraft/world/entity/item/ItemEntity.java b/net/minecraft/world/entity/item/ItemEntity.java
-index 66087121aab928064edcd036ac498e833036ba16..22781cf1a567a39df2e4979c80c84e0f71943b09 100644
+index 357f856835f539085f64341cdfc0d472eade5962..85cefc2eff0f4ff68288a062d73c69713ce51a1d 100644
 --- a/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/net/minecraft/world/entity/item/ItemEntity.java
-@@ -66,7 +66,13 @@ public class ItemEntity extends Entity implements TraceableEntity {
+@@ -65,7 +65,13 @@ public class ItemEntity extends Entity implements TraceableEntity {
          this(EntityTypes.ITEM, level);
          this.setPos(x, y, z);
          this.setItem(itemStack);
@@ -71,10 +71,10 @@ index 66087121aab928064edcd036ac498e833036ba16..22781cf1a567a39df2e4979c80c84e0f
  
      public ItemEntity(
 diff --git a/net/minecraft/world/entity/item/PrimedTnt.java b/net/minecraft/world/entity/item/PrimedTnt.java
-index 82dd3a28bfeb4ec455e43b70fc8bd01f1009f998..21829d68b5d374377ef05a10301914dcdf6307b0 100644
+index ffb23ae34060c349e7200fc8475412295bd54c7e..2323856ce4e3ca6b72c1845af614b007e5abfcc5 100644
 --- a/net/minecraft/world/entity/item/PrimedTnt.java
 +++ b/net/minecraft/world/entity/item/PrimedTnt.java
-@@ -73,7 +73,7 @@ public class PrimedTnt extends Entity implements TraceableEntity {
+@@ -72,7 +72,7 @@ public class PrimedTnt extends Entity implements TraceableEntity {
      public PrimedTnt(final Level level, final double x, final double y, final double z, final @Nullable LivingEntity owner) {
          this(EntityTypes.TNT, level);
          this.setPos(x, y, z);

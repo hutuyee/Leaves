@@ -6,10 +6,10 @@ Subject: [PATCH] Optimize suffocation
 This patch is Powered by Pufferfish(https://github.com/pufferfish-gg/Pufferfish)
 
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index b1874505e4ae0aba4b82305aa05b20e87abeaa1a..5c3124310e3a926d00a602638c11a8c0a140e0b2 100644
+index cf4ae48aaaa9c365273839b1a588932021dc3a95..24b98ba55c76de9d6febd01f3a8280f06a2bb9f7 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -456,7 +456,12 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -453,7 +453,12 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          profiler.push("livingEntityBaseTick");
          if (this.isAlive() && this.level() instanceof ServerLevel level) {
              boolean isPlayer = this instanceof Player;
@@ -23,16 +23,16 @@ index b1874505e4ae0aba4b82305aa05b20e87abeaa1a..5c3124310e3a926d00a602638c11a8c0
                  this.hurtServer(level, this.damageSources().inWall(), 1.0F);
              } else if (isPlayer && !level.getWorldBorder().isWithinBounds(this.getBoundingBox())) {
                  double dist = level.getWorldBorder().getDistanceToBorder(this) + level.getWorldBorder().getSafeZone();
-@@ -1434,6 +1439,12 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -1423,6 +1428,12 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          return this.getHealth() <= 0.0F || this.dead;
      }
  
 +    // Leaves start - optimize suffocation
 +    public boolean couldPossiblyBeHurt(final float amount) {
-+        return (float)this.damageCooldownTime <= (float)this.invulnerableDuration / 2.0F || amount > this.lastHurt;
++        return (float)this.invulnerableTime <= (float)this.invulnerableDuration / 2.0F || amount > this.lastHurt;
 +    }
 +    // Leaves end - optimize suffocation
 +
-     public boolean wasHurtRecently() {
-         return this.hurtTime > 0;
-     }
+     @Override
+     public boolean hurtServer(final ServerLevel level, final DamageSource source, float damage) {
+         if (this.isInvulnerableTo(level, source)) {

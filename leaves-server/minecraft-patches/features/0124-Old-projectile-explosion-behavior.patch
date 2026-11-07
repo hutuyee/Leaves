@@ -5,19 +5,19 @@ Subject: [PATCH] Old projectile explosion behavior
 
 
 diff --git a/net/minecraft/world/level/ServerExplosion.java b/net/minecraft/world/level/ServerExplosion.java
-index 301398f76ff93347c51161084e776102dbc40ebd..10bac5a9474ea7fd9f42a67983a3c9ad39eaec8f 100644
+index 06fa5d3582a2f8043451e972be2c6cb0bcc85854..f4009b46bae9aa0e4c27ca199ef221bb72174314 100644
 --- a/net/minecraft/world/level/ServerExplosion.java
 +++ b/net/minecraft/world/level/ServerExplosion.java
 @@ -534,7 +534,13 @@ public class ServerExplosion implements Explosion {
                              // Paper end - knockback events
                          }
                          // CraftBukkit end
--                        entity.pushFromExplosion(knockback);
+-                        entity.push(knockback);
 +                        // Leaves start - old projectile explosion behavior
 +                        if (org.leavesmc.leaves.LeavesConfig.modify.oldMC.oldProjectileExplosionBehavior) {
 +                            entity.setDeltaMovement(entity.getDeltaMovement().add(knockback));
 +                        } else {
-+                            entity.pushFromExplosion(knockback);
++                            entity.push(knockback);
 +                        }
 +                        // Leaves end - old projectile explosion behavior
                          if (entity.is(EntityTypeTags.REDIRECTABLE_PROJECTILE) && entity instanceof Projectile projectile) {

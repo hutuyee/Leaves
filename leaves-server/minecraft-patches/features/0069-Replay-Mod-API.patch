@@ -6,10 +6,10 @@ Subject: [PATCH] Replay Mod API
 This patch is Powered by ReplayMod(https://github.com/ReplayMod)
 
 diff --git a/net/minecraft/commands/CommandSourceStack.java b/net/minecraft/commands/CommandSourceStack.java
-index 7cbcc8865893ea4f7fae8da13f534c65fcdcd216..57e9613074842412f6deeabd14aa7b2d6f998147 100644
+index 89b9d1a4122d502437d516f8affc5ba72f421f5f..e5a215c35f06c5b651e5f8b71700929e4070c677 100644
 --- a/net/minecraft/commands/CommandSourceStack.java
 +++ b/net/minecraft/commands/CommandSourceStack.java
-@@ -570,7 +570,7 @@ public class CommandSourceStack implements SharedSuggestionProvider, ExecutionCo
+@@ -562,7 +562,7 @@ public class CommandSourceStack implements SharedSuggestionProvider, ExecutionCo
  
      @Override
      public Collection<String> getOnlinePlayerNames() {
@@ -84,10 +84,10 @@ index 6c05b9276bdc267a36376f6c64592a50e4b2b36e..904a772a0f83b4712234c0beb423a1fd
                      result.add(player);
                      if (result.size() >= limit) {
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index c421b11b1080425cf7d731d6e54e86c6b2fafc5c..411d5a0b88cb82096eb61fd52ae388ea9844f2cf 100644
+index 4e0225494b27e0ca068b0c59699055f978e88933..af3ddc965ec3084644798f0172ae0997cb98d5ff 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1727,7 +1727,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1743,7 +1743,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      }
  
      private ServerStatus.Players buildPlayerStatus() {
@@ -96,7 +96,7 @@ index c421b11b1080425cf7d731d6e54e86c6b2fafc5c..411d5a0b88cb82096eb61fd52ae388ea
          int maxPlayers = this.getMaxPlayers();
          if (this.hidesOnlinePlayers()) {
              return new ServerStatus.Players(maxPlayers, players.size(), List.of());
-@@ -1940,7 +1940,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1956,7 +1956,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      @Override
      public int getPlayerCount() {
@@ -105,7 +105,7 @@ index c421b11b1080425cf7d731d6e54e86c6b2fafc5c..411d5a0b88cb82096eb61fd52ae388ea
      }
  
      public String[] getPlayerNames() {
-@@ -2162,7 +2162,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2173,7 +2173,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
          int count = 0;
  
@@ -114,7 +114,7 @@ index c421b11b1080425cf7d731d6e54e86c6b2fafc5c..411d5a0b88cb82096eb61fd52ae388ea
              // Paper start - Expand PlayerGameModeChangeEvent
              org.bukkit.event.player.PlayerGameModeChangeEvent event = player.setGameMode(gameType, org.bukkit.event.player.PlayerGameModeChangeEvent.Cause.DEFAULT_GAMEMODE, null);
              if (event == null || event.isCancelled()) {
-@@ -2331,7 +2331,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2343,7 +2343,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
                  if (Thread.currentThread() != this.serverThread) return; // Paper
                  // Paper start - we don't need to save everything, just advancements
                  // this.getPlayerList().saveAll();
@@ -123,7 +123,7 @@ index c421b11b1080425cf7d731d6e54e86c6b2fafc5c..411d5a0b88cb82096eb61fd52ae388ea
                      player.getAdvancements().save();
                  }
                  // Paper end - we don't need to save everything, just advancements
-@@ -2466,7 +2466,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2479,7 +2479,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              PlayerList playerList = this.getPlayerList();
              UserWhiteList whiteList = playerList.getWhiteList();
  
@@ -133,10 +133,10 @@ index c421b11b1080425cf7d731d6e54e86c6b2fafc5c..411d5a0b88cb82096eb61fd52ae388ea
                      player.connection.disconnect(net.kyori.adventure.text.Component.text(org.spigotmc.SpigotConfig.whitelistMessage), org.bukkit.event.player.PlayerKickEvent.Cause.WHITELIST); // Paper - use configurable message & kick event cause
                  }
 diff --git a/net/minecraft/server/PlayerAdvancements.java b/net/minecraft/server/PlayerAdvancements.java
-index 928d676d40452a04fe47a49469b0c8f2bc6549a1..56874555c52f52445102d5c62d28694bdcf7af50 100644
+index ceffa9e06abeaead449f6149ca11bad567db5951..ade4d1a21124b21e43ae4fbe6a5639adcea7e491 100644
 --- a/net/minecraft/server/PlayerAdvancements.java
 +++ b/net/minecraft/server/PlayerAdvancements.java
-@@ -174,7 +174,7 @@ public class PlayerAdvancements {
+@@ -173,7 +173,7 @@ public class PlayerAdvancements {
          }
          // Leaves end - spectator don't get advancement
          // Leaves start - bot can't get advancement
@@ -146,10 +146,10 @@ index 928d676d40452a04fe47a49469b0c8f2bc6549a1..56874555c52f52445102d5c62d28694b
          }
          // Leaves end - bot can't get advancement
 diff --git a/net/minecraft/server/ServerScoreboard.java b/net/minecraft/server/ServerScoreboard.java
-index 4856a2b24e708084da2809df87859fd9c07f0a6b..2ad3470c19a4a9e49ec069a1b932d7851fd69662 100644
+index 62b2940e02ad5b3c515934dc5b1d0eaedce84d69..b8dadb6524f1f4e1a3a56f66043964c5f3810ee0 100644
 --- a/net/minecraft/server/ServerScoreboard.java
 +++ b/net/minecraft/server/ServerScoreboard.java
-@@ -250,7 +250,7 @@ public class ServerScoreboard extends Scoreboard {
+@@ -247,7 +247,7 @@ public class ServerScoreboard extends Scoreboard {
      public void startTrackingObjective(final Objective objective) {
          List<Packet<?>> packets = this.getStartTrackingPackets(objective);
  
@@ -158,7 +158,7 @@ index 4856a2b24e708084da2809df87859fd9c07f0a6b..2ad3470c19a4a9e49ec069a1b932d785
              if (player.getBukkitEntity().getScoreboard().getHandle() != this) continue; // CraftBukkit - Only players on this board
              for (Packet<?> packet : packets) {
                  player.connection.send(packet);
-@@ -276,7 +276,7 @@ public class ServerScoreboard extends Scoreboard {
+@@ -273,7 +273,7 @@ public class ServerScoreboard extends Scoreboard {
      public void stopTrackingObjective(final Objective objective) {
          List<Packet<?>> packets = this.getStopTrackingPackets(objective);
  
@@ -284,10 +284,10 @@ index 37c9f983ae89c497f44a1b7967d741abf909e0a0..d7fb2505f2a86ca0d81f144624ef2e1a
  
              this.setListData(players);
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index cc999d87b27063c8def51f484483a74b65bd2353..1a345ed4576e98273eab0e20f5539f830c176c4f 100644
+index ce69ebcca68ac552ec37f253bf8f6149eb76649e..2a6703e5cac457d76e62be27b3e2d8b2b0c05b38 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
-@@ -3160,7 +3160,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
+@@ -2904,7 +2904,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
              if (entity instanceof ServerPlayer player) {
                  ServerLevel.this.players.add(player);
                  // Leaves start - skip fakeplayers
@@ -296,7 +296,7 @@ index cc999d87b27063c8def51f484483a74b65bd2353..1a345ed4576e98273eab0e20f5539f83
                      ServerLevel.this.realPlayers.add(player);
                  }
                  // Leaves end - skip fakeplayers
-@@ -3242,7 +3242,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
+@@ -2987,7 +2987,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
              if (entity instanceof ServerPlayer player) {
                  ServerLevel.this.players.remove(player);
                  // Leaves start - skip fakeplayers
@@ -306,18 +306,18 @@ index cc999d87b27063c8def51f484483a74b65bd2353..1a345ed4576e98273eab0e20f5539f83
                  }
                  // Leaves end - skip fakeplayers
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index aa8042e60f63ce7380893af6da21be41ff40d6b9..8eb94f0896025f4688ace83ac32c5f2fc9260b83 100644
+index e8d1ee3c5ba1c8fa6e6e30f8ee18c27319893653..29907d613a0df77a83f187158e9255e90a6115b3 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -116,6 +116,7 @@ public abstract class PlayerList {
+@@ -114,6 +114,7 @@ public abstract class PlayerList {
      private static final SimpleDateFormat BAN_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z", Locale.ROOT);
      private final MinecraftServer server;
      private final List<ServerPlayer> players = new java.util.concurrent.CopyOnWriteArrayList(); // CraftBukkit - ArrayList -> CopyOnWriteArrayList: Iterator safety
 +    public final List<ServerPlayer> realPlayers = new java.util.concurrent.CopyOnWriteArrayList(); // Leaves - replay mod api
      private final Map<UUID, ServerPlayer> playersByUUID = Maps.newHashMap();
-     private final Map<NameAndId, PermissionLevel> playerPermissions = Maps.newHashMap();
      private final UserBanList bans;
-@@ -157,6 +158,140 @@ public abstract class PlayerList {
+     private final IpBanList ipBans;
+@@ -155,6 +156,140 @@ public abstract class PlayerList {
  
      abstract public void loadAndSaveFiles(); // Paper - fix converting txt to json file; moved from DedicatedPlayerList constructor
  
@@ -458,7 +458,7 @@ index aa8042e60f63ce7380893af6da21be41ff40d6b9..8eb94f0896025f4688ace83ac32c5f2f
      public void placeNewPlayer(final Connection connection, final ServerPlayer player, final CommonListenerCookie cookie) {
          player.isRealPlayer = true; // Paper
          player.loginTime = System.currentTimeMillis(); // Paper - Replace OfflinePlayer#getLastPlayed
-@@ -225,6 +360,7 @@ public abstract class PlayerList {
+@@ -223,6 +358,7 @@ public abstract class PlayerList {
  
          // player.connection.send(ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(this.players)); // CraftBukkit - replaced with loop below
          this.players.add(player);
@@ -466,7 +466,7 @@ index aa8042e60f63ce7380893af6da21be41ff40d6b9..8eb94f0896025f4688ace83ac32c5f2f
          this.playersByName.put(player.getScoreboardName().toLowerCase(java.util.Locale.ROOT), player); // Spigot
          this.playersByUUID.put(player.getUUID(), player);
          // this.broadcastAll(ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(player))); // CraftBukkit - replaced with loop below
-@@ -431,6 +567,7 @@ public abstract class PlayerList {
+@@ -428,6 +564,7 @@ public abstract class PlayerList {
      }
  
      protected void save(final ServerPlayer player) {
@@ -474,7 +474,7 @@ index aa8042e60f63ce7380893af6da21be41ff40d6b9..8eb94f0896025f4688ace83ac32c5f2f
          if (!player.getBukkitEntity().isPersistent()) return; // CraftBukkit
          player.lastSave = MinecraftServer.currentTick; // Paper - Incremental chunk and player saving
          this.playerIo.save(player);
-@@ -445,6 +582,40 @@ public abstract class PlayerList {
+@@ -442,6 +579,40 @@ public abstract class PlayerList {
          }
      }
  
@@ -515,7 +515,7 @@ index aa8042e60f63ce7380893af6da21be41ff40d6b9..8eb94f0896025f4688ace83ac32c5f2f
      public net.kyori.adventure.text.@Nullable Component remove(final ServerPlayer player) { // CraftBukkit - return string // Paper - return Component
          // Paper start - Fix kick event leave message not being sent
          return this.remove(player, net.kyori.adventure.text.Component.translatable("multiplayer.player.left", net.kyori.adventure.text.format.NamedTextColor.YELLOW, io.papermc.paper.configuration.GlobalConfiguration.get().messages.useDisplayNameInQuitMessage ? player.getBukkitEntity().displayName() : io.papermc.paper.adventure.PaperAdventure.asAdventure(player.getDisplayName())));
-@@ -517,6 +688,7 @@ public abstract class PlayerList {
+@@ -514,6 +685,7 @@ public abstract class PlayerList {
          player.retireScheduler(); // Paper - Folia schedulers
          player.getAdvancements().clearTriggers();
          this.players.remove(player);
@@ -523,7 +523,7 @@ index aa8042e60f63ce7380893af6da21be41ff40d6b9..8eb94f0896025f4688ace83ac32c5f2f
          this.playersByName.remove(player.getScoreboardName().toLowerCase(java.util.Locale.ROOT)); // Spigot
          this.server.getCustomBossEvents().onPlayerDisconnect(player);
          UUID uuid = player.getUUID();
-@@ -835,15 +1007,15 @@ public abstract class PlayerList {
+@@ -826,15 +998,15 @@ public abstract class PlayerList {
      }
  
      public String[] getPlayerNamesArray() {
@@ -544,7 +544,7 @@ index aa8042e60f63ce7380893af6da21be41ff40d6b9..8eb94f0896025f4688ace83ac32c5f2f
          }
          // Leaves end - fakeplayer support
  
-@@ -910,7 +1082,7 @@ public abstract class PlayerList {
+@@ -901,7 +1073,7 @@ public abstract class PlayerList {
  
      // Paper start - whitelist verify event / login event
      public LoginResult canBypassFullServerLogin(final NameAndId nameAndId, final LoginResult currentResult) {

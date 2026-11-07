@@ -5,10 +5,10 @@ Subject: [PATCH] Old Throwable Projectile tick order
 
 
 diff --git a/net/minecraft/world/entity/projectile/ThrowableProjectile.java b/net/minecraft/world/entity/projectile/ThrowableProjectile.java
-index 787addf20375517333f2b75f20aff026c5b953d1..d4f4f8d3899c2ba4aa49612c086d74debb748444 100644
+index 62a073c3cf878b8ef7592f5157b729b969e32107..58b284e783ebe9ef9ae6a028ac44c6c043779cd5 100644
 --- a/net/minecraft/world/entity/projectile/ThrowableProjectile.java
 +++ b/net/minecraft/world/entity/projectile/ThrowableProjectile.java
-@@ -43,6 +43,25 @@ public abstract class ThrowableProjectile extends Projectile {
+@@ -45,6 +45,25 @@ public abstract class ThrowableProjectile extends Projectile {
      @Override
      public void tick() {
          this.handleFirstTickBubbleColumn();

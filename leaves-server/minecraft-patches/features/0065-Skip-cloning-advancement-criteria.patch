@@ -6,10 +6,10 @@ Subject: [PATCH] Skip cloning advancement criteria
 This patch is Powered by Gale(https://github.com/GaleMC/Gale)
 
 diff --git a/net/minecraft/advancements/Advancement.java b/net/minecraft/advancements/Advancement.java
-index b8afa8f7e3a51c92deb4e2d105031ee9eb39e663..8ec375f13f6101628ab83e044f26d7465c0d090c 100644
+index 5a4c58bfd3708f505901f5b9fb316a1c0d7a36ac..cf19726b855c2fef93fd48960727feefdc47e94c 100644
 --- a/net/minecraft/advancements/Advancement.java
 +++ b/net/minecraft/advancements/Advancement.java
-@@ -72,7 +72,15 @@ public record Advancement(
+@@ -62,7 +62,15 @@ public record Advancement(
          final AdvancementRequirements requirements,
          final boolean sendsTelemetryEvent
      ) {

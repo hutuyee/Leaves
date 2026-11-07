@@ -5,10 +5,10 @@ Subject: [PATCH] No TNT place update
 
 
 diff --git a/net/minecraft/world/level/block/TntBlock.java b/net/minecraft/world/level/block/TntBlock.java
-index daf0f8d4511cad6c81b70894f8d893a993730d7c..44a1f79d16683e490a708972555161fc25eab6b9 100644
+index c27fc92d6ff9dd7e07a61513601ef73ff16cf842..e11ed0c5f9ad13f81ef18856dde12c8925b6880b 100644
 --- a/net/minecraft/world/level/block/TntBlock.java
 +++ b/net/minecraft/world/level/block/TntBlock.java
-@@ -43,7 +43,7 @@ public class TntBlock extends Block {
+@@ -47,7 +47,7 @@ public class TntBlock extends Block {
      @Override
      protected void onPlace(final BlockState state, final Level level, final BlockPos pos, final BlockState oldState, final boolean movedByPiston) {
          if (!oldState.is(state.getBlock())) {

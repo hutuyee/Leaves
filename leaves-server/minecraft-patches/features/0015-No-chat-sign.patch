@@ -5,29 +5,29 @@ Subject: [PATCH] No chat sign
 
 
 diff --git a/net/minecraft/commands/arguments/ArgumentSignatures.java b/net/minecraft/commands/arguments/ArgumentSignatures.java
-index 78aa03db8aa8b0aa927145c26f72ff31d98653da..c645fb48933f10755b5f7cfe2d73efc52972e0cb 100644
+index 042fec0c893c34c99edda17274a59e44c041c5d4..20367cbf935b5a7d30515abb779d3bf83d744587 100644
 --- a/net/minecraft/commands/arguments/ArgumentSignatures.java
 +++ b/net/minecraft/commands/arguments/ArgumentSignatures.java
-@@ -13,9 +13,15 @@ public record ArgumentSignatures(List<ArgumentSignatures.Entry> entries) {
-     public static final ArgumentSignatures EMPTY = new ArgumentSignatures(List.of());
-     private static final int MAX_ARGUMENT_COUNT = 8;
+@@ -14,9 +14,16 @@ public record ArgumentSignatures(List<ArgumentSignatures.Entry> entries) {
      private static final int MAX_ARGUMENT_NAME_LENGTH = 16;
--    public static final StreamCodec<ByteBuf, ArgumentSignatures> STREAM_CODEC = StreamCodec.composite(
--        ArgumentSignatures.Entry.STREAM_CODEC.apply(ByteBufCodecs.list(8)), ArgumentSignatures::entries, ArgumentSignatures::new
-+    private static final StreamCodec<ByteBuf, List<ArgumentSignatures.Entry>> ENTRIES_STREAM_CODEC = ArgumentSignatures.Entry.STREAM_CODEC.apply(
-+        ByteBufCodecs.list(8)
-     );
-+    // Leaves start - no chat sign
-+    public static final StreamCodec<ByteBuf, ArgumentSignatures> STREAM_CODEC = ENTRIES_STREAM_CODEC.map(
-+        entries -> new ArgumentSignatures(org.leavesmc.leaves.LeavesConfig.mics.noChatSign ? List.of() : entries),
-+        ArgumentSignatures::entries
-+    );
-+    // Leaves end - no chat sign
  
-     public static ArgumentSignatures signCommand(final SignableCommand<?> command, final ArgumentSignatures.Signer signer) {
-         List<ArgumentSignatures.Entry> entries = command.arguments().stream().map(argument -> {
+     public ArgumentSignatures(final FriendlyByteBuf input) {
+-        this(input.readCollection(FriendlyByteBuf.<List<ArgumentSignatures.Entry>>limitValue(ArrayList::new, 8), ArgumentSignatures.Entry::new));
++        this(readSign(input)); // Leaves - no chat sign
+     }
+ 
++    // Leaves start - no chat sign
++    private static List<ArgumentSignatures.Entry> readSign(final FriendlyByteBuf input) {
++        var entries = input.readCollection(FriendlyByteBuf.<List<ArgumentSignatures.Entry>>limitValue(ArrayList::new, 8), ArgumentSignatures.Entry::new);
++        return org.leavesmc.leaves.LeavesConfig.mics.noChatSign ? List.of() : entries;
++    }
++    // Leaves end - no chat sign
++
+     public void write(final FriendlyByteBuf output) {
+         output.writeCollection(this.entries, (out, entry) -> entry.write(out));
+     }
 diff --git a/net/minecraft/network/protocol/game/ServerboundChatPacket.java b/net/minecraft/network/protocol/game/ServerboundChatPacket.java
-index b758f2d913b5539362d228b04d4c9bb87e8c8482..caa6f3647d7949c6272a275aa9fa9b69b258468a 100644
+index c9623b551609c77e8f143e492fe07f80b5a07dc0..8e1c8730f0a7a4186b041a26ab443b40d506b043 100644
 --- a/net/minecraft/network/protocol/game/ServerboundChatPacket.java
 +++ b/net/minecraft/network/protocol/game/ServerboundChatPacket.java
 @@ -1,5 +1,6 @@
@@ -35,34 +35,36 @@ index b758f2d913b5539362d228b04d4c9bb87e8c8482..caa6f3647d7949c6272a275aa9fa9b69
  
 +import io.netty.buffer.ByteBuf;
  import java.time.Instant;
- import java.util.Optional;
  import net.minecraft.network.FriendlyByteBuf;
-@@ -12,6 +13,11 @@ import net.minecraft.network.protocol.PacketType;
+ import net.minecraft.network.chat.LastSeenMessages;
+@@ -16,7 +17,7 @@ public record ServerboundChatPacket(String message, Instant timeStamp, long salt
+     );
  
- public record ServerboundChatPacket(String message, Instant timeStamp, long salt, Optional<MessageSignature> signature, LastSeenMessages.Update lastSeenMessages)
-     implements Packet<ServerGamePacketListener> {
+     private ServerboundChatPacket(final FriendlyByteBuf input) {
+-        this(input.readUtf(256), input.readInstant(), input.readLong(), input.readNullable(MessageSignature::read), new LastSeenMessages.Update(input));
++        this(input.readUtf(256), input.readInstant(), input.readLong(), input.readNullable(ServerboundChatPacket::readSign), new LastSeenMessages.Update(input));
+     }
+ 
+     private void write(final FriendlyByteBuf output) {
+@@ -27,6 +28,13 @@ public record ServerboundChatPacket(String message, Instant timeStamp, long salt
+         this.lastSeenMessages.write(output);
+     }
+ 
 +    // Leaves start - no chat sign
-+    private static final StreamCodec<ByteBuf, Optional<MessageSignature>> SIGNATURE_STREAM_CODEC = MessageSignature.STREAM_CODEC
-+        .apply(ByteBufCodecs::optional)
-+        .map(signature -> org.leavesmc.leaves.LeavesConfig.mics.noChatSign ? Optional.empty() : signature, signature -> signature);
++    private static @Nullable MessageSignature readSign(final FriendlyByteBuf input) {
++        MessageSignature signature = MessageSignature.read(input);
++        return org.leavesmc.leaves.LeavesConfig.mics.noChatSign ? null : signature;
++    }
 +    // Leaves end - no chat sign
-     public static final StreamCodec<FriendlyByteBuf, ServerboundChatPacket> STREAM_CODEC = StreamCodec.composite(
-         ByteBufCodecs.stringUtf8(256),
-         ServerboundChatPacket::message,
-@@ -19,7 +25,7 @@ public record ServerboundChatPacket(String message, Instant timeStamp, long salt
-         ServerboundChatPacket::timeStamp,
-         ByteBufCodecs.LONG,
-         ServerboundChatPacket::salt,
--        MessageSignature.STREAM_CODEC.apply(ByteBufCodecs::optional),
-+        SIGNATURE_STREAM_CODEC,
-         ServerboundChatPacket::signature,
-         LastSeenMessages.Update.STREAM_CODEC,
-         ServerboundChatPacket::lastSeenMessages,
++
+     @Override
+     public PacketType<ServerboundChatPacket> type() {
+         return GamePacketTypes.SERVERBOUND_CHAT;
 diff --git a/net/minecraft/network/protocol/game/ServerboundChatSessionUpdatePacket.java b/net/minecraft/network/protocol/game/ServerboundChatSessionUpdatePacket.java
-index 0a3cffd6346b0a27078efb5083e42d1d68421342..ce8a32a970a7df574a5edc07367f512b12fda02e 100644
+index a3dc386fb5900f24d9eb3a84ad24e60fa0328bd6..eb00b83be6f2c0fe1fed5e5858ef4488847670a1 100644
 --- a/net/minecraft/network/protocol/game/ServerboundChatSessionUpdatePacket.java
 +++ b/net/minecraft/network/protocol/game/ServerboundChatSessionUpdatePacket.java
-@@ -17,6 +17,11 @@ public record ServerboundChatSessionUpdatePacket(RemoteChatSession.Data chatSess
+@@ -26,6 +26,11 @@ public record ServerboundChatSessionUpdatePacket(RemoteChatSession.Data chatSess
  
      @Override
      public void handle(final ServerGamePacketListener listener) {
@@ -115,7 +117,7 @@ index 5eb7d46bf0d84720662125711fa7b544e9299446..68dc48c768ac8ecbc3826bb35a179528
          private static final String PREFIX = "data:image/png;base64,";
          public static final Codec<ServerStatus.Favicon> CODEC = Codec.STRING.comapFlatMap(string -> {
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index 1d50163bccdd84f9beed5815704d7dabb2220469..ec2b06bfdd03f591fa8cb4361160767694b86a69 100644
+index bc1a832765222082f34e652e2c95900e70e221d1..965f746303dd601f0005dae2d8141155f12aa817 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -773,7 +773,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
@@ -161,10 +163,10 @@ index d2585f4362ad3111e0bb23a0f25c7df06e43c210..36b45826b61f4006e5ae4e8766d9a146
          if (packet == null) {
              return;
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 5c459d4c274930faf394ea6af0f05fd5a19f246d..aa8042e60f63ce7380893af6da21be41ff40d6b9 100644
+index b53044cc54a09e0ae46200f62ceb650d9f0c45a0..e8d1ee3c5ba1c8fa6e6e30f8ee18c27319893653 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -1197,7 +1197,7 @@ public abstract class PlayerList {
+@@ -1196,7 +1196,7 @@ public abstract class PlayerList {
      }
  
      public boolean verifyChatTrusted(final PlayerChatMessage message) {

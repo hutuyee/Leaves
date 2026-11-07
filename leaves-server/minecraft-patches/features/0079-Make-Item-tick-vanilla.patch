@@ -5,10 +5,10 @@ Subject: [PATCH] Make Item tick vanilla
 
 
 diff --git a/net/minecraft/world/entity/item/ItemEntity.java b/net/minecraft/world/entity/item/ItemEntity.java
-index 22781cf1a567a39df2e4979c80c84e0f71943b09..5d471e3f2022f4127c5bfcd1fef5371d6f4498a3 100644
+index 85cefc2eff0f4ff68288a062d73c69713ce51a1d..3e7a325ab9b0846d138f22d989b8546074e8caa8 100644
 --- a/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/net/minecraft/world/entity/item/ItemEntity.java
-@@ -127,6 +127,9 @@ public class ItemEntity extends Entity implements TraceableEntity {
+@@ -134,6 +134,9 @@ public class ItemEntity extends Entity implements TraceableEntity {
      // Paper start - EAR 2
      @Override
      public void inactiveTick() {
@@ -18,7 +18,7 @@ index 22781cf1a567a39df2e4979c80c84e0f71943b09..5d471e3f2022f4127c5bfcd1fef5371d
          super.inactiveTick();
          if (this.pickupDelay > 0 && this.pickupDelay != 32767) {
              this.pickupDelay--;
-@@ -144,6 +147,8 @@ public class ItemEntity extends Entity implements TraceableEntity {
+@@ -151,6 +154,8 @@ public class ItemEntity extends Entity implements TraceableEntity {
              // CraftBukkit end
              this.discard(org.bukkit.event.entity.EntityRemoveEvent.Cause.DESPAWN); // CraftBukkit - add Bukkit remove cause
          }

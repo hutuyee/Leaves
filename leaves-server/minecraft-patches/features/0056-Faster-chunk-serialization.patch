@@ -13,10 +13,19 @@ As part of: Lithium (https://github.com/CaffeineMC/lithium)
 Licensed under: LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.html)
 
 diff --git a/net/minecraft/world/level/chunk/HashMapPalette.java b/net/minecraft/world/level/chunk/HashMapPalette.java
-index fde0a0e4b2a3b2bd4f2ac893703c70dd55b1ddc2..b303d23869fc5bab79b833b53cbb413bb921a212 100644
+index 3ee35885ea1f997bb5a36dd8d5f83b168883ba61..9cf778f7992e285fbe8601cd4372f7a3e9f55e07 100644
 --- a/net/minecraft/world/level/chunk/HashMapPalette.java
 +++ b/net/minecraft/world/level/chunk/HashMapPalette.java
-@@ -21,6 +21,14 @@ public class HashMapPalette<T> implements Palette<T> {
+@@ -14,7 +14,7 @@ public class HashMapPalette<T> implements Palette<T>, ca.spottedleaf.moonrise.pa
+ 
+     // Paper start - optimise palette reads
+     @Override
+-    public final T[] moonrise$getRawPalette(final ca.spottedleaf.moonrise.patches.fast_palette.FastPaletteData<T> container) {
++    public T[] moonrise$getRawPalette(final ca.spottedleaf.moonrise.patches.fast_palette.FastPaletteData<T> container) { // Leaves - allow Lithium palette access
+         return ((ca.spottedleaf.moonrise.patches.fast_palette.FastPalette<T>)this.values).moonrise$getRawPalette(container);
+     }
+     // Paper end - optimise palette reads
+@@ -28,6 +28,14 @@ public class HashMapPalette<T> implements Palette<T>, ca.spottedleaf.moonrise.pa
          this(bits, CrudeIncrementalIntIdentityHashBiMap.create((1 << bits) + 1)); // Paper - Perf: Avoid unnecessary resize operation in CrudeIncrementalIntIdentityHashBiMap
      }
  
@@ -32,10 +41,10 @@ index fde0a0e4b2a3b2bd4f2ac893703c70dd55b1ddc2..b303d23869fc5bab79b833b53cbb413b
          this.bits = bits;
          this.values = values;
 diff --git a/net/minecraft/world/level/chunk/PalettedContainer.java b/net/minecraft/world/level/chunk/PalettedContainer.java
-index d564338ddc3dc13f0d11a18e26ea36e1f9343745..07c61ff0e2451830c996baf464a08a4a536665d0 100644
+index 26dbb9da7a7f50ec913b1226eff9e9ce6b4f3f12..12e7be3eaa8f8ff773c69b734f811750996f4a3c 100644
 --- a/net/minecraft/world/level/chunk/PalettedContainer.java
 +++ b/net/minecraft/world/level/chunk/PalettedContainer.java
-@@ -481,13 +481,27 @@ public class PalettedContainer<T> implements PaletteResize<T>, PalettedContainer
+@@ -424,13 +424,27 @@ public class PalettedContainer<T> implements PaletteResize<T>, PalettedContainer
  
      @Override
      public void count(final PalettedContainer.CountConsumer<T> output) {

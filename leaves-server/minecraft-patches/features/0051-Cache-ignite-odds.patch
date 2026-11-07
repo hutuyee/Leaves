@@ -5,10 +5,10 @@ Subject: [PATCH] Cache ignite odds
 
 
 diff --git a/net/minecraft/world/level/block/FireBlock.java b/net/minecraft/world/level/block/FireBlock.java
-index 132edd0e94456378cc8598c39e20749b3cfb382a..17777282a4d474dfba32fd1d501e7d415d2a38c0 100644
+index 0ab93b5937cf098750820affb0969ccfbc578cca..a3380101f6b5a53513f865a5969e66dd7eb69a2f 100644
 --- a/net/minecraft/world/level/block/FireBlock.java
 +++ b/net/minecraft/world/level/block/FireBlock.java
-@@ -195,6 +195,7 @@ public class FireBlock extends BaseFireBlock {
+@@ -202,6 +202,7 @@ public class FireBlock extends BaseFireBlock {
                  this.checkBurnOut(level, pos.south(), 300 + extra, random, age, pos);
                  // CraftBukkit end - add source blockPos to burn calls
                  BlockPos.MutableBlockPos testPos = new BlockPos.MutableBlockPos();
@@ -16,7 +16,7 @@ index 132edd0e94456378cc8598c39e20749b3cfb382a..17777282a4d474dfba32fd1d501e7d41
  
                  for (int xx = -1; xx <= 1; xx++) {
                      for (int zz = -1; zz <= 1; zz++) {
-@@ -206,7 +207,7 @@ public class FireBlock extends BaseFireBlock {
+@@ -213,7 +214,7 @@ public class FireBlock extends BaseFireBlock {
                                  }
  
                                  testPos.setWithOffset(pos, xx, yy, zz);
@@ -25,7 +25,7 @@ index 132edd0e94456378cc8598c39e20749b3cfb382a..17777282a4d474dfba32fd1d501e7d41
                                  if (igniteOdds > 0) {
                                      int odds = (igniteOdds + 40 + level.getDifficulty().getId() * 7) / (age + 30);
                                      if (increasedBurnout) {
-@@ -308,7 +309,12 @@ public class FireBlock extends BaseFireBlock {
+@@ -315,7 +316,12 @@ public class FireBlock extends BaseFireBlock {
          return false;
      }
  
@@ -38,7 +38,7 @@ index 132edd0e94456378cc8598c39e20749b3cfb382a..17777282a4d474dfba32fd1d501e7d41
          if (!level.isEmptyBlock(pos)) {
              return 0;
          }
-@@ -316,12 +322,20 @@ public class FireBlock extends BaseFireBlock {
+@@ -323,12 +329,20 @@ public class FireBlock extends BaseFireBlock {
          int odds = 0;
  
          for (Direction direction : Direction.values()) {

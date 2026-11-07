@@ -5,10 +5,10 @@ Subject: [PATCH] Disable end gateway portal entity ticking
 
 
 diff --git a/net/minecraft/world/level/block/EndGatewayBlock.java b/net/minecraft/world/level/block/EndGatewayBlock.java
-index cbaba8bb25a05d5d317269d262435a35f6f25b96..0eafbb830344a8174a6332e51b372355b3081a00 100644
+index 1ae282969e77f31aadd6fac4fd5c552f6693c8dd..6bfda30555b10eb35e1fd4042ebba3d3e698ccbc 100644
 --- a/net/minecraft/world/level/block/EndGatewayBlock.java
 +++ b/net/minecraft/world/level/block/EndGatewayBlock.java
-@@ -116,8 +116,11 @@ public class EndGatewayBlock extends BaseEntityBlock implements Portal {
+@@ -124,8 +124,11 @@ public class EndGatewayBlock extends BaseEntityBlock implements Portal {
              if (teleportPosition == null) {
                  return null;
              } else {
@@ -21,7 +21,7 @@ index cbaba8bb25a05d5d317269d262435a35f6f25b96..0eafbb830344a8174a6332e51b372355
                      : new TeleportTransition(
                          currentLevel,
                          teleportPosition,
-@@ -125,8 +128,9 @@ public class EndGatewayBlock extends BaseEntityBlock implements Portal {
+@@ -133,8 +136,9 @@ public class EndGatewayBlock extends BaseEntityBlock implements Portal {
                          0.0F,
                          0.0F,
                          Relative.union(Relative.DELTA, Relative.ROTATION),

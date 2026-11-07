@@ -5,10 +5,10 @@ Subject: [PATCH] Fast exp orb absorb
 
 
 diff --git a/net/minecraft/world/entity/ExperienceOrb.java b/net/minecraft/world/entity/ExperienceOrb.java
-index f6b0505f3c53196967dcf264c5e929e346090188..ecd7aeae948083a3e20256e53c9a3f333dfe6542 100644
+index b95c56e0699fbe16e65efcf010cd514f0ac0962f..fbbf95251f68815b170f8202a8f4f6ca38981adc 100644
 --- a/net/minecraft/world/entity/ExperienceOrb.java
 +++ b/net/minecraft/world/entity/ExperienceOrb.java
-@@ -355,6 +355,21 @@ public class ExperienceOrb extends Entity {
+@@ -357,6 +357,21 @@ public class ExperienceOrb extends Entity {
      public void playerTouch(final Player player) {
          if (player instanceof ServerPlayer serverPlayer) {
              if (player.takeXpDelay == 0 && new com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent(serverPlayer.getBukkitEntity(), (org.bukkit.entity.ExperienceOrb) this.getBukkitEntity()).callEvent()) { // Paper - PlayerPickupExperienceEvent

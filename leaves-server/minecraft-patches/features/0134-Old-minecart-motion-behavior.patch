@@ -13,10 +13,10 @@ As part of: CPCA (https://github.com/liuyuexiaoyu1/carpet_pc_additon)
 Licensed under: MIT (https://mit-license.org)
 
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index aebd5b98151255109f6e5c39287e2f92c257ee14..718017972cc78a46cebc891b3c292398e7f21b3d 100644
+index 84ed50bda20a63fede061c282d8e6a851bbb0643..301fb2e4bd3685931f26c9413bb1e66e92c17f34 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -4431,6 +4431,14 @@ public abstract class Entity
+@@ -4317,6 +4317,14 @@ public abstract class Entity
                  transition.relatives().contains(Relative.Y) ? 0.0 : passengerOffset.y(),
                  transition.relatives().contains(Relative.Z) ? 0.0 : passengerOffset.z()
              );
@@ -32,10 +32,10 @@ index aebd5b98151255109f6e5c39287e2f92c257ee14..718017972cc78a46cebc891b3c292398
      }
  
 diff --git a/net/minecraft/world/level/block/NetherPortalBlock.java b/net/minecraft/world/level/block/NetherPortalBlock.java
-index 67a069bfdbe6edfec6c6913469b62a130d74a052..ecdf80513b0e07aad40167be67dc5b46a8491550 100644
+index eaad96ddf584924beca270e962077d083d64f57a..36f2fa80aa31be6b5eaf1008540a77774d11e195 100644
 --- a/net/minecraft/world/level/block/NetherPortalBlock.java
 +++ b/net/minecraft/world/level/block/NetherPortalBlock.java
-@@ -270,7 +270,18 @@ public class NetherPortalBlock extends Block implements Portal {
+@@ -274,7 +274,18 @@ public class NetherPortalBlock extends Block implements Portal {
          double width = foundRectangle.axis1Size;
          double height = foundRectangle.axis2Size;
          EntityDimensions dimensions = entity.getDimensions(entity.getPose());
@@ -55,7 +55,7 @@ index 67a069bfdbe6edfec6c6913469b62a130d74a052..ecdf80513b0e07aad40167be67dc5b46
          double offsetRight = dimensions.width() / 2.0 + (width - dimensions.width()) * offset.x();
          double offsetUp = (height - dimensions.height()) * offset.y();
          double offsetForward = 0.5 + offset.z();
-@@ -282,7 +293,7 @@ public class NetherPortalBlock extends Block implements Portal {
+@@ -286,7 +297,7 @@ public class NetherPortalBlock extends Block implements Portal {
          );
          Vec3 collisionFreePos = PortalShape.findCollisionFreePosition(targetPos, newLevel, entity, dimensions);
          return new TeleportTransition(

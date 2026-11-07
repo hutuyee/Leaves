@@ -6,30 +6,30 @@ Subject: [PATCH] Return nether portal fix
 Part of this patch is powered by NetherPortalFix(https://github.com/TwelveIterationMods/NetherPortalFix)
 
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 2a8eb944db638a28c8a37873329ec0037dc656a8..b5d456047a8a08a161b74821a362102bdc882e15 100644
+index e2f3929fc4689320dcfb78b87e7f7337e283af45..375101d16d6750505d6794e9c21180198f8f4f28 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -3702,6 +3702,18 @@ public abstract class Entity
-     public void teleportToPortalDestination(final ServerLevel level, final TeleportTransition teleportTransition) {
-         ServerLevel newLevel = teleportTransition.newLevel();
-         if (level.isAllowedToEnterPortal(newLevel) && (newLevel.dimension() == level.dimension() || this.canTeleport(level, newLevel))) {
-+            // Leaves start - nether portal fix
-+            if (org.leavesmc.leaves.LeavesConfig.modify.netherPortalFix && this instanceof ServerPlayer player) {
-+                final ResourceKey<Level> fromDim = level.dimension();
-+                final ResourceKey<Level> toDim = newLevel.dimension();
-+                if ((fromDim == Level.OVERWORLD && toDim == Level.NETHER) || (fromDim == Level.NETHER && toDim == Level.OVERWORLD)) {
-+                    BlockPos fromPortal = org.leavesmc.leaves.util.ReturnPortalManager.findPortalAt(player, fromDim, player.lastPos);
-+                    if (fromPortal != null) {
-+                        org.leavesmc.leaves.util.ReturnPortalManager.storeReturnPortal(player, toDim, player.blockPosition(), fromPortal);
-+                    }
-+                }
-+            }
-+            // Leaves end - nether portal fix
-             this.teleport(teleportTransition);
-         }
-     }
+@@ -3594,6 +3594,18 @@ public abstract class Entity
+                     if (teleportTransition != null) {
+                         ServerLevel newLevel = teleportTransition.newLevel();
+                         if (level.isAllowedToEnterPortal(newLevel) && (newLevel.dimension() == level.dimension() || this.canTeleport(level, newLevel))) {
++                            // Leaves start - nether portal fix
++                            if (org.leavesmc.leaves.LeavesConfig.modify.netherPortalFix && this instanceof ServerPlayer player) {
++                                final ResourceKey<Level> fromDim = level.dimension();
++                                final ResourceKey<Level> toDim = newLevel.dimension();
++                                if ((fromDim == Level.OVERWORLD && toDim == Level.NETHER) || (fromDim == Level.NETHER && toDim == Level.OVERWORLD)) {
++                                    BlockPos fromPortal = org.leavesmc.leaves.util.ReturnPortalManager.findPortalAt(player, fromDim, player.lastPos);
++                                    if (fromPortal != null) {
++                                        org.leavesmc.leaves.util.ReturnPortalManager.storeReturnPortal(player, toDim, player.blockPosition(), fromPortal);
++                                    }
++                                }
++                            }
++                            // Leaves end - nether portal fix
+                             this.teleport(teleportTransition);
+                         }
+                     }
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 340c21a1a5117df2f25673683d4466424fa7395b..7bcb0734e3c924af420a9581bc4cd05dc9bab578 100644
+index 78c04b339b8b1aa2d1fc05304a1970aa02c92edb..42b9863bd3a00df403d17d3ea212b8338e07d475 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -276,7 +276,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
@@ -39,13 +39,13 @@ index 340c21a1a5117df2f25673683d4466424fa7395b..7bcb0734e3c924af420a9581bc4cd05d
 -    private BlockPos lastPos;
 +    public BlockPos lastPos; // Leaves - private -> public
      private Optional<BlockPos> lastClimbablePos = Optional.empty();
-     protected @Nullable DamageSource lastDamageSource; // Paper - Backport MC-311924 fix
+     private @Nullable DamageSource lastDamageSource;
      private long lastDamageStamp;
 diff --git a/net/minecraft/world/level/block/NetherPortalBlock.java b/net/minecraft/world/level/block/NetherPortalBlock.java
-index 28ab25af5929991622629f056f32b1184853cb24..67a069bfdbe6edfec6c6913469b62a130d74a052 100644
+index 0bc5063f05599f41086f23ba6753e268258add3a..eaad96ddf584924beca270e962077d083d64f57a 100644
 --- a/net/minecraft/world/level/block/NetherPortalBlock.java
 +++ b/net/minecraft/world/level/block/NetherPortalBlock.java
-@@ -183,7 +183,18 @@ public class NetherPortalBlock extends Block implements Portal {
+@@ -190,7 +190,18 @@ public class NetherPortalBlock extends Block implements Portal {
          final WorldBorder worldBorder
          , org.bukkit.craftbukkit.event.PortalEventResult result // CraftBukkit
      ) {

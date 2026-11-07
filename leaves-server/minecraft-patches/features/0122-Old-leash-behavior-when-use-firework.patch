@@ -5,7 +5,7 @@ Subject: [PATCH] Old leash behavior when use firework
 
 
 diff --git a/net/minecraft/world/item/FireworkRocketItem.java b/net/minecraft/world/item/FireworkRocketItem.java
-index 4bf71b7dca8d569e426df39fa20dc3fa4d2d93bf..ded48fc4a91186827fcec1f2583a83a60fa4f0ef 100644
+index f585fc6a3d566f0089d8629b487ad64954e47606..3fbe2599910aa1ba0a9ea622d2b6db8682572a18 100644
 --- a/net/minecraft/world/item/FireworkRocketItem.java
 +++ b/net/minecraft/world/item/FireworkRocketItem.java
 @@ -72,7 +72,7 @@ public class FireworkRocketItem extends Item implements ProjectileItem {
@@ -18,7 +18,7 @@ index 4bf71b7dca8d569e426df39fa20dc3fa4d2d93bf..ded48fc4a91186827fcec1f2583a83a6
                          }
                          if (event.shouldConsume() && !player.hasInfiniteMaterials()) {
 @@ -91,7 +91,7 @@ public class FireworkRocketItem extends Item implements ProjectileItem {
-                 com.destroystokyo.paper.event.player.PlayerElytraBoostEvent event = new com.destroystokyo.paper.event.player.PlayerElytraBoostEvent((org.bukkit.entity.Player) player.getBukkitEntity(), org.bukkit.craftbukkit.inventory.CraftItemStack.asBukkitMirror(itemStack), (org.bukkit.entity.Firework) delayed.projectile().getBukkitEntity(), org.bukkit.craftbukkit.CraftEquipmentSlot.getHand(hand));
+                 com.destroystokyo.paper.event.player.PlayerElytraBoostEvent event = new com.destroystokyo.paper.event.player.PlayerElytraBoostEvent((org.bukkit.entity.Player) player.getBukkitEntity(), org.bukkit.craftbukkit.inventory.CraftItemStack.asCraftMirror(itemStack), (org.bukkit.entity.Firework) delayed.projectile().getBukkitEntity(), org.bukkit.craftbukkit.CraftEquipmentSlot.getHand(hand));
                  if (event.callEvent() && delayed.attemptSpawn()) {
                      player.awardStat(Stats.ITEM_USED.get(this)); // Moved up from below
 -                    if (player.dropAllLeashConnections(player, hand)) { // Paper - PlayerUnleashEntityEvent

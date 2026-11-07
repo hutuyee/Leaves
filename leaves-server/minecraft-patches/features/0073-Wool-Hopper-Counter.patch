@@ -6,7 +6,7 @@ Subject: [PATCH] Wool Hopper Counter
 This patch is Powered by fabric-carpet(https://github.com/gnembon/fabric-carpet)
 
 diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index 9002c1c4449a6117aec87196e56b12d646578775..9e8def438d4e162ff99d0ebc065dbb7be5842eb9 100644
+index a749b9a59452a22fd3cc41859bb6162a33414360..bd4622284b3bb90cca92e5b540fb3e358eac095d 100644
 --- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 @@ -207,8 +207,34 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
@@ -44,7 +44,7 @@ index 9002c1c4449a6117aec87196e56b12d646578775..9e8def438d4e162ff99d0ebc065dbb7b
                  setChanged(level, pos, state);
                  // Leaves start - pca
                  if (org.leavesmc.leaves.LeavesConfig.protocol.pca.enable) {
-@@ -425,6 +451,12 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -433,6 +459,12 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
      // Paper end - Perf: Optimize Hoppers
  
      private static boolean ejectItems(final Level level, final BlockPos blockPos, final HopperBlockEntity self) {
@@ -57,9 +57,9 @@ index 9002c1c4449a6117aec87196e56b12d646578775..9e8def438d4e162ff99d0ebc065dbb7b
          Container container = getAttachedContainer(level, blockPos, self);
          if (container == null) {
              return false;
-@@ -470,6 +502,28 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -446,6 +478,28 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+         return hopperPush(level, container, direction, self); // Paper - Perf: Optimize Hoppers
      }
-     // Paper end - Add PrepareHopperTransferEvent
  
 +    // Leaves start - hopper counter
 +    private static boolean woolHopperCounter(final Level level, final BlockPos blockPos, final BlockState state, final @Nullable Container container) {
@@ -86,7 +86,7 @@ index 9002c1c4449a6117aec87196e56b12d646578775..9e8def438d4e162ff99d0ebc065dbb7b
      private static int[] getSlots(final Container container, final Direction direction) {
          if (container instanceof WorldlyContainer worldlyContainer) {
              return worldlyContainer.getSlotsForFace(direction);
-@@ -557,6 +611,9 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -531,6 +585,9 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
      }
  
      public static boolean addItem(final Container container, final ItemEntity entity) {

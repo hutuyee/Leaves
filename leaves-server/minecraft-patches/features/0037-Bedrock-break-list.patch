@@ -5,10 +5,10 @@ Subject: [PATCH] Bedrock break list
 
 
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 49656403d697e383ed3cfa5042252bf6c6f46855..c421b11b1080425cf7d731d6e54e86c6b2fafc5c 100644
+index 2b9a7dcd3abdd29ae504b10bfbd9ba2306baba6b..4e0225494b27e0ca068b0c59699055f978e88933 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1843,6 +1843,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1859,6 +1859,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          profiler.popPush("server gui refresh");
  
          org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handleTick(tickCount); // Leaves - protocol
@@ -17,10 +17,10 @@ index 49656403d697e383ed3cfa5042252bf6c6f46855..c421b11b1080425cf7d731d6e54e86c6
          for (Runnable tickable : this.tickables) {
              tickable.run();
 diff --git a/net/minecraft/server/ServerScoreboard.java b/net/minecraft/server/ServerScoreboard.java
-index 3c1d3c873e857a16ed33dcd77ab937017256776c..4856a2b24e708084da2809df87859fd9c07f0a6b 100644
+index 7ffd683c42557052d7bfa963d87e68f4e8f62d6c..62b2940e02ad5b3c515934dc5b1d0eaedce84d69 100644
 --- a/net/minecraft/server/ServerScoreboard.java
 +++ b/net/minecraft/server/ServerScoreboard.java
-@@ -167,6 +167,7 @@ public class ServerScoreboard extends Scoreboard {
+@@ -164,6 +164,7 @@ public class ServerScoreboard extends Scoreboard {
      @Override
      public void onObjectiveAdded(final Objective objective) {
          super.onObjectiveAdded(objective);
@@ -28,7 +28,7 @@ index 3c1d3c873e857a16ed33dcd77ab937017256776c..4856a2b24e708084da2809df87859fd9
          this.setDirty();
      }
  
-@@ -183,6 +184,7 @@ public class ServerScoreboard extends Scoreboard {
+@@ -180,6 +181,7 @@ public class ServerScoreboard extends Scoreboard {
      @Override
      public void onObjectiveRemoved(final Objective objective) {
          super.onObjectiveRemoved(objective);
@@ -37,10 +37,10 @@ index 3c1d3c873e857a16ed33dcd77ab937017256776c..4856a2b24e708084da2809df87859fd9
              this.stopTrackingObjective(objective);
          }
 diff --git a/net/minecraft/world/level/block/piston/PistonBaseBlock.java b/net/minecraft/world/level/block/piston/PistonBaseBlock.java
-index 92afbd653c6aaff973110d24357f68140e75d418..8e9a7a6fbd0f7ee8a9119cac7ab4e9037a385dc0 100644
+index c02394b5ea59c9f3b5d2b4f40b4f69d701698aed..7f3d3d9e64a5c7366ed5b58ac7a01696f008c9a6 100644
 --- a/net/minecraft/world/level/block/piston/PistonBaseBlock.java
 +++ b/net/minecraft/world/level/block/piston/PistonBaseBlock.java
-@@ -64,6 +64,11 @@ public class PistonBaseBlock extends DirectionalBlock {
+@@ -75,6 +75,11 @@ public class PistonBaseBlock extends DirectionalBlock {
      @Override
      public void setPlacedBy(final Level level, final BlockPos pos, final BlockState state, final @Nullable LivingEntity by, final ItemStack itemStack) {
          if (!level.isClientSide()) {
@@ -52,7 +52,7 @@ index 92afbd653c6aaff973110d24357f68140e75d418..8e9a7a6fbd0f7ee8a9119cac7ab4e903
              this.checkIfExtend(level, pos, state);
          }
      }
-@@ -217,7 +222,13 @@ public class PistonBaseBlock extends DirectionalBlock {
+@@ -228,7 +233,13 @@ public class PistonBaseBlock extends DirectionalBlock {
                              }
                          }
                          // Paper end - Fix sticky pistons and BlockPistonRetractEvent
@@ -67,7 +67,7 @@ index 92afbd653c6aaff973110d24357f68140e75d418..8e9a7a6fbd0f7ee8a9119cac7ab4e903
                      } else {
                          this.moveBlocks(level, pos, direction, false);
                      }
-@@ -226,6 +237,11 @@ public class PistonBaseBlock extends DirectionalBlock {
+@@ -237,6 +248,11 @@ public class PistonBaseBlock extends DirectionalBlock {
                  // Paper start - Protect Bedrock and End Portal/Frames from being destroyed; fix headless pistons breaking blocks
                  BlockPos headPos = pos.relative(direction);
                  if (io.papermc.paper.configuration.GlobalConfiguration.get().unsupportedSettings.allowPermanentBlockBreakExploits || level.getBlockState(headPos) == Blocks.PISTON_HEAD.defaultBlockState().setValue(FACING, direction)) { // double check to make sure we're not a headless piston

@@ -5,10 +5,10 @@ Subject: [PATCH] Fix chunk reload detector
 
 
 diff --git a/net/minecraft/server/level/ServerEntity.java b/net/minecraft/server/level/ServerEntity.java
-index b0c885796c81db431dac28104c86578e4cf4a602..5d889a043dc160d01ff114c633296622ad667c8a 100644
+index 82ae1edf4a683c73cad5b5d3915d46e8d66b2f37..16913851276f0e784f56d70dfc21f94b33675a60 100644
 --- a/net/minecraft/server/level/ServerEntity.java
 +++ b/net/minecraft/server/level/ServerEntity.java
-@@ -409,7 +409,7 @@ public class ServerEntity {
+@@ -373,7 +373,7 @@ public class ServerEntity {
              if (!slots.isEmpty()) {
                  broadcast.accept(new ClientboundSetEquipmentPacket(this.entity.getId(), slots, true)); // Paper - data sanitization
              }

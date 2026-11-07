@@ -5,10 +5,10 @@ Subject: [PATCH] Vanilla player display name
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index f85c7ac29f5f6c423d2122cb0174894bd0523958..de7149f3aed36621033eb39665b1bb8b7db2de2f 100644
+index 4c67abd912301a02cf3b26204fdcd49b1bd04672..1563b9e3f69e6a28c21a95d0c895fd1bd5d08b19 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -494,7 +494,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -489,7 +489,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
          this.object = null;
          // CraftBukkit start
          this.displayName = this.getScoreboardName();
@@ -18,10 +18,10 @@ index f85c7ac29f5f6c423d2122cb0174894bd0523958..de7149f3aed36621033eb39665b1bb8b
          this.maxHealthCache = this.getMaxHealth();
          // CraftBukkit end
 diff --git a/net/minecraft/world/scores/Scoreboard.java b/net/minecraft/world/scores/Scoreboard.java
-index ccff13ea50431fbde5b1e0238a8534fab06aa786..f0242ec3ff5a386feaeb403bb617f6e50e15b3af 100644
+index 4a15851bda30c918c58c96d2cb98b74f30db396c..f1d975e886f3972559f5c47cdbc7e0f8a07eb31c 100644
 --- a/net/minecraft/world/scores/Scoreboard.java
 +++ b/net/minecraft/world/scores/Scoreboard.java
-@@ -276,6 +276,16 @@ public class Scoreboard {
+@@ -275,6 +275,16 @@ public class Scoreboard {
          }
  
          this.teamsByPlayer.put(player, team);
@@ -38,7 +38,7 @@ index ccff13ea50431fbde5b1e0238a8534fab06aa786..f0242ec3ff5a386feaeb403bb617f6e5
          return team.getPlayers().add(player);
      }
  
-@@ -296,6 +306,14 @@ public class Scoreboard {
+@@ -295,6 +305,14 @@ public class Scoreboard {
  
          this.teamsByPlayer.remove(player);
          team.getPlayers().remove(player);

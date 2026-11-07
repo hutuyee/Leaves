@@ -6,13 +6,14 @@ Subject: [PATCH] Vanilla hopper
 This is a temporary solution designed to attempt to restore the vanilla behavior of the funnel while preserving optimizations as much as possible. It should ultimately be replaced by the optimization solution provided by lithium.
 
 diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index 9e8def438d4e162ff99d0ebc065dbb7be5842eb9..40556c8623a6e26873dd1753d5f43d19692fd6b6 100644
+index bd4622284b3bb90cca92e5b540fb3e358eac095d..dc09d08b21475ecff2ff550a8d6a10967ed66bf8 100644
 --- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-@@ -314,35 +314,54 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -312,36 +312,55 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
          ItemStack movedItem = origItemStack;
          final int originalItemCount = origItemStack.getCount();
          final int movedItemCount = Math.min(level.spigotConfig.hopperAmount, originalItemCount);
+-        container.setChanged(); // original logic always marks source inv as changed even if no move happens.
 -        movedItem.setCount(movedItemCount);
 -
 -        if (!skipPullModeEventFire) {
@@ -40,6 +41,7 @@ index 9e8def438d4e162ff99d0ebc065dbb7be5842eb9..40556c8623a6e26873dd1753d5f43d19
 -        }
 +            container.setItem(i, movedItem);
 +        } else {
++            container.setChanged(); // original logic always marks source inv as changed even if no move happens.
 +            movedItem.setCount(movedItemCount);
  
 -        final ItemStack remainingItem = addItem(container, hopper, movedItem, null);
@@ -85,5 +87,5 @@ index 9e8def438d4e162ff99d0ebc065dbb7be5842eb9..40556c8623a6e26873dd1753d5f43d19
 -        origItemStack.setCount(originalItemCount);
 +        // Leaves end - fix vanilla hopper
  
-         Container updatedContainer = container;
-         if (container instanceof net.minecraft.world.CompoundContainer compoundContainer) {
+         if (level.paperConfig().hopper.cooldownWhenFull && !org.leavesmc.leaves.LeavesConfig.modify.mcTechnicalMode) { // Leaves - mc technical survival mode
+             applyCooldown(hopper);

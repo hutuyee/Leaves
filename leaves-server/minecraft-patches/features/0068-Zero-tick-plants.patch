@@ -5,10 +5,10 @@ Subject: [PATCH] Zero tick plants
 
 
 diff --git a/net/minecraft/world/level/block/BambooStalkBlock.java b/net/minecraft/world/level/block/BambooStalkBlock.java
-index 57f0ab50c2eb22701bc709baba5a1e053757bfa1..7e5cee53ce7492948195f6dc73bc2d5924c93401 100644
+index cf23ecd34bc7af694a036e388f20c56b0ca0a5b1..2e8166022d28d817587c4a5df0326ee10a1443f2 100644
 --- a/net/minecraft/world/level/block/BambooStalkBlock.java
 +++ b/net/minecraft/world/level/block/BambooStalkBlock.java
-@@ -101,6 +101,8 @@ public class BambooStalkBlock extends Block implements BonemealableBlock {
+@@ -108,6 +108,8 @@ public class BambooStalkBlock extends Block implements BonemealableBlock {
      protected void tick(final BlockState state, final ServerLevel level, final BlockPos pos, final RandomSource random) {
          if (!state.canSurvive(level, pos)) {
              level.destroyBlock(pos, true);
@@ -18,10 +18,10 @@ index 57f0ab50c2eb22701bc709baba5a1e053757bfa1..7e5cee53ce7492948195f6dc73bc2d59
      }
  
 diff --git a/net/minecraft/world/level/block/CactusBlock.java b/net/minecraft/world/level/block/CactusBlock.java
-index 687f7bca0a546bb4dc7942194a76088a07e36770..4b2c5b6ac72f95bbdd76a3c328f6719b5babfd20 100644
+index 1fbdb7a9ae8120cbe43cb185ad17c4769cf6e8b6..6081a482998d715110cdc99fc86706921a8115ba 100644
 --- a/net/minecraft/world/level/block/CactusBlock.java
 +++ b/net/minecraft/world/level/block/CactusBlock.java
-@@ -40,6 +40,8 @@ public class CactusBlock extends Block {
+@@ -47,6 +47,8 @@ public class CactusBlock extends Block {
      protected void tick(final BlockState state, final ServerLevel level, final BlockPos pos, final RandomSource random) {
          if (!state.canSurvive(level, pos)) {
              level.destroyBlock(pos, true);
@@ -31,10 +31,10 @@ index 687f7bca0a546bb4dc7942194a76088a07e36770..4b2c5b6ac72f95bbdd76a3c328f6719b
      }
  
 diff --git a/net/minecraft/world/level/block/ChorusFlowerBlock.java b/net/minecraft/world/level/block/ChorusFlowerBlock.java
-index 4b2f1868ebd07b97a4900ea55aa31226a2d2e263..46c28bab3c8148d4c58f314e5a98f3dd54a00694 100644
+index 76dbad4969f8e7e39c78eec782579362203ca6bc..440998164af1140c76f05c15d23c376aa05fc7b1 100644
 --- a/net/minecraft/world/level/block/ChorusFlowerBlock.java
 +++ b/net/minecraft/world/level/block/ChorusFlowerBlock.java
-@@ -36,6 +36,8 @@ public class ChorusFlowerBlock extends Block {
+@@ -47,6 +47,8 @@ public class ChorusFlowerBlock extends Block {
      protected void tick(final BlockState state, final ServerLevel level, final BlockPos pos, final RandomSource random) {
          if (!state.canSurvive(level, pos)) {
              level.destroyBlock(pos, true);
@@ -44,10 +44,10 @@ index 4b2f1868ebd07b97a4900ea55aa31226a2d2e263..46c28bab3c8148d4c58f314e5a98f3dd
      }
  
 diff --git a/net/minecraft/world/level/block/GrowingPlantHeadBlock.java b/net/minecraft/world/level/block/GrowingPlantHeadBlock.java
-index 4fd9e6bb598afdebfda4828e9f18afe556057f63..bad9d3d32aaeefbc0a72b88edb92ae5091b73861 100644
+index 21524350cb8822d33c86f1be783669ac8b961319..fbed46f137c13ae80a954d1de3b7b339978024ce 100644
 --- a/net/minecraft/world/level/block/GrowingPlantHeadBlock.java
 +++ b/net/minecraft/world/level/block/GrowingPlantHeadBlock.java
-@@ -156,4 +156,15 @@ public abstract class GrowingPlantHeadBlock extends GrowingPlantBlock implements
+@@ -160,4 +160,15 @@ public abstract class GrowingPlantHeadBlock extends GrowingPlantBlock implements
      protected GrowingPlantHeadBlock getHeadBlock() {
          return this;
      }
@@ -64,10 +64,10 @@ index 4fd9e6bb598afdebfda4828e9f18afe556057f63..bad9d3d32aaeefbc0a72b88edb92ae50
 +    // Leaves end - zero tick plants
  }
 diff --git a/net/minecraft/world/level/block/SugarCaneBlock.java b/net/minecraft/world/level/block/SugarCaneBlock.java
-index b7bc0151fa6b01ed4814ca2050daa63f5b5b05a1..62ad1907d612f3a877e59bfa2bbb0873f16865d1 100644
+index 373a61d2d8e73f3bbfd5117c492a8d63bb574f54..06b1f315890b9edbea0f8da6845dab28216064bd 100644
 --- a/net/minecraft/world/level/block/SugarCaneBlock.java
 +++ b/net/minecraft/world/level/block/SugarCaneBlock.java
-@@ -36,6 +36,8 @@ public class SugarCaneBlock extends Block {
+@@ -43,6 +43,8 @@ public class SugarCaneBlock extends Block {
      protected void tick(final BlockState state, final ServerLevel level, final BlockPos pos, final RandomSource random) {
          if (!state.canSurvive(level, pos)) {
              level.destroyBlock(pos, true);

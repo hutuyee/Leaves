@@ -6,10 +6,10 @@ Subject: [PATCH] Syncmatica Protocol
 This patch is Powered by Syncmatica(https://github.com/End-Tech/syncmatica)
 
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 43fb490c34274fd6a1d91c48ea7ffaddeada0645..fa8da607a70bc614b01112384c4a9426cfd07faf 100644
+index ff96f768ba9430b8a74e27306b707b04761b56e6..eb87e934932a5b05291a47db1f0094369361312d 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -335,6 +335,7 @@ public class ServerGamePacketListenerImpl
+@@ -328,6 +328,7 @@ public class ServerGamePacketListenerImpl
      private static final int MAX_SIGN_LINE_LENGTH = Integer.getInteger("Paper.maxSignLength", 80); // Paper - Limit client sign length
      private final io.papermc.paper.event.packet.ClientTickEndEvent tickEndEvent; // Paper - add client tick end event
      public final io.papermc.paper.connection.PaperPlayerGameConnection playerGameConnection; // Paper
@@ -17,9 +17,9 @@ index 43fb490c34274fd6a1d91c48ea7ffaddeada0645..fa8da607a70bc614b01112384c4a9426
  
      public ServerGamePacketListenerImpl(final MinecraftServer server, final Connection connection, final ServerPlayer player, final CommonListenerCookie cookie) {
          super(server, connection, cookie);
-@@ -349,6 +350,7 @@ public class ServerGamePacketListenerImpl
+@@ -341,6 +342,7 @@ public class ServerGamePacketListenerImpl
+         this.signedMessageDecoder = SignedMessageChain.Decoder.unsigned(player.getUUID(), server::enforceSecureProfile);
          this.chatMessageChain = new FutureChain(server.chatExecutor); // CraftBukkit - async chat
-         this.commandSuggestionsProvider = new ServerCommandSuggestionsProvider(player);
          this.tickEndEvent = new io.papermc.paper.event.packet.ClientTickEndEvent(player.getBukkitEntity()); // Paper - add client tick end event
 +        this.exchangeTarget = new org.leavesmc.leaves.protocol.syncmatica.exchange.ExchangeTarget(this); // Leaves - Syncmatica Protocol
          this.playerGameConnection = new io.papermc.paper.connection.PaperPlayerGameConnection(this); // Paper

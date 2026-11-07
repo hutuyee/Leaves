@@ -5,22 +5,22 @@ Subject: [PATCH] No feather falling trample
 
 
 diff --git a/net/minecraft/world/level/block/FarmlandBlock.java b/net/minecraft/world/level/block/FarmlandBlock.java
-index 5437f62ff44d3aa59bfa671dc5aaed14a646a7bc..9d21c7ca631d00d826307887c890b9349e167128 100644
+index 902735a0ae76c0a8b3397c00bb8e4480b4120c6e..2470bdd6c6e70586580084a324a343656c4ab0cf 100644
 --- a/net/minecraft/world/level/block/FarmlandBlock.java
 +++ b/net/minecraft/world/level/block/FarmlandBlock.java
-@@ -110,6 +110,15 @@ public class FarmlandBlock extends Block {
-                 ? !level.getServer().isUnderSpawnProtection(serverLevel, pos, player)
-                 : serverLevel.getGameRules().get(GameRules.MOB_GRIEFING);
-             if (canTrample && entity.getBbWidth() * entity.getBbWidth() * entity.getBbHeight() > 0.512F) {
-+                // Leaves start - no feather falling trample
-+                if (org.leavesmc.leaves.LeavesConfig.modify.noFeatherFallingTrample
-+                    && net.minecraft.world.item.enchantment.EnchantmentHelper.getEnchantmentLevel(
-+                        level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).getOrThrow(net.minecraft.world.item.enchantment.Enchantments.FEATHER_FALLING),
-+                        (LivingEntity) entity
-+                    ) > 0) {
-+                    return;
-+                }
-+                // Leaves end - no feather falling trample
-                 // CraftBukkit start - Interact soil
-                 org.bukkit.event.Cancellable cancellable;
-                 if (entity instanceof Player) {
+@@ -115,6 +115,15 @@ public class FarmlandBlock extends Block {
+             && entity instanceof LivingEntity
+             && (entity instanceof Player || serverLevel.getGameRules().get(GameRules.MOB_GRIEFING))
+             && entity.getBbWidth() * entity.getBbWidth() * entity.getBbHeight() > 0.512F) {
++            // Leaves start - no feather falling trample
++            if (org.leavesmc.leaves.LeavesConfig.modify.noFeatherFallingTrample
++                && net.minecraft.world.item.enchantment.EnchantmentHelper.getEnchantmentLevel(
++                    level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).getOrThrow(net.minecraft.world.item.enchantment.Enchantments.FEATHER_FALLING),
++                    (LivingEntity) entity
++                ) > 0) {
++                return;
++            }
++            // Leaves end - no feather falling trample
+             // CraftBukkit start - Interact soil
+             org.bukkit.event.Cancellable cancellable;
+             if (entity instanceof Player) {

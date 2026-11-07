@@ -5,10 +5,10 @@ Subject: [PATCH] Leaves Server Config And Command
 
 
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index fbccfe0421143bf7d4023194966817079dd8cbfa..39360c51d0ea9f1902106748b234505da93e5f66 100644
+index 11c149f9261cbbf6372a00cf73d163b089721a25..f7112d7e146c353260f15c3ffe1f61f8e8931ce2 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -2304,6 +2304,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2315,6 +2315,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
              )
              .thenAcceptAsync(newResources -> {
                  io.papermc.paper.command.brigadier.PaperBrigadier.moveBukkitCommands(this.resources.managers().getCommands(), newResources.managers().getCommands()); // Paper
@@ -17,7 +17,7 @@ index fbccfe0421143bf7d4023194966817079dd8cbfa..39360c51d0ea9f1902106748b234505d
                  this.resources = newResources;
                  this.packRepository.setSelected(packsToEnable, false); // Paper - add pendingReload flag to determine required pack loading - false as this is *after* a reload (see above)
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index d7317d209ed5c150f732878bd1abc703e03b9379..2fcc8d18dddff4e2bca2a7c782465f162a93e2e0 100644
+index cc851c23a9d2ba4329fdbca79c4cfbbc3c6c2e09..5e7eed26c6c0854475fe3bda95de4959c103d3cf 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -251,6 +251,8 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface

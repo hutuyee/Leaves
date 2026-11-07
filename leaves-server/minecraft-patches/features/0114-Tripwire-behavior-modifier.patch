@@ -5,10 +5,10 @@ Subject: [PATCH] Tripwire behavior modifier
 
 
 diff --git a/net/minecraft/world/level/levelgen/feature/EndPlatformFeature.java b/net/minecraft/world/level/levelgen/feature/EndPlatformFeature.java
-index aab588e934945c2cec0f7d90f0b2cc22b4e5eb8b..bd826e4ab5b80d924e4358cd675a5db5bba91d0d 100644
+index 68eb73d004dfe85bccc96af269832b0086d01720..e90b92d5095322556eba0cf5d51db834c7f949b5 100644
 --- a/net/minecraft/world/level/levelgen/feature/EndPlatformFeature.java
 +++ b/net/minecraft/world/level/levelgen/feature/EndPlatformFeature.java
-@@ -33,6 +33,11 @@ public record EndPlatformFeature() implements Feature {
+@@ -28,6 +28,11 @@ public class EndPlatformFeature extends Feature<NoneFeatureConfiguration> {
          // CraftBukkit end
          BlockPos.MutableBlockPos pos = origin.mutable();
  
@@ -20,7 +20,7 @@ index aab588e934945c2cec0f7d90f0b2cc22b4e5eb8b..bd826e4ab5b80d924e4358cd675a5db5
          for (int dz = -2; dz <= 2; dz++) {
              for (int dx = -2; dx <= 2; dx++) {
                  for (int dy = -1; dy < 3; dy++) {
-@@ -40,7 +45,30 @@ public record EndPlatformFeature() implements Feature {
+@@ -35,7 +40,30 @@ public class EndPlatformFeature extends Feature<NoneFeatureConfiguration> {
                      Block block = dy == -1 ? Blocks.OBSIDIAN : Blocks.AIR;
                      if (!blockList.getBlockState(blockPos).is(block)) { // CraftBukkit
                          if (dropResources) {
@@ -52,7 +52,7 @@ index aab588e934945c2cec0f7d90f0b2cc22b4e5eb8b..bd826e4ab5b80d924e4358cd675a5db5
                          }
  
                          blockList.setBlock(blockPos, block.defaultBlockState(), Block.UPDATE_ALL); // CraftBukkit
-@@ -58,11 +86,28 @@ public record EndPlatformFeature() implements Feature {
+@@ -53,11 +81,28 @@ public class EndPlatformFeature extends Feature<NoneFeatureConfiguration> {
              if (portalEvent.isCancelled()) return;
          }
  

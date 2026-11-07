@@ -6,10 +6,10 @@ Subject: [PATCH] Skip entity move if movement is zero
 This patch is Powered by Gale(https://github.com/GaleMC/Gale)
 
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 6daa71441020d2e3ac1a19aee8e26d08d397fdc6..b0bd5869548827018b111a74c85478319faf85e8 100644
+index 2fb272d1f5e381deab23a78c0014457490c2597d..85d66933f726cac67f23c38f603a1c0a740bd351 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -284,6 +284,7 @@ public abstract class Entity
+@@ -280,6 +280,7 @@ public abstract class Entity
      public float yRotO;
      public float xRotO;
      private AABB bb = INITIAL_AABB;
@@ -17,10 +17,10 @@ index 6daa71441020d2e3ac1a19aee8e26d08d397fdc6..b0bd5869548827018b111a74c8547831
      public boolean onGround;
      public boolean horizontalCollision;
      public boolean verticalCollision;
-@@ -1166,6 +1167,12 @@ public abstract class Entity
-             );
-         }
+@@ -1139,6 +1140,12 @@ public abstract class Entity
+     // Paper end - detailed watchdog information
  
+     public void move(final MoverType moverType, Vec3 delta) {
 +        // Leaves start - skip entity move if movement is zero
 +        if (org.leavesmc.leaves.LeavesConfig.performance.skipEntityMoveIfMovementIsZero && !this.boundingBoxChanged && delta.equals(Vec3.ZERO)) {
 +            return;
@@ -30,7 +30,7 @@ index 6daa71441020d2e3ac1a19aee8e26d08d397fdc6..b0bd5869548827018b111a74c8547831
          final Vec3 originalMovement = delta; // Paper - Expose pre-collision velocity
          // Paper start - detailed watchdog information
          ca.spottedleaf.moonrise.common.util.TickThread.ensureTickThread("Cannot move an entity off-main");
-@@ -4773,6 +4780,7 @@ public abstract class Entity
+@@ -4638,6 +4645,7 @@ public abstract class Entity
      }
  
      public final void setBoundingBox(final AABB bb) {

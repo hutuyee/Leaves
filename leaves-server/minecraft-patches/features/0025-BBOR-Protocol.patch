@@ -5,10 +5,10 @@ Subject: [PATCH] BBOR Protocol
 
 
 diff --git a/net/minecraft/world/level/chunk/LevelChunk.java b/net/minecraft/world/level/chunk/LevelChunk.java
-index 76dae652c910e36c860791a8285bd9fee466d5b9..04063b07d3634003dd7e158f12d1d8fcd1fc99ce 100644
+index 681563230061212afa7994c8eb16c068754db5dd..b86773029356e9110cbf5e8529963ecf0f992b4c 100644
 --- a/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/net/minecraft/world/level/chunk/LevelChunk.java
-@@ -751,6 +751,11 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
+@@ -749,6 +749,11 @@ public class LevelChunk extends ChunkAccess implements DebugValueSource, ca.spot
  
      public void setLoaded(final boolean loaded) {
          this.loaded = loaded;

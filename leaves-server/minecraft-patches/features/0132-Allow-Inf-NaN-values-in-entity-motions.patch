@@ -5,10 +5,10 @@ Subject: [PATCH] Allow Inf NaN values in entity motions
 
 
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 36216b7da2286b7f726f5e35fb5420568f93ffe3..aebd5b98151255109f6e5c39287e2f92c257ee14 100644
+index b9095a1d523c46df19bc36d7b8a44cad26982b2c..84ed50bda20a63fede061c282d8e6a851bbb0643 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -2539,7 +2539,7 @@ public abstract class Entity
+@@ -2487,7 +2487,7 @@ public abstract class Entity
      }
  
      public void push(final Vec3 impulse) {
@@ -17,7 +17,7 @@ index 36216b7da2286b7f726f5e35fb5420568f93ffe3..aebd5b98151255109f6e5c39287e2f92
              this.push(impulse.x, impulse.y, impulse.z);
          }
      }
-@@ -2555,7 +2555,7 @@ public abstract class Entity
+@@ -2499,7 +2499,7 @@ public abstract class Entity
  
      public void push(final double xa, final double ya, final double za, @Nullable Entity pushingEntity) {
          // Paper end - Add EntityKnockbackByEntityEvent and EntityPushedByEntityAttackEvent
@@ -26,7 +26,7 @@ index 36216b7da2286b7f726f5e35fb5420568f93ffe3..aebd5b98151255109f6e5c39287e2f92
              // Paper start - Add EntityKnockbackByEntityEvent and EntityPushedByEntityAttackEvent
              org.bukkit.util.Vector delta = new org.bukkit.util.Vector(xa, ya, za);
              if (pushingEntity != null) {
-@@ -2768,14 +2768,18 @@ public abstract class Entity
+@@ -2708,14 +2708,18 @@ public abstract class Entity
              output.store("Motion", Vec3.CODEC, this.getDeltaMovement());
              // CraftBukkit start - Checking for NaN pitch/yaw and resetting to zero
              // TODO: make sure this is the best way to address this.
@@ -50,7 +50,7 @@ index 36216b7da2286b7f726f5e35fb5420568f93ffe3..aebd5b98151255109f6e5c39287e2f92
              output.store("Rotation", Vec2.CODEC, new Vec2(this.getYRot(), this.getXRot()));
              output.putDouble("fall_distance", this.fallDistance);
              output.putShort("Fire", (short)this.remainingFireTicks);
-@@ -5150,15 +5154,15 @@ public abstract class Entity
+@@ -5015,15 +5019,15 @@ public abstract class Entity
      }
  
      public void setDeltaMovement(final Vec3 deltaMovement) {
@@ -69,7 +69,7 @@ index 36216b7da2286b7f726f5e35fb5420568f93ffe3..aebd5b98151255109f6e5c39287e2f92
              this.setDeltaMovement(this.getDeltaMovement().add(momentum));
          }
      }
-@@ -5379,7 +5383,7 @@ public abstract class Entity
+@@ -5244,7 +5248,7 @@ public abstract class Entity
      }
  
      public void setYRot(final float yRot) {
@@ -78,7 +78,7 @@ index 36216b7da2286b7f726f5e35fb5420568f93ffe3..aebd5b98151255109f6e5c39287e2f92
              Util.logAndPauseIfInIde("Invalid entity rotation: " + yRot + ", discarding.");
          } else {
              this.yRot = yRot;
-@@ -5391,7 +5395,7 @@ public abstract class Entity
+@@ -5256,7 +5260,7 @@ public abstract class Entity
      }
  
      public void setXRot(final float xRot) {

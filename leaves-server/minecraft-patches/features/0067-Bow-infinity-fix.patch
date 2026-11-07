@@ -5,10 +5,10 @@ Subject: [PATCH] Bow infinity fix
 
 
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 8b30dd7a94f1439d98179363f3a00a799a2b180e..2727a255fc9ec463b98245767042f5673b9b03d7 100644
+index 9963deb55030995406555436a21dd50f15b1377d..6b9b0435356ba47a3b055685bc9169d315ffa9cb 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
-@@ -2097,8 +2097,17 @@ public abstract class Player extends Avatar implements ContainerUser {
+@@ -2102,8 +2102,17 @@ public abstract class Player extends Avatar implements ContainerUser {
              }
          }
  

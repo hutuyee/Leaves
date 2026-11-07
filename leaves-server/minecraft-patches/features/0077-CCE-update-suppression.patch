@@ -5,10 +5,10 @@ Subject: [PATCH] CCE update suppression
 
 
 diff --git a/net/minecraft/world/level/block/ShulkerBoxBlock.java b/net/minecraft/world/level/block/ShulkerBoxBlock.java
-index 8e06a91ff10682433f90a34994ff4f2537d8878f..7c51cbf890480c66556ada59dba08e80a677b2b9 100644
+index 44899662958c66cfba25a9a2dbacdec1e838619f..476dda0acace6e79c158bb4d7bbc79ce362a96cb 100644
 --- a/net/minecraft/world/level/block/ShulkerBoxBlock.java
 +++ b/net/minecraft/world/level/block/ShulkerBoxBlock.java
-@@ -173,7 +173,9 @@ public class ShulkerBoxBlock extends BaseEntityBlock {
+@@ -185,7 +185,9 @@ public class ShulkerBoxBlock extends BaseEntityBlock {
      protected int getAnalogOutputSignal(final BlockState state, final Level level, final BlockPos pos, final Direction direction) {
          // Leaves start - update suppression crash fix
          try {

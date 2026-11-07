@@ -4,11 +4,11 @@ Date: Sat, 17 Jun 2023 15:20:28 +0800
 Subject: [PATCH] Despawn enderman with block
 
 
-diff --git a/net/minecraft/world/entity/monster/Enderman.java b/net/minecraft/world/entity/monster/Enderman.java
-index 24085db3c0ab92a67e1857c9c03be6c6507d78c9..88d992fa3d136226fe352f52fddca54a7d1f10ee 100644
---- a/net/minecraft/world/entity/monster/Enderman.java
-+++ b/net/minecraft/world/entity/monster/Enderman.java
-@@ -449,7 +449,7 @@ public class Enderman extends Monster implements NeutralMob {
+diff --git a/net/minecraft/world/entity/monster/EnderMan.java b/net/minecraft/world/entity/monster/EnderMan.java
+index 9b4ae8afda1f2202761cb49bc4f1181ce4eb55d5..b2a4b7cfb72d46e3b29b6bd1b10f1a618dd2788e 100644
+--- a/net/minecraft/world/entity/monster/EnderMan.java
++++ b/net/minecraft/world/entity/monster/EnderMan.java
+@@ -430,7 +430,7 @@ public class EnderMan extends Monster implements NeutralMob {
  
      @Override
      public boolean requiresCustomPersistence() {

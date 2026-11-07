@@ -5,10 +5,10 @@ Subject: [PATCH] Elytra aeronautics no chunk load
 
 
 diff --git a/net/minecraft/server/level/ChunkMap.java b/net/minecraft/server/level/ChunkMap.java
-index 33e2f83079b8149352d2d7c5d29bd468ec8d5054..6b2103b06a00dc1ca7bf5402bd6700c6f9d2a562 100644
+index 91e9ffda898883aaee6e38956645bd72a446d8b8..6c225c2d19827cff612b6c13a73f486c8e25253e 100644
 --- a/net/minecraft/server/level/ChunkMap.java
 +++ b/net/minecraft/server/level/ChunkMap.java
-@@ -891,7 +891,8 @@ public class ChunkMap extends SimpleRegionStorage implements ChunkHolder.PlayerP
+@@ -892,7 +892,8 @@ public class ChunkMap extends SimpleRegionStorage implements ChunkHolder.PlayerP
      }
  
      private boolean skipPlayer(final ServerPlayer player) {
@@ -18,7 +18,7 @@ index 33e2f83079b8149352d2d7c5d29bd468ec8d5054..6b2103b06a00dc1ca7bf5402bd6700c6
      }
  
      private void updatePlayerStatus(final ServerPlayer player, final boolean added) {
-@@ -925,6 +926,7 @@ public class ChunkMap extends SimpleRegionStorage implements ChunkHolder.PlayerP
+@@ -926,6 +927,7 @@ public class ChunkMap extends SimpleRegionStorage implements ChunkHolder.PlayerP
      }
  
      public void move(final ServerPlayer player) {
@@ -27,10 +27,10 @@ index 33e2f83079b8149352d2d7c5d29bd468ec8d5054..6b2103b06a00dc1ca7bf5402bd6700c6
  
          SectionPos oldSection = player.getLastSectionPos();
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 10331713201a8cb8116cd1dec487b7f7590d6f39..cc999d87b27063c8def51f484483a74b65bd2353 100644
+index 730fede2653927484d8fab11e2c20d75e8c17f1d..ce69ebcca68ac552ec37f253bf8f6149eb76649e 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
-@@ -948,6 +948,9 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
+@@ -941,6 +941,9 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
                          }
                      }
                  );
@@ -41,10 +41,10 @@ index 10331713201a8cb8116cd1dec487b7f7590d6f39..cc999d87b27063c8def51f484483a74b
              profiler.popPush("blockEntities");
              this.tickBlockEntities();
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index f20941e0080bc1dbf4ac824e7c50a613f6df62ea..90fe16553a3081abd5776cbf64775f39aee407c8 100644
+index eb87e934932a5b05291a47db1f0094369361312d..ebb2dcfc86ed44b1b6a05cd45292fefa969c7d08 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -622,7 +622,7 @@ public class ServerGamePacketListenerImpl
+@@ -611,7 +611,7 @@ public class ServerGamePacketListenerImpl
                  speed *= 2f; // TODO: Get the speed of the vehicle instead of the player
  
                  // Paper start - Prevent moving into unloaded chunks
@@ -53,19 +53,19 @@ index f20941e0080bc1dbf4ac824e7c50a613f6df62ea..90fe16553a3081abd5776cbf64775f39
                      !level.areChunksLoadedForMove(this.player.getBoundingBox().expandTowards(new Vec3(targetX, targetY, targetZ).subtract(this.player.position()))) ||
                          !level.areChunksLoadedForMove(vehicle.getBoundingBox().expandTowards(new Vec3(targetX, targetY, targetZ).subtract(vehicle.position())))
                  )) {
-@@ -1688,6 +1688,7 @@ public class ServerGamePacketListenerImpl
-                         allowMovement = !this.hasNewCollision(level, this.player, oldAABB, newBox);
-                     } // else: no collision at all detected, why do we care?
-                 }
-+                allowMovement = allowMovement || this.player.elytraAeronauticsNoChunk; // Leaves - Elytra aeronautics
-                 // Paper end - optimise out extra getCubes
-                 if (!allowMovement) {
-                     io.papermc.paper.event.player.PlayerFailMoveEvent event = fireFailMove(io.papermc.paper.event.player.PlayerFailMoveEvent.FailReason.CLIPPED_INTO_BLOCK,
+@@ -1651,6 +1651,7 @@ public class ServerGamePacketListenerImpl
+                                         allowMovement = !this.hasNewCollision(level, this.player, oldAABB, newBox);
+                                     } // else: no collision at all detected, why do we care?
+                                 }
++                                allowMovement = allowMovement || this.player.elytraAeronauticsNoChunk; // Leaves - Elytra aeronautics
+                                 // Paper end - optimise out extra getCubes
+                                 if (!allowMovement) {
+                                     io.papermc.paper.event.player.PlayerFailMoveEvent event = fireFailMove(io.papermc.paper.event.player.PlayerFailMoveEvent.FailReason.CLIPPED_INTO_BLOCK,
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 2746ba8cf565e2d98c532712b9fcbbd7b3c0af80..1a1a566daa5a71732f661e1898dc224a9883c1e4 100644
+index 0d1174c96cb24b37bd0b38291e576f9a76cb7b7f..7eb5c92944658f01c3fb47a059ee0b0fc3a7e703 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -1196,6 +1196,15 @@ public abstract class Entity
+@@ -1168,6 +1168,15 @@ public abstract class Entity
                  }
              }
  
@@ -81,7 +81,7 @@ index 2746ba8cf565e2d98c532712b9fcbbd7b3c0af80..1a1a566daa5a71732f661e1898dc224a
              ProfilerFiller profiler = Profiler.get();
              profiler.push("move");
              if (this.stuckSpeedMultiplier.lengthSqr() > 1.0E-7) {
-@@ -2371,6 +2380,7 @@ public abstract class Entity
+@@ -2319,6 +2328,7 @@ public abstract class Entity
          this.yo = y;
          this.zo = cz;
          this.setPos(cx, y, cz);
@@ -90,10 +90,10 @@ index 2746ba8cf565e2d98c532712b9fcbbd7b3c0af80..1a1a566daa5a71732f661e1898dc224a
      }
  
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 7bcb0734e3c924af420a9581bc4cd05dc9bab578..fa0168c058ff4a3a56d7d02745be359c9606df5e 100644
+index 42b9863bd3a00df403d17d3ea212b8338e07d475..ff82a16f32612c0b59ed2746d2c6731b0f59a6fa 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -3493,6 +3493,11 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -3487,6 +3487,11 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
              this.fallFlyTicks++;
          } else {
              this.fallFlyTicks = 0;
@@ -106,7 +106,7 @@ index 7bcb0734e3c924af420a9581bc4cd05dc9bab578..fa0168c058ff4a3a56d7d02745be359c
  
          if (this.isSleeping()) {
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 5d143fe6973a34d9f0688ce0530aedf1be3b146e..ed666b0435ff59d871b1054b141dde0b677b0ada 100644
+index b748a217f4dbe61c074d3b8e3d48d1950d46975a..9963deb55030995406555436a21dd50f15b1377d 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -174,6 +174,7 @@ public abstract class Player extends Avatar implements ContainerUser {
@@ -118,7 +118,7 @@ index 5d143fe6973a34d9f0688ce0530aedf1be3b146e..ed666b0435ff59d871b1054b141dde0b
      // CraftBukkit start
      public boolean fauxSleeping;
 diff --git a/net/minecraft/world/entity/projectile/FireworkRocketEntity.java b/net/minecraft/world/entity/projectile/FireworkRocketEntity.java
-index 5b61c20fcac6825a1891c674870f40074eff22d3..912efe559859e0ee2816102704212071a722ff15 100644
+index 325bdcd8c7dd4e03aa6f649c8f76b031529d5fd8..a48db97c8675069facca0212f1e62d5558acc296 100644
 --- a/net/minecraft/world/entity/projectile/FireworkRocketEntity.java
 +++ b/net/minecraft/world/entity/projectile/FireworkRocketEntity.java
 @@ -324,7 +324,7 @@ public class FireworkRocketEntity extends Projectile implements ItemSupplier {
@@ -131,7 +131,7 @@ index 5b61c20fcac6825a1891c674870f40074eff22d3..912efe559859e0ee2816102704212071
          Fireworks fireworks = sourceItemStack.get(DataComponents.FIREWORKS);
          return fireworks != null ? fireworks.explosions() : List.of();
 diff --git a/net/minecraft/world/item/FireworkRocketItem.java b/net/minecraft/world/item/FireworkRocketItem.java
-index 2c3d09655a37e4f45630664eee22005b40c98fa9..4bf71b7dca8d569e426df39fa20dc3fa4d2d93bf 100644
+index b3443ff2d06af328493046e723efc11d299a2824..f585fc6a3d566f0089d8629b487ad64954e47606 100644
 --- a/net/minecraft/world/item/FireworkRocketItem.java
 +++ b/net/minecraft/world/item/FireworkRocketItem.java
 @@ -65,6 +65,27 @@ public class FireworkRocketItem extends Item implements ProjectileItem {
@@ -161,4 +161,4 @@ index 2c3d09655a37e4f45630664eee22005b40c98fa9..4bf71b7dca8d569e426df39fa20dc3fa
 +                // Leaves end - Elytra aeronautics
                  // Paper start - PlayerElytraBoostEvent
                  final Projectile.Delayed<FireworkRocketEntity> delayed = Projectile.spawnProjectileDelayed(new FireworkRocketEntity(level, itemStack, player), serverLevel, itemStack, f -> f.spawningEntity = player.getUUID()); // Paper - firework api - assign spawning entity uuid
-                 com.destroystokyo.paper.event.player.PlayerElytraBoostEvent event = new com.destroystokyo.paper.event.player.PlayerElytraBoostEvent((org.bukkit.entity.Player) player.getBukkitEntity(), org.bukkit.craftbukkit.inventory.CraftItemStack.asBukkitMirror(itemStack), (org.bukkit.entity.Firework) delayed.projectile().getBukkitEntity(), org.bukkit.craftbukkit.CraftEquipmentSlot.getHand(hand));
+                 com.destroystokyo.paper.event.player.PlayerElytraBoostEvent event = new com.destroystokyo.paper.event.player.PlayerElytraBoostEvent((org.bukkit.entity.Player) player.getBukkitEntity(), org.bukkit.craftbukkit.inventory.CraftItemStack.asCraftMirror(itemStack), (org.bukkit.entity.Firework) delayed.projectile().getBukkitEntity(), org.bukkit.craftbukkit.CraftEquipmentSlot.getHand(hand));

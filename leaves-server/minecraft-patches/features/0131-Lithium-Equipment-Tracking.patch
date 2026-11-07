@@ -24,11 +24,11 @@ As part of: Lithium (https://github.com/CaffeineMC/lithium)
 Licensed under: LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.html)
 
 diff --git a/net/minecraft/world/entity/EntityEquipment.java b/net/minecraft/world/entity/EntityEquipment.java
-index 1aa888376784dfc9ddd9c4e2493031ff2a564b59..6a4bbaf6c7422921bfb844dd057dff75c987a149 100644
+index 20041325ae77f16a5b77f5de7255788b52ebb3a5..1456dbc98de65da1d854a3d3c224e4dad2de0f38 100644
 --- a/net/minecraft/world/entity/EntityEquipment.java
 +++ b/net/minecraft/world/entity/EntityEquipment.java
-@@ -8,7 +8,7 @@ import java.util.Map.Entry;
- import net.minecraft.world.entity.item.ItemEntity;
+@@ -7,7 +7,7 @@ import java.util.Objects;
+ import java.util.Map.Entry;
  import net.minecraft.world.item.ItemStack;
  
 -public class EntityEquipment {
@@ -36,7 +36,7 @@ index 1aa888376784dfc9ddd9c4e2493031ff2a564b59..6a4bbaf6c7422921bfb844dd057dff75
      public static final Codec<EntityEquipment> CODEC = Codec.unboundedMap(EquipmentSlot.CODEC, ItemStack.CODEC).xmap(items -> {
          EnumMap<EquipmentSlot, ItemStack> map = new EnumMap<>(EquipmentSlot.class);
          map.putAll((Map<? extends EquipmentSlot, ? extends ItemStack>)items);
-@@ -19,6 +19,11 @@ public class EntityEquipment {
+@@ -18,6 +18,11 @@ public class EntityEquipment {
          return items;
      });
      private final EnumMap<EquipmentSlot, ItemStack> items;
@@ -48,7 +48,7 @@ index 1aa888376784dfc9ddd9c4e2493031ff2a564b59..6a4bbaf6c7422921bfb844dd057dff75
  
      private EntityEquipment(final EnumMap<EquipmentSlot, ItemStack> items) {
          this.items = items;
-@@ -29,7 +34,13 @@ public class EntityEquipment {
+@@ -28,7 +33,13 @@ public class EntityEquipment {
      }
  
      public ItemStack set(final EquipmentSlot slot, final ItemStack itemStack) {
@@ -63,7 +63,7 @@ index 1aa888376784dfc9ddd9c4e2493031ff2a564b59..6a4bbaf6c7422921bfb844dd057dff75
      }
  
      public ItemStack get(final EquipmentSlot slot) {
-@@ -56,8 +67,23 @@ public class EntityEquipment {
+@@ -55,8 +66,23 @@ public class EntityEquipment {
      }
  
      public void setAll(final EntityEquipment equipment) {
@@ -87,7 +87,7 @@ index 1aa888376784dfc9ddd9c4e2493031ff2a564b59..6a4bbaf6c7422921bfb844dd057dff75
      }
  
      public void dropAll(final LivingEntity dropper) {
-@@ -73,6 +99,7 @@ public class EntityEquipment {
+@@ -69,6 +95,7 @@ public class EntityEquipment {
  
      public void clear() {
          this.items.replaceAll((s, v) -> ItemStack.EMPTY);
@@ -95,7 +95,7 @@ index 1aa888376784dfc9ddd9c4e2493031ff2a564b59..6a4bbaf6c7422921bfb844dd057dff75
      }
  
      // Paper start - EntityDeathEvent
-@@ -81,4 +108,98 @@ public class EntityEquipment {
+@@ -77,4 +104,98 @@ public class EntityEquipment {
          return this.items.containsKey(slot);
      }
      // Paper end - EntityDeathEvent
@@ -195,11 +195,11 @@ index 1aa888376784dfc9ddd9c4e2493031ff2a564b59..6a4bbaf6c7422921bfb844dd057dff75
 +    // Leaves end - Lithium - equipment tracking
  }
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 27a3fab934f543fd39b8fa9aecb398faccbea9c8..85676a3b3adbcd334ce8ef1158a1c60fb5000d34 100644
+index 11bafe463952e7dbbc94378d2abe8505338c9700..c2b57db6433739379e41a31480e79bec0e343d8a 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -448,9 +448,15 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
-             });
+@@ -445,9 +445,15 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+             this.getSleepingPos().ifPresent(this::setPosToBed);
          }
  
 -        if (this.level() instanceof ServerLevel serverLevel) {
@@ -215,7 +215,7 @@ index 27a3fab934f543fd39b8fa9aecb398faccbea9c8..85676a3b3adbcd334ce8ef1158a1c60f
  
          super.baseTick();
          ProfilerFiller profiler = Profiler.get();
-@@ -3598,6 +3604,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -3592,6 +3598,7 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
      public void detectEquipmentUpdates() {
          Map<EquipmentSlot, ItemStack> changedItems = this.collectEquipmentChanges(this.lastEquipmentItems);
          if (changedItems != null) {
@@ -223,7 +223,7 @@ index 27a3fab934f543fd39b8fa9aecb398faccbea9c8..85676a3b3adbcd334ce8ef1158a1c60f
              this.handleHandSwap(changedItems);
              if (!changedItems.isEmpty()) {
                  this.handleEquipmentChanges(changedItems);
-@@ -3606,6 +3613,14 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
+@@ -3600,6 +3607,14 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
      }
  
      protected @Nullable Map<EquipmentSlot, ItemStack> collectEquipmentChanges(final Map<EquipmentSlot, ItemStack> lastEquipmentItems) {
@@ -239,7 +239,7 @@ index 27a3fab934f543fd39b8fa9aecb398faccbea9c8..85676a3b3adbcd334ce8ef1158a1c60f
          // Paper start - EntityEquipmentChangedEvent
          record EquipmentChangeImpl(org.bukkit.inventory.ItemStack oldItem, org.bukkit.inventory.ItemStack newItem) implements io.papermc.paper.event.entity.EntityEquipmentChangedEvent.EquipmentChange {
 diff --git a/net/minecraft/world/entity/decoration/ArmorStand.java b/net/minecraft/world/entity/decoration/ArmorStand.java
-index aa5f0a0c32b3ec942015a4468a4ca1fac86ecd1b..5a511dbc75038d62814ecd557dc9fd2394d9aee6 100644
+index a578dc7bc551f68c9d6e5a6404e5b700277e9e3f..a4e6127d1fd93346e42b39b8935171de3df7be0e 100644
 --- a/net/minecraft/world/entity/decoration/ArmorStand.java
 +++ b/net/minecraft/world/entity/decoration/ArmorStand.java
 @@ -93,7 +93,7 @@ public class ArmorStand extends LivingEntity {
@@ -261,4 +261,4 @@ index aa5f0a0c32b3ec942015a4468a4ca1fac86ecd1b..5a511dbc75038d62814ecd557dc9fd23
 +                if (org.leavesmc.leaves.LeavesConfig.performance.equipmentTracking) this.noTickEquipmentDirty = false; // Leaves - Lithium - equipment tracking
              }
  
-             // Still tick for death, otherwise leaves permanent entities
+             return;

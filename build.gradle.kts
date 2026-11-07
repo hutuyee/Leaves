@@ -80,6 +80,15 @@ paperweight {
     }
 }
 
+// Paper patch tasks read files produced by the upstream checkout.
+project(":leaves-server") {
+    tasks.matching {
+        it.name.contains("Paper")
+    }.configureEach {
+        dependsOn(rootProject.tasks.named("checkoutPaperRepo"))
+    }
+}
+
 val patchTasks = listOf(
     "::applyPaperApiPatches" to "::rebuildPaperApiPatches",
     "::applyPaperSingleFilePatches" to "::rebuildPaperSingleFilePatches",

@@ -5,10 +5,10 @@ Subject: [PATCH] Bytebuf API
 
 
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 8eb94f0896025f4688ace83ac32c5f2fc9260b83..709e41236f79fe32b2bf159ba086cc63496df0bc 100644
+index 29907d613a0df77a83f187158e9255e90a6115b3..fc09a6c820278e7bbc4e56f94806ac20b463979b 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -309,6 +309,11 @@ public abstract class PlayerList {
+@@ -307,6 +307,11 @@ public abstract class PlayerList {
              GameProtocols.SERVERBOUND_TEMPLATE.bind(RegistryFriendlyByteBuf.decorator(this.server.registryAccess()), playerConnection), playerConnection
          );
          playerConnection.suspendFlushing();

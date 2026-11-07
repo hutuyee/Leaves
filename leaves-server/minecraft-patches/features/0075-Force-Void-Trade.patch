@@ -5,7 +5,7 @@ Subject: [PATCH] Force Void Trade
 
 
 diff --git a/net/minecraft/world/entity/npc/villager/AbstractVillager.java b/net/minecraft/world/entity/npc/villager/AbstractVillager.java
-index 520330f52f799b08b530b8198c633bd0ef49793e..a6d3405ee08e811122226a25826a14f72ec3da1d 100644
+index cd74900e15b32651d20a5179f235f02b967b17ac..e7d44317d4a5ed781fc192cc5609167dcd7d068b 100644
 --- a/net/minecraft/world/entity/npc/villager/AbstractVillager.java
 +++ b/net/minecraft/world/entity/npc/villager/AbstractVillager.java
 @@ -58,6 +58,7 @@ public abstract class AbstractVillager extends AgeableMob implements Npc, Mercha
@@ -74,10 +74,10 @@ index 520330f52f799b08b530b8198c633bd0ef49793e..a6d3405ee08e811122226a25826a14f7
 +    // Leaves end - force void trade
  }
 diff --git a/net/minecraft/world/entity/npc/villager/Villager.java b/net/minecraft/world/entity/npc/villager/Villager.java
-index e6f3961f1573dffef51b8ee724a52800c8a6004b..fadb8302f17eaba69a9636ed607742013a41c06d 100644
+index 0a02aef2ff159a1d94870bf3cede0ed29ae192af..4987fba4de77e998579ae835e4417d8edc3d57d9 100644
 --- a/net/minecraft/world/entity/npc/villager/Villager.java
 +++ b/net/minecraft/world/entity/npc/villager/Villager.java
-@@ -329,6 +329,7 @@ public class Villager extends AbstractVillager implements VillagerDataHolder, Re
+@@ -352,6 +352,7 @@ public class Villager extends AbstractVillager implements VillagerDataHolder, Re
      }
  
      private void startTrading(final Player player) {
@@ -85,7 +85,7 @@ index e6f3961f1573dffef51b8ee724a52800c8a6004b..fadb8302f17eaba69a9636ed60774201
          this.updateSpecialPrices(player);
          this.setTradingPlayer(player);
          this.openTradingScreen(player, this.getDisplayName(), this.getVillagerData().level());
-@@ -593,8 +594,12 @@ public class Villager extends AbstractVillager implements VillagerDataHolder, Re
+@@ -613,8 +614,12 @@ public class Villager extends AbstractVillager implements VillagerDataHolder, Re
      @Override
      protected void rewardTradeXp(final MerchantOffer offer) {
          int popXp = 3 + this.random.nextInt(4);
@@ -98,10 +98,10 @@ index e6f3961f1573dffef51b8ee724a52800c8a6004b..fadb8302f17eaba69a9636ed60774201
 +        }
 +        // Leaves end - force void trade
          if (this.shouldIncreaseLevel()) {
-             if (this.level() instanceof ServerLevel serverLevel) {
-                 this.increaseMerchantCareer(serverLevel);
+             this.updateMerchantTimer = 40;
+             this.increaseProfessionLevelOnUpdate = true;
 diff --git a/net/minecraft/world/entity/npc/wanderingtrader/WanderingTrader.java b/net/minecraft/world/entity/npc/wanderingtrader/WanderingTrader.java
-index 7af7514a204914957de02d8a775fb8ad9ea6d010..647bbcacd36298b27c6ef94b6c9e6281e29fe927 100644
+index f79353aa58b03d00839e4e95d1fd2480a635a592..8e553ec0bfe9658cadec7ad1033ddfd22182b0e0 100644
 --- a/net/minecraft/world/entity/npc/wanderingtrader/WanderingTrader.java
 +++ b/net/minecraft/world/entity/npc/wanderingtrader/WanderingTrader.java
 @@ -120,6 +120,7 @@ public class WanderingTrader extends AbstractVillager implements Consumable.Over
@@ -113,10 +113,10 @@ index 7af7514a204914957de02d8a775fb8ad9ea6d010..647bbcacd36298b27c6ef94b6c9e6281
                  this.openTradingScreen(player, this.getDisplayName(), 1);
              }
 diff --git a/net/minecraft/world/inventory/MerchantMenu.java b/net/minecraft/world/inventory/MerchantMenu.java
-index a00a12d5069ba60007db5876519ae071d1f86400..84040de1f8d46024b5c4f934f32d2432522c8b9f 100644
+index 0d19d4c2ea25ed8ee28ec505bc92baabac527b16..c07f5d4975a27d0cedf5759e66600edaa095a4f8 100644
 --- a/net/minecraft/world/inventory/MerchantMenu.java
 +++ b/net/minecraft/world/inventory/MerchantMenu.java
-@@ -26,7 +26,7 @@ public class MerchantMenu extends AbstractContainerMenu {
+@@ -25,7 +25,7 @@ public class MerchantMenu extends AbstractContainerMenu {
      private static final int SELLSLOT2_X = 162;
      private static final int BUYSLOT_X = 220;
      private static final int ROW_Y = 37;
@@ -172,10 +172,10 @@ index b7766e7155a6a5345bc4eefcbd05e6848e1bf026..12e9001d75b7c3928edd07f68c4176af
  
      public void setToOutOfStock() {
 diff --git a/net/minecraft/world/level/block/EndGatewayBlock.java b/net/minecraft/world/level/block/EndGatewayBlock.java
-index 4ac1da84017191eb0d415ff0a4ed934538da985d..cbaba8bb25a05d5d317269d262435a35f6f25b96 100644
+index 67941c19d97a328dfce7eeecf52518349f27df81..1ae282969e77f31aadd6fac4fd5c552f6693c8dd 100644
 --- a/net/minecraft/world/level/block/EndGatewayBlock.java
 +++ b/net/minecraft/world/level/block/EndGatewayBlock.java
-@@ -104,6 +104,15 @@ public class EndGatewayBlock extends BaseEntityBlock implements Portal {
+@@ -112,6 +112,15 @@ public class EndGatewayBlock extends BaseEntityBlock implements Portal {
      public @Nullable TeleportTransition getPortalDestination(final ServerLevel currentLevel, final Entity entity, final BlockPos portalEntryPos) {
          if (currentLevel.getBlockEntity(portalEntryPos) instanceof TheEndGatewayBlockEntity endGatewayBlockEntity) {
              Vec3 teleportPosition = endGatewayBlockEntity.getPortalPosition(currentLevel, portalEntryPos);

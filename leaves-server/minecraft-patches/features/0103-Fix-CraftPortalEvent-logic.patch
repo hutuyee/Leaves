@@ -5,10 +5,10 @@ Subject: [PATCH] Fix CraftPortalEvent logic
 
 
 diff --git a/net/minecraft/world/level/block/EndPortalBlock.java b/net/minecraft/world/level/block/EndPortalBlock.java
-index 23a3c9cd26666f909e5b512e276a2fcdcbc42c05..914f464a5a75bda7fc0cdacc1a93fcfe30165354 100644
+index 2d48b70e18547330078e49c8f01f2f39b08d274c..8b1535afb8f82ae3a26a818a7363d040a548f892 100644
 --- a/net/minecraft/world/level/block/EndPortalBlock.java
 +++ b/net/minecraft/world/level/block/EndPortalBlock.java
-@@ -109,10 +109,9 @@ public class EndPortalBlock extends BaseEntityBlock implements Portal {
+@@ -116,10 +116,9 @@ public class EndPortalBlock extends BaseEntityBlock implements Portal {
          }
  
          // CraftBukkit start
