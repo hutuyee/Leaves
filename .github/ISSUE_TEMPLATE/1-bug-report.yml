@@ -25,7 +25,7 @@ body:
         Leaves服务端发行版本 Leaves server release version (contains the git commit's hash)<br>
         通过执行`/version`命令将获取到的内容复制到这里。 Run `/version` on your server and paste the full, unmodified output here.
       placeholder: >
-        e.g. This server is running Leaves version 26.3-4-master@abcdef0 (2026-10-18T00:00:00Z) (Implementing API version 26.3-R0.1-SNAPSHOT)
+        e.g. This server is running Leaves version 26.2-4-master@abcdef0 (2026-10-18T00:00:00Z) (Implementing API version 26.2-R0.1-SNAPSHOT)
     validations:
       required: true
   - type: textarea

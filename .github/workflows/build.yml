@@ -33,7 +33,7 @@ jobs:
       - name: Apply Patches
         run: ./gradlew applyAllPatches
       - name: Create Leavesclip Jar
-        run: ./gradlew createMojmapLeavesclipJar
+        run: ./gradlew createLeavesclipJar
         env:
           BUILD_NUMBER: ${{ env.BUILD_NUMBER }}
       - name: Publish to Maven repo

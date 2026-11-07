@@ -5,10 +5,10 @@ Subject: [PATCH] Bytebuf API
 
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index 66fe601d21ece91de0264deb227014e369f65eaa..bcadd9272fb351c647e63c73ded261993d8a4c3b 100644
+index 37b2231a7664ecaa100223f1ed48bce615d6477a..20516a21e3fe5f5020e52db734bf5fd5cbf98ab7 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -3108,4 +3108,10 @@ public final class Bukkit {
+@@ -3022,4 +3022,10 @@ public final class Bukkit {
          return server.getPhotographerManager();
      }
      // Leaves end - Photographer API
@@ -20,10 +20,10 @@ index 66fe601d21ece91de0264deb227014e369f65eaa..bcadd9272fb351c647e63c73ded26199
 +    // Leaves end - Bytebuf API
  }
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index f3f52e67926846144f531ae8ab16d55419038e4e..d17af41d9d4ab3ffb42580979fa5f5d3d9280202 100644
+index f343cba4971887b8ea1476ef2c95c40003076da9..3f21642321b3366a96083be3205efe9be946bb07 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -2861,4 +2861,6 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -2785,4 +2785,6 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
      // Leaves end - Bot API
  
      @NotNull org.leavesmc.leaves.entity.photographer.PhotographerManager getPhotographerManager(); // Leaves - Photographer API
@@ -31,10 +31,10 @@ index f3f52e67926846144f531ae8ab16d55419038e4e..d17af41d9d4ab3ffb42580979fa5f5d3
 +    org.leavesmc.leaves.bytebuf.BytebufAllocator getBytebufAllocator(); // Leaves - Bytebuf API
  }
 diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
-index e763c44f999df2814be8fbc2dfb9eceead2e77db..177fda8df00962f550fbb16664a64d4b2257baed 100644
+index 65e83e171ab4c514662b9344e08f7065fa9efaa1..4605f722a7310fae5870c07d46dc3b7fa76993ad 100644
 --- a/src/main/java/org/bukkit/entity/Player.java
 +++ b/src/main/java/org/bukkit/entity/Player.java
-@@ -73,7 +73,7 @@ import org.jspecify.annotations.Nullable;
+@@ -72,7 +72,7 @@ import org.jspecify.annotations.Nullable;
   * Represents a player, connected or not
   */
  @NullMarked
