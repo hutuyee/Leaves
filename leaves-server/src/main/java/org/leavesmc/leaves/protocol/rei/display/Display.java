@@ -2,6 +2,7 @@ package org.leavesmc.leaves.protocol.rei.display;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
@@ -11,11 +12,13 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.Fireworks;
+import net.minecraft.world.item.component.ProvidesTrimMaterial;
 import net.minecraft.world.item.crafting.FireworkRocketRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -156,7 +159,8 @@ public abstract class Display {
     }
 
     private static Optional<Holder<TrimMaterial>> getMaterialFromIngredient(HolderLookup.Provider provider, Holder<Item> item) {
-        return Optional.ofNullable(new ItemStack(item).get(DataComponents.PROVIDES_TRIM_MATERIAL));
+        return Optional.ofNullable(new ItemStack(item).get(DataComponents.PROVIDES_TRIM_MATERIAL))
+            .map(ProvidesTrimMaterial::material);
     }
 
     public static EntryIngredient ofSlotDisplay(SlotDisplay slot) {
@@ -177,9 +181,9 @@ public abstract class Display {
             default -> {
                 RegistryAccess access = MinecraftServer.getServer().registryAccess();
                 try {
-                    List<ItemStack> stacks = slot.resolveForStacks(ContextMap.builder()
-                        .set(SlotDisplayContext.REGISTRIES, access)
-                        .buildAndValidate(SlotDisplayContext.CONTEXT));
+                    List<ItemStack> stacks = slot.resolveForStacks(new ContextMap.Builder()
+                        .withParameter(SlotDisplayContext.REGISTRIES, access)
+                        .create(SlotDisplayContext.CONTEXT));
                     yield EntryIngredient.of(stacks.toArray(new ItemStack[0]));
                 } catch (Exception e) {
                     MinecraftServer.LOGGER.warn("Failed to resolve slot display: {}", slot, e);
@@ -200,7 +204,13 @@ public abstract class Display {
         return ingredients.build();
     }
 
-    public static <T extends ItemLike> EntryIngredient ofItemTag(HolderSet<T> holders) {
+    public static <T extends ItemLike> EntryIngredient ofItemTag(TagKey<T> tagKey) {
+        HolderGetter<T> getter = MinecraftServer.getServer().registryAccess().lookupOrThrow(tagKey.registry());
+        HolderSet.Named<T> holders = getter.get(tagKey).orElse(null);
+        if (holders == null) {
+            return EntryIngredient.empty();
+        }
+
         int size = holders.size();
         if (size == 0) {
             return EntryIngredient.empty();

@@ -7,6 +7,7 @@ public enum Schema {
     // Minecraft Data Versions
     SCHEMA_FUTURE(9999, "FUTURE"),
     SCHEMA_26_03(5023, "26.3"),
+    SCHEMA_26_02(4903, "26.2"),
     SCHEMA_25W41A(4657, "25w41a"),
     SCHEMA_1_21_10(4556, "1.21.10"),
     SCHEMA_1_21_09(4554, "1.21.9"),

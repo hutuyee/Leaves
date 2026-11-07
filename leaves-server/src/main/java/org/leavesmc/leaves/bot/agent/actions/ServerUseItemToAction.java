@@ -2,7 +2,6 @@ package org.leavesmc.leaves.bot.agent.actions;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -41,7 +40,7 @@ public class ServerUseItemToAction extends AbstractUseBotAction<ServerUseItemToA
         }
 
         if (shouldSwing(interactionResult)) {
-            bot.swing(hand, SwingAnimation.DEFAULT, true);
+            bot.swing(hand);
         }
 
         return interactionResult;

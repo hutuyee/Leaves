@@ -766,19 +766,13 @@ public class LinearRegionFile implements IRegionFile {
     }
 
     @Override
-    public boolean moonrise$recalculateHeader() {
+    public boolean recalculateHeader() {
         return false;
     }
 
     @Override
-    public int moonrise$getRecalculateCount() {
+    public int getRecalculateCount() {
         return 0;
-    }
-
-    @Override
-    public Boolean moonrise$tryRecalcHeader(final int expectedRecalcCount) {
-        // Linear files do not support header recovery, so the caller must not retry the read.
-        return Boolean.FALSE;
     }
 
     public void setOversized(int x, int z, boolean something) {

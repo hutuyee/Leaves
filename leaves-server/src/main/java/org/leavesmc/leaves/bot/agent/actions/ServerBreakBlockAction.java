@@ -2,7 +2,6 @@ package org.leavesmc.leaves.bot.agent.actions;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -43,7 +42,7 @@ public class ServerBreakBlockAction extends AbstractTimerBotAction<ServerBreakBl
                 lastSentState = -1;
 
                 if (!iblockdata.isAir()) {
-                    bot.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, true);
+                    bot.swing(InteractionHand.MAIN_HAND);
                     EnchantmentHelper.onHitBlock(
                         bot.level(), bot.getMainHandItem(), bot, bot, EquipmentSlot.MAINHAND, Vec3.atCenterOf(pos), iblockdata,
                         item -> bot.onEquippedItemBroken(item, EquipmentSlot.MAINHAND)
@@ -64,7 +63,7 @@ public class ServerBreakBlockAction extends AbstractTimerBotAction<ServerBreakBl
                 }
             } else {
                 if (!iblockdata.isAir()) {
-                    bot.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, true);
+                    bot.swing(InteractionHand.MAIN_HAND);
                     float damage = this.incrementDestroyProgress(bot, iblockdata, pos);
                     if (damage >= 1.0F) {
                         bot.gameMode.destroyAndAck(pos, 0, "destroyed");

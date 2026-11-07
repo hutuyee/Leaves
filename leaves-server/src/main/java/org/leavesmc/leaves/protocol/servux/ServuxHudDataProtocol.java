@@ -4,7 +4,6 @@ import com.mojang.serialization.DataResult;
 import io.netty.buffer.Unpooled;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
@@ -118,7 +117,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
         ListTag list = new ListTag();
 
         recipes.forEach((recipeEntry -> {
-            DataResult<Tag> dr = Recipe.CODEC.encodeStart(NbtOps.INSTANCE, Holder.direct(recipeEntry.value()));
+            DataResult<Tag> dr = Recipe.CODEC.encodeStart(NbtOps.INSTANCE, recipeEntry.value());
 
             if (dr.result().isPresent()) {
                 CompoundTag entry = new CompoundTag();

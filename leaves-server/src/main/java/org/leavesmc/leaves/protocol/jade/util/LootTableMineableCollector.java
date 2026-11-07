@@ -60,8 +60,8 @@ public class LootTableMineableCollector {
             ItemPredicate itemPredicate = predicate.orElse(null);
             return itemPredicate != null && itemPredicate.test(toolItem);
         } else if (condition instanceof AnyOfCondition anyOfCondition) {
-            for (Holder<LootItemCondition> child : anyOfCondition.terms) {
-                if (isCorrectConditions(List.of(child.value()), toolItem)) {
+            for (LootItemCondition child : anyOfCondition.terms) {
+                if (isCorrectConditions(List.of(child), toolItem)) {
                     return true;
                 }
             }
@@ -99,13 +99,10 @@ public class LootTableMineableCollector {
                 }
             }
         } else if (entry instanceof NestedLootTable nestedLootTable) {
-            for (Holder<LootTable> lootTable : nestedLootTable.value) {
-                if (doLootTable(lootTable.value())) {
-                    return true;
-                }
-            }
+            LootTable lootTable = nestedLootTable.contents.map($ -> lootRegistry.get($).map(Holder::value).orElse(null), Function.identity());
+            return doLootTable(lootTable);
         } else {
-            return entry.condition.map(condition -> isCorrectConditions(List.of(condition.value()), toolItem)).orElse(false);
+            return isCorrectConditions(entry.conditions, toolItem);
         }
         return false;
     }

@@ -29,14 +29,12 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.MoveSimulationType;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
 import net.minecraft.world.inventory.ChestMenu;
@@ -144,8 +142,8 @@ public class ServerBot extends ServerPlayer {
 
         this.resetOperationCountPerTick(); // Leaves - player operation limiter
         this.wardenSpawnTracker.tick();
-        if (this.getInvulnerableTime() > 0) {
-            this.setInvulnerableTime(this.getInvulnerableTime() - 1);
+        if (this.invulnerableTime > 0) {
+            this.invulnerableTime--;
         }
         if (this.spawnInvulnerableTime > 0) {
             --this.spawnInvulnerableTime; // Leaves - spawn invulnerable time
@@ -250,8 +248,8 @@ public class ServerBot extends ServerPlayer {
     }
 
     @Override
-    public MoveSimulationType getMoveSimulationType() {
-        return MoveSimulationType.SERVER_AND_CLIENT;
+    public boolean canSimulateMovement() {
+        return true;
     }
 
     @Override
@@ -352,7 +350,7 @@ public class ServerBot extends ServerPlayer {
     @Override
     public void attack(@NotNull Entity target) {
         super.attack(target);
-        this.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, true);
+        this.swing(InteractionHand.MAIN_HAND);
     }
 
     @Override
@@ -642,14 +640,14 @@ public class ServerBot extends ServerPlayer {
         for (int i = 0; i < items.size(); i++) {
             ItemStack itemStack = items.get(i);
             if (!itemStack.isEmpty()) {
-                this.drop(itemStack, death, net.minecraft.util.Prediction.SERVER_ONLY);
+                this.drop(itemStack, death, false);
                 items.set(i, ItemStack.EMPTY);
             }
         }
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ItemStack itemStack;
             if (!(itemStack = this.equipment.get(slot)).isEmpty()) {
-                this.drop(itemStack, death, net.minecraft.util.Prediction.SERVER_ONLY);
+                this.drop(itemStack, death, false);
                 this.equipment.set(slot, ItemStack.EMPTY);
             }
         }
