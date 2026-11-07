@@ -65,7 +65,7 @@ dependencies {
 ./gradlew createLeavesclipJar
 ```
 
-可直接运行的服务端文件位于 `leaves-server/build/libs/leaves-leavesclip-26.2-R0.1-SNAPSHOT-*.jar`。
+可直接运行的服务端文件位于 `leaves-server/build/libs/leaves-leavesclip-26.2-R0.1-SNAPSHOT.jar`。设置 `BUILD_NUMBER` 时，文件名会在 `.jar` 前附加 `-<BUILD_NUMBER>`。
 
 ## 对于想要出一份力的开发者
 

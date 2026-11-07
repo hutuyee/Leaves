@@ -66,7 +66,7 @@ After cloning this repository and checking out `codex/26.2-adaptation`, run thes
 ./gradlew createLeavesclipJar
 ```
 
-The runnable server jar is `leaves-server/build/libs/leaves-leavesclip-26.2-R0.1-SNAPSHOT-*.jar`.
+The runnable server jar is `leaves-server/build/libs/leaves-leavesclip-26.2-R0.1-SNAPSHOT.jar`. When `BUILD_NUMBER` is set, the filename includes a `-<BUILD_NUMBER>` suffix before `.jar`.
 
 ## Pull Requests
 
