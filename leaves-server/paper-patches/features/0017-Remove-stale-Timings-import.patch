@@ -1,0 +1,17 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: hutuyee <hutuyee@outlook.com>
+Date: Sat, 7 Nov 2026 20:25:40 +0800
+Subject: [PATCH] Remove stale Timings import
+
+
+diff --git a/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java b/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java
+index 0929388d6b5375fbd7898c29d094a13aad88d020..ecd25243b55a00d7c8a04385c2695d55afc58657 100644
+--- a/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java
++++ b/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java
+@@ -1,6 +1,5 @@
+ package io.papermc.paper.plugin.manager;
+ 
+-import co.aikar.timings.TimedEventExecutor;
+ import com.destroystokyo.paper.event.server.ServerExceptionEvent;
+ import com.destroystokyo.paper.exception.ServerEventException;
+ import com.google.common.collect.Sets;

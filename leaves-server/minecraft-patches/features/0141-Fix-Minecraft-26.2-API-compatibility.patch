@@ -1,0 +1,113 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: hutuyee <hutuyee@outlook.com>
+Date: Sat, 7 Nov 2026 20:25:40 +0800
+Subject: [PATCH] Fix Minecraft 26.2 API compatibility
+
+
+diff --git a/net/minecraft/server/network/ServerCommonPacketListenerImpl.java b/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
+index 81830f6b47e7c8059dff2c7576edb9a79f095983..c62ce458369049858eca7795f12fafbf50965313 100644
+--- a/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
++++ b/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
+@@ -388,7 +388,7 @@ public abstract class ServerCommonPacketListenerImpl implements ServerCommonPack
+         if (org.leavesmc.leaves.LeavesConfig.mics.noChatSign
+             && this instanceof ServerGamePacketListenerImpl
+             && packet instanceof net.minecraft.network.protocol.game.ClientboundPlayerChatPacket chat) {
+-            Component content = chat.unsignedContent().orElseGet(() -> Component.literal(chat.body().content()));
++            Component content = java.util.Objects.requireNonNullElseGet(chat.unsignedContent(), () -> Component.literal(chat.body().content()));
+             packetToSend = new net.minecraft.network.protocol.game.ClientboundSystemChatPacket(chat.chatType().decorate(content), false);
+         }
+         // Leaves end - rebuild ClientboundPlayerChatPacket
+diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
+index f0efc04aad282bb8208be9895cb07798c66afe04..f7de5204da2f28337347fbdfd3f8d45e539cafd1 100644
+--- a/net/minecraft/server/players/PlayerList.java
++++ b/net/minecraft/server/players/PlayerList.java
+@@ -268,7 +268,6 @@ public abstract class PlayerList {
+ 
+         level = player.level();
+         this.sendActivePlayerEffects(player);
+-        player.sendPostEffects();
+         player.initInventoryMenu();
+         playerConnection.resumeFlushing();
+ 
+diff --git a/net/minecraft/world/entity/Mob.java b/net/minecraft/world/entity/Mob.java
+index 51426fa5de3b4243a043d23c506c672be6dfe6b6..a88bb52ecc5f9dc117f88323af4dafcfd3d30113 100644
+--- a/net/minecraft/world/entity/Mob.java
++++ b/net/minecraft/world/entity/Mob.java
+@@ -215,6 +215,8 @@ public abstract class Mob extends LivingEntity implements Targeting, EquipmentUs
+         return this.lookControl;
+     }
+ 
++    private int inactiveTickDisableCounter; // Leaves - throttle inactive goal selector ticking
++
+     // Paper start
+     @Override
+     public void inactiveTick() {
+diff --git a/net/minecraft/world/item/FireworkRocketItem.java b/net/minecraft/world/item/FireworkRocketItem.java
+index 3fbe2599910aa1ba0a9ea622d2b6db8682572a18..f3ee75b63abd851c0fe1a5d7b4d36744dc63b3ef 100644
+--- a/net/minecraft/world/item/FireworkRocketItem.java
++++ b/net/minecraft/world/item/FireworkRocketItem.java
+@@ -69,7 +69,7 @@ public class FireworkRocketItem extends Item implements ProjectileItem {
+                 if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer && serverPlayer.elytraAeronauticsNoChunk) {
+                     final FireworkRocketEntity firework = new FireworkRocketEntity(level, itemStack, player);
+                     firework.spawningEntity = player.getUUID();
+-                    com.destroystokyo.paper.event.player.PlayerElytraBoostEvent event = new com.destroystokyo.paper.event.player.PlayerElytraBoostEvent((org.bukkit.entity.Player) player.getBukkitEntity(), org.bukkit.craftbukkit.inventory.CraftItemStack.asBukkitMirror(itemStack), (org.bukkit.entity.Firework) firework.getBukkitEntity(), org.bukkit.craftbukkit.CraftEquipmentSlot.getHand(hand));
++                    com.destroystokyo.paper.event.player.PlayerElytraBoostEvent event = new com.destroystokyo.paper.event.player.PlayerElytraBoostEvent((org.bukkit.entity.Player) player.getBukkitEntity(), itemStack.asBukkitMirror(), (org.bukkit.entity.Firework) firework.getBukkitEntity(), org.bukkit.craftbukkit.CraftEquipmentSlot.getHand(hand));
+                     if (event.callEvent() && org.leavesmc.leaves.util.ElytraAeronauticsHelper.proxySpawnAndTick(firework)) {
+                         player.awardStat(Stats.ITEM_USED.get(this));
+                         if (!org.leavesmc.leaves.LeavesConfig.modify.oldMC.keepLeashConnectWhenUseFirework && player.dropAllLeashConnections(player, hand)) { // Leaves - keep leash connection when using firework
+diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
+index 7c3f0acec2732a0cfe2039b4123220572ba129dc..950645448bc70deee24808e7b62d44f4de37709c 100644
+--- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
++++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
+@@ -988,10 +988,6 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+         if (this.cooldownTime > 0 || this.getLevel() == null || skipNextSleepCheckAfterCooldown) {
+             return;
+         }
+-        // PrepareHopperTransferEvent can change the allowed slots without changing either inventory.
+-        if (hasPrepareTransferListeners(this.getLevel())) {
+-            return;
+-        }
+         if (isSleeping()) {
+             return;
+         }
+@@ -1580,7 +1576,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+         }
+ 
+         LithiumStackList hopperStackList = InventoryHelper.getLithiumStackList(hopperBlockEntity);
+-        if (!hasPrepareTransferListeners(world) && hopperBlockEntity.insertInventory == insertInventory && hopperStackList.getModCount() == hopperBlockEntity.myModCountAtLastInsert) {
++        if (hopperBlockEntity.insertInventory == insertInventory && hopperStackList.getModCount() == hopperBlockEntity.myModCountAtLastInsert) {
+             if (hopperBlockEntity.insertStackList != null && hopperBlockEntity.insertStackList.getModCount() == hopperBlockEntity.insertStackListModCount) {
+ //                ComparatorUpdatePattern.NO_UPDATE.apply(hopperBlockEntity, hopperStackList); //commented because it's a noop, Hoppers do not send useless comparator updates
+                 return false;
+@@ -1649,7 +1645,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+         LithiumStackList hopperStackList = InventoryHelper.getLithiumStackList(hopperBlockEntity);
+         LithiumStackList fromStackList = hopperBlockEntity.extractStackList;
+ 
+-        if (!hasPrepareTransferListeners(world) && hopperStackList.getModCount() == hopperBlockEntity.myModCountAtLastExtract) {
++        if (hopperStackList.getModCount() == hopperBlockEntity.myModCountAtLastExtract) {
+             if (fromStackList.getModCount() == hopperBlockEntity.extractStackListModCount) {
+                 if (!(from instanceof ComparatorTracker comparatorTracker) || comparatorTracker.lithium$hasAnyComparatorNearby()) {
+                     //noinspection CollectionAddedToSelf
+@@ -1697,9 +1693,5 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+         }
+         return false;
+     }
+-    private static boolean hasPrepareTransferListeners(Level level) {
+-        return !level.paperConfig().hopper.disableMoveEvent
+-            && io.papermc.paper.event.inventory.PrepareHopperTransferEvent.getHandlerList().getRegisteredListeners().length != 0;
+-    }
+     // Leaves end - Lithium Sleeping Block Entity
+ }
+diff --git a/net/minecraft/world/level/dimension/end/EnderDragonFight.java b/net/minecraft/world/level/dimension/end/EnderDragonFight.java
+index 99a4e4b95d30e86d0fcba29c3521a1a3e5299d02..3701612f9c589e7c3ae8eb4b9db4a84ae0469f1e 100644
+--- a/net/minecraft/world/level/dimension/end/EnderDragonFight.java
++++ b/net/minecraft/world/level/dimension/end/EnderDragonFight.java
+@@ -348,7 +348,7 @@ public class EnderDragonFight extends SavedData {
+             }
+ 
+             if (this.needsStateScanning || this.exitPortalLocation == null) {
+-                BlockPos endPodiumLocation = getPodiumLocation(this.origin);
++                BlockPos endPodiumLocation = EndPodiumFeature.getLocation(this.origin);
+                 int startY = this.cachePortalOriginIteratorY != -1
+                     ? this.cachePortalOriginIteratorY
+                     : this.level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, endPodiumLocation).getY();
